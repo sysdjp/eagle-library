@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+	xmlns:xi="app_origin.xml"
+	>
+
+<string name="setting_summary">The screen of &quot;ShakeDroid Advance&quot; is set to a live wallpaper. </string>
+<string name="setting_checkbox_vertical">Vertical</string>
+<string name="setting_checkbox_horizontal">Horizontal</string>
+<string name="setting_helptext">Select shake file</string>
+<string name="setting_selectbutton">Select</string>
+<string name="setting_errormessage_filetype">error file...</string>
+<string name="alert_notinstall_shakedroid">Please install &quot;ShakeDroid Advance (150 JPY)&quot;.</string>
+<string name="alert_install_shakedroid">Install</string>
+</resources>

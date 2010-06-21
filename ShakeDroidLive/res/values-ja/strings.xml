@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+	>
+
+<string name="setting_summary">ShakeDroid Advanceで作成した画面をライブ壁紙に設定します。</string>
+<string name="setting_checkbox_vertical">縦画面</string>
+<string name="setting_checkbox_horizontal">横画面</string>
+<string name="setting_helptext">揺れ設定ファイルを選択してください。</string>
+<string name="setting_selectbutton">Select</string>
+<string name="setting_errormessage_filetype">ファイルの縦横が不正です。</string>
+<string name="alert_notinstall_shakedroid">&quot;ShakeDroid Advance&quot;をインストールして下さい。</string>
+<string name="alert_install_shakedroid">インストール</string>
+</resources>
