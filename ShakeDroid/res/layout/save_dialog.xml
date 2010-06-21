@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="wrap_content" android:clickable="true" android:layout_width="fill_parent" android:orientation="vertical">
+<LinearLayout android:id="@+id/LinearLayout02" android:layout_width="wrap_content" android:layout_height="wrap_content"><ImageView android:id="@+id/save_preview" android:layout_height="64dp" android:layout_width="64dp"></ImageView><LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="wrap_content"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/save_date" android:text="date"></TextView><CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/savedialog_overwrite" android:text="@string/savedialog_overwrite"></CheckBox></LinearLayout><Button android:id="@+id/save_loadbutton" android:layout_height="fill_parent" android:layout_width="120dp" android:text="@string/savedialog_loadbutton"></Button></LinearLayout>
+
+
+
+
+
+
+</LinearLayout>

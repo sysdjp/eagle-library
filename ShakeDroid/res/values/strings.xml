@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">ShakeDroid</string><string name="app_name_advance">ShakeDroid Advance</string>
+
+<string name="menu_pick_picture">Please choose the picture from the Menu. </string>
+<string name="pick_picture">Please choose the picture that shakes it. </string>
+<string name="touch_picture">Please touch the shaken place. </string>
+<string name="change_picture">Change picture</string>
+<string name="confimation_mode">Confirmation mode</string>
+<string name="weight_reset">Reset</string>
+<string name="shaketype_always">Always</string>
+<string name="shaketype_slide">Slide</string>
+<string name="shaketype_accel">Acceleration sensor</string>
+<string name="shaketype_title">Please choose the type. </string>
+<string name="text_accel_sensitivity">Accel Sensitivity</string>
+<string name="menu_shaketype">Setting</string>
+<string name="text_shake_multiply">Amount of shake</string>
+<string name="option_enableOrientation">Orientation lock</string>
+<string name="option_strTouchWeight">Influence of touch</string><string name="option_resetButton">Reset</string>
+
+<string name="option_strFrameRate">Frame rate</string>
+<string name="option_okButton">OK</string>
+<string name="option_strWeightMulShake">Duration of shake</string>
+<string name="toast_saveOption">Save option</string>
+
+<string name="dialog_ok">OK</string>
+<string name="dialog_cancel">Cancel</string>
+<string name="savedialog_title">The setting is preserved. </string>
+<string name="menutitle_save">Save</string>
+<string name="savedialog_toast_saveok">succeeded in preservation. </string>
+<string name="savedialog_toast_saveng">failed in preservation. </string>
+<string name="savedialog_mode_vertical">Vertical</string>
+<string name="savedialog_mode_horizontal">Horizontal</string>
+<string name="savedialog_loadbutton">Load</string>
+<string name="menutitle_load">Load</string>
+<string name="savedialog_overwrite">Overwrite</string>
+<string name="toast_noLoadFiles">No Files...</string>
+
+
+<string name="savedialog_send_livewallpaper">forwards it to a live wallpaper. </string>
+<string name="savedialog_fail_sendwall">&quot;ShakeDroid Live&quot; is not installed. </string>
+<string name="main_ad_00">The screen can be set to &quot;Live Wallpaper&quot;. </string>
+<string name="main_ad_01">Please install &quot;ShakeDroid Advance&quot; (150JPY) and &quot;ShakeDroid Live&quot; (Free). </string>
+<string name="main_ad_install">Install</string>
+<string name="str_reset_check">Do you reset it?</string>
+<string name="option_enable_resetdialog">It confirms it at reset. </string>
+<string name="str_inclination">Toggle V / H</string>
+</resources>

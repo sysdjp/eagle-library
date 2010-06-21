@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:admobsdk="http://schemas.android.com/apk/res/eagle.android.app.shake"
+  android:layout_width="fill_parent" android:orientation="vertical" android:isScrollContainer="true" android:scrollbars="vertical" android:scrollbarStyle="insideOverlay" android:layout_gravity="bottom" android:layout_height="wrap_content">
+
+
+
+
+
+
+
+
+
+<ScrollView android:id="@+id/ScrollView01" android:layout_height="fill_parent" android:layout_width="fill_parent"><LinearLayout android:id="@+id/LinearLayout01" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginRight="50dp"><RadioGroup android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/shaketype_group"><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/type_always" android:text="@string/shaketype_always"></RadioButton><RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/type_slide" android:text="@string/shaketype_slide"></RadioButton>
+
+<RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/type_accel" android:text="@string/shaketype_accel"></RadioButton>
+</RadioGroup><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/text_accel_sensitivity"></TextView>
+
+
+
+<SeekBar android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/accel_sensitivity" android:max="100" android:layout_marginLeft="5dp" android:layout_marginRight="5dp" android:layout_marginBottom="15dp"></SeekBar><TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/text_shake_multiply"></TextView><SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:max="200" android:id="@+id/shake_mul" android:layout_marginLeft="5dp" android:layout_marginRight="5dp" android:layout_marginBottom="15dp"></SeekBar><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/option_strWeightMulShake"></TextView><SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginLeft="5dp" android:layout_marginRight="5dp" android:layout_marginBottom="15dp" android:max="98" android:id="@+id/option_weightMulShakeBar"></SeekBar><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/option_strTouchWeight" android:id="@+id/TextView03"></TextView><SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/option_touchWeightAddBar" android:layout_marginLeft="5dp" android:layout_marginRight="5dp" android:layout_marginBottom="15dp" android:max="100"></SeekBar><CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/option_enable_resetdialog" android:text="@string/option_enable_resetdialog"></CheckBox><Button android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_marginTop="15dp" android:id="@+id/option_resetButton" android:text="@string/option_resetButton" android:layout_marginBottom="15dp"></Button>
+
+
+
+
+
+
+
+
+
+
+</LinearLayout>
+
+
+</ScrollView>
+
+
+
+</LinearLayout>

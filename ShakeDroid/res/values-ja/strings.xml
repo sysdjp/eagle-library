@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="app_name">ShakeDroid</string>
+
+<string name="menu_pick_picture">Menuから揺らす画像を選択してください。</string>
+<string name="pick_picture">揺らす画像を選択してください。</string>
+<string name="touch_picture">揺らす場所にタッチしてください。</string>
+<string name="change_picture">画像変更</string>
+<string name="confimation_mode">描画モード変更</string>
+<string name="weight_reset">ウェイトリセット</string>
+<string name="shaketype_always">常に揺らす</string>
+<string name="shaketype_slide">画面をスライドして揺らす</string>
+<string name="shaketype_accel">端末を振って揺らす</string>
+<string name="shaketype_title">設定変更</string>
+<string name="text_accel_sensitivity">加速度センサー感度</string>
+<string name="menu_shaketype">設定変更</string>
+<string name="text_shake_multiply">揺れる量</string>
+<string name="option_enableOrientation">縦横固定</string>
+
+<string name="option_strTouchWeight">タッチの影響度</string><string name="option_resetButton">初期化</string>
+<string name="option_strWeightMulShake">揺れの持続</string>
+<string name="toast_saveOption">設定を保存しました。</string>
+<string name="savedialog_title">保存</string>
+<string name="savedialog_toast_saveok">保存に成功しました。</string>
+<string name="savedialog_toast_saveng">保存に失敗しました。</string>
+<string name="savedialog_mode_vertical">縦画面</string>
+<string name="savedialog_mode_horizontal">横画面</string>
+<string name="savedialog_overwrite">上書き保存</string>
+<string name="toast_noLoadFiles">ファイルが保存されていません。</string>
+<string name="savedialog_send_livewallpaper">ライブ壁紙に転送する</string><string name="savedialog_fail_sendwall">ShakeDroid Liveがインストールされていません。</string>
+
+<string name="main_ad_00">作成した画面をライブ壁紙に指定できます。</string>
+<string name="main_ad_01">ライブ壁紙に設定する場合は、ShakeDroid Advance (￥150)とShakeDroid Live (無料)をインストールして下さい。</string>
+<string name="str_reset_check">影響範囲をリセットしますか？</string>
+<string name="option_enable_resetdialog">影響リセット時に確認する</string>
+<string name="str_inclination">縦横切替</string>
+</resources>
