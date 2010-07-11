@@ -50,6 +50,15 @@ public interface IBufferReader
 	public	void		seek( int eSeekType, int length )	throws	IOException;
 
 	/**
+	 * バッファの大きさを取得する。<BR>
+	 * 不明である場合、負の値を返す。
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/06/21 : 新規作成
+	 */
+	public	int			getBufferSize( )	throws	IOException;
+
+	/**
 	 * バッファの開放を行う。
 	 * @author eagle.sakura
 	 * @version 2010/03/13 : 新規作成

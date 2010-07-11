@@ -35,6 +35,20 @@ public class InputStreamBufferReader	implements	IBufferReader
 	}
 
 	/**
+	 * バッファの大きさを取得する。
+	 * @author eagle.sakura
+	 * @return
+	 * @throws IOException
+	 * @version 2010/06/21 : 新規作成
+	 */
+	@Override
+	public int getBufferSize() throws IOException
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		return	is.available();
+	}
+
+	/**
 	 * @author eagle.sakura
 	 * @version 2010/03/31 : 新規作成
 	 */
@@ -83,7 +97,12 @@ public class InputStreamBufferReader	implements	IBufferReader
 	// TODO 自動生成されたメソッド・スタブ
 		if( eSeekType == eSeekTypeCurrent )
 		{
-			is.skip( eSeekTypeCurrent );
+			is.skip( length );
+		}
+		else if( eSeekType == eSeekTypeSet )
+		{
+			is.reset();
+			is.skip( length );
 		}
 	}
 

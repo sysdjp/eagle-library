@@ -26,6 +26,11 @@ public class DataInputStream	implements	Disposable
 	private		IBufferReader	reader	= null;
 
 	/**
+	 * バイトオーダー変換。
+	 */
+	private		ByteOrder		order	= ByteOrder.eThrough;
+
+	/**
 	 * ストリームを生成する。
 	 * @author eagle.sakura
 	 * @param br
@@ -34,6 +39,43 @@ public class DataInputStream	implements	Disposable
 	public	DataInputStream( IBufferReader br )
 	{
 		reader = br;
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @param is
+	 * @version 2010/06/23 : 新規作成
+	 */
+	public	DataInputStream( InputStream is )
+	{
+		this( new InputStreamBufferReader( is ) );
+	}
+
+	/**
+	 * リードクラスを取得する。
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/06/21 : 新規作成
+	 */
+	public IBufferReader getReader()
+	{
+		return reader;
+	}
+
+	/**
+	 * 入力時のバイトオーダー変換方法を指定する。<BR>
+	 * ファイル側がリトルエンディアンの場合
+	 * {@link ByteOrder#eReversing}、ビッグエンディアンの場合
+	 * {@link ByteOrder#eThrough}を指定する。<BR>
+	 * 標準では{@link ByteOrder#eThrough}になっている。
+	 * @author eagle.sakura
+	 * @param set
+	 * @version 2010/06/21 : 新規作成
+	 */
+	public	void		setByteOrder( ByteOrder set )
+	{
+		order = set;
 	}
 
 	/**
@@ -46,6 +88,7 @@ public class DataInputStream	implements	Disposable
 	{
 		byte[] n = { 0 };
 		reader.readBuffer( n, 0, n.length );
+		order.encode( n, 1, 1 );
 		return	n[ 0 ];
 	}
 
@@ -59,6 +102,7 @@ public class DataInputStream	implements	Disposable
 	{
 		byte[ ] n = { 0, 0 };
 		reader.readBuffer( n, 0, n.length );
+		order.encode( n, 2, 1 );
 
 		int n0 = ( ( int )n[ 0 ] & 0xff );
 		int n1 = ( ( int )n[ 1 ] & 0xff );
@@ -79,6 +123,7 @@ public class DataInputStream	implements	Disposable
 	{
 		byte[ ]	n = { 0, 0, 0 };
 		reader.readBuffer( n, 0, n.length );
+		order.encode( n, 3, 1 );
 
 		return	(int)(			( ( ( ( int )n[ 0 ] ) & 0xff ) << 16	)
 							|	( ( ( ( int )n[ 1 ] ) & 0xff ) << 8 	)
@@ -119,6 +164,7 @@ public class DataInputStream	implements	Disposable
 	{
 		byte[ ] n = { 0, 0, 0, 0 };
 		reader.readBuffer( n, 0, n.length );
+		order.encode( n, 4, 1 );
 
 		int n0 = ( ( int )n[ 0 ] & 0xff );
 		int n1 = ( ( int )n[ 1 ] & 0xff );
@@ -141,6 +187,7 @@ public class DataInputStream	implements	Disposable
 						0, 0, 0, 0
 					};
 		reader.readBuffer( n, 0, n.length );
+		order.encode( n, 8, 1 );
 
 		int n0 = ( ( int )n[ 0 ] & 0xff );
 		int n1 = ( ( int )n[ 1 ] & 0xff );

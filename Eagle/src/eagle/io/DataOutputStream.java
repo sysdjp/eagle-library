@@ -14,7 +14,15 @@ import eagle.util.EagleUtil;
  */
 public class DataOutputStream	implements	Disposable
 {
+	/**
+	 * 入出力。
+	 */
 	private	IBufferWriter			writer	=	null;
+
+	/**
+	 * バイトオーダー変換。
+	 */
+	private		ByteOrder		order	= ByteOrder.eThrough;
 
 	/**
 	 * 書き込み用のストリームを作成する。
@@ -25,6 +33,21 @@ public class DataOutputStream	implements	Disposable
 	public	DataOutputStream( IBufferWriter bw )
 	{
 		writer = bw;
+	}
+
+	/**
+	 * 入力時のバイトオーダー変換方法を指定する。<BR>
+	 * ファイル側がリトルエンディアンの場合
+	 * {@link ByteOrder#eReversing}、ビッグエンディアンの場合
+	 * {@link ByteOrder#eThrough}を指定する。<BR>
+	 * 標準では{@link ByteOrder#eThrough}になっている。
+	 * @author eagle.sakura
+	 * @param set
+	 * @version 2010/06/21 : 新規作成
+	 */
+	public	void		setByteOrder( ByteOrder set )
+	{
+		order = set;
 	}
 
 	/**
@@ -63,6 +86,7 @@ public class DataOutputStream	implements	Disposable
 		{
 			n,
 		};
+		order.encode( buf, 1, 1 );
 		writeBuffer( buf, 0, buf.length );
 	}
 
@@ -91,6 +115,7 @@ public class DataOutputStream	implements	Disposable
 			( byte )( ( ( ( int )n ) >> 8 ) & 0xff ),
 			( byte )( ( ( ( int )n ) >> 0 ) & 0xff ),
 		};
+		order.encode( buf, 2, 1 );
 		writeBuffer( buf, 0, buf.length );
 	}
 
@@ -109,6 +134,7 @@ public class DataOutputStream	implements	Disposable
 			( byte )( ( ( ( int )n ) >> 8  ) & 0xff ),
 			( byte )( ( ( ( int )n ) >> 0  ) & 0xff ),
 		};
+		order.encode( buf, 4, 1 );
 		writeBuffer( buf, 0, buf.length );
 	}
 
@@ -131,6 +157,7 @@ public class DataOutputStream	implements	Disposable
 			temp[ ptr ] = ( byte )( ( n >>  8 ) & 0xff ); ptr++;
 			temp[ ptr ] = ( byte )( ( n >>  0 ) & 0xff ); ptr++;
 		}
+		order.encode( temp, 4, buffer.length );
 		writeBuffer( temp, 0, temp.length );
 	}
 
@@ -152,6 +179,7 @@ public class DataOutputStream	implements	Disposable
 			temp[ ptr ] = ( byte )( ( n >>  8 ) & 0xff ); ptr++;
 			temp[ ptr ] = ( byte )( ( n >>  0 ) & 0xff ); ptr++;
 		}
+		order.encode( temp, 4, buffer.length );
 		writeBuffer( temp, 0, temp.length );
 	}
 
@@ -173,6 +201,7 @@ public class DataOutputStream	implements	Disposable
 			( byte )( ( ( ( int )n ) >> 8  ) & 0xff ),
 			( byte )( ( ( ( int )n ) >> 0  ) & 0xff ),
 		};
+		order.encode( buf, 4, 1 );
 		writeBuffer( buf, 0, buf.length );
 	}
 
@@ -193,6 +222,7 @@ public class DataOutputStream	implements	Disposable
 			( byte )( ( ( ( int )n ) >> 8  ) & 0xff ),
 			( byte )( ( ( ( int )n ) >> 0  ) & 0xff ),
 		};
+		order.encode( buf, 2, 1 );
 		writeBuffer( buf, 0, buf.length );
 	}
 
@@ -213,6 +243,7 @@ public class DataOutputStream	implements	Disposable
 			( byte )( ( ( ( int )n ) >> 8  ) & 0xff ),
 			( byte )( ( ( ( int )n ) >> 0  ) & 0xff ),
 		};
+		order.encode( buf, 4, 1 );
 		writeBuffer( buf, 0, buf.length );
 	}
 

@@ -45,6 +45,20 @@ public class FileAccessStream	implements	Disposable,
 	}
 
 	/**
+	 *
+	 * @author eagle.sakura
+	 * @return
+	 * @throws IOException
+	 * @version 2010/06/21 : 新規作成
+	 */
+	@Override
+	public int getBufferSize()	throws	IOException
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		return ( int ) raf.length();
+	}
+
+	/**
 	 * 書き込み用ストリームを取得する。
 	 * @author eagle.sakura
 	 * @return

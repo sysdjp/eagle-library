@@ -170,6 +170,23 @@ public	final class Vector3
 	}
 
 	/**
+	 * 2つのベクトルを保管する。<BR>
+	 * leapは０．０ｆ～１．０ｆである必要がある。
+	 * @author eagle.sakura
+	 * @param v0
+	 * @param v1
+	 * @param leap
+	 * @param result
+	 * @version 2010/07/11 : 新規作成
+	 */
+	public	static	void	leap( Vector3 v0, Vector3 v1, float leap, Vector3 result )
+	{
+		result.x = ( v1.x * leap ) + ( v0.x * ( 1.0f - leap ) );
+		result.y = ( v1.y * leap ) + ( v0.y * ( 1.0f - leap ) );
+		result.z = ( v1.z * leap ) + ( v0.z * ( 1.0f - leap ) );
+	}
+
+	/**
 	 * 整合性確認。
 	 * @author eagle.sakura
 	 * @param obj
