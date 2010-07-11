@@ -12,9 +12,9 @@ import android.util.Log;
 import eagle.android.gles11.GLManager;
 import eagle.android.gles11.IndexBufferSW;
 import eagle.android.gles11.VertexBufferSW;
+import eagle.android.math.Matrix4x4;
 import eagle.io.DataInputStream;
 import eagle.io.DataOutputStream;
-import eagle.math.Matrix4x4;
 import eagle.math.Vector3;
 import eagle.util.EagleUtil;
 

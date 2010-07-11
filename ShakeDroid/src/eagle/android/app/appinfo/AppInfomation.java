@@ -29,12 +29,10 @@ public class AppInfomation implements IAppInfomation
 	{
 		// TODO 自動生成されたメソッド・スタブ
 		AdView	ad = new	AdView( activity );
-	//	ad.layout( 0, 0, 320, 48 );
 		ad.setVisibility( View.VISIBLE );
 		ad.setKeywords("Android application");
 		ad.bringToFront();
 		ad.requestFocus();
-	//	ad.requestFreshAd();
 		ad.invalidate();
 		return ad;
 	}
