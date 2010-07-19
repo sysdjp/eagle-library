@@ -30,9 +30,20 @@
 <string name="toast_noLoadFiles">ファイルが保存されていません。</string>
 <string name="savedialog_send_livewallpaper">ライブ壁紙に転送する</string><string name="savedialog_fail_sendwall">ShakeDroid Liveがインストールされていません。</string>
 
-<string name="main_ad_00">作成した画面をライブ壁紙に指定できます。</string>
-<string name="main_ad_01">ライブ壁紙に設定する場合は、ShakeDroid Advance (￥150)とShakeDroid Live (無料)をインストールして下さい。</string>
+<string name="main_ad_00"></string>
+<string name="main_ad_01">ShakeDroid Advanceならすべての機能を利用できます。</string>
 <string name="str_reset_check">影響範囲をリセットしますか？</string>
 <string name="option_enable_resetdialog">影響リセット時に確認する</string>
 <string name="str_inclination">縦横切替</string>
+<string name="option_enable_facedetect">身体認識（β版）</string>
+<string name="option_memory_saving_str">メモリ節約</string>
+<string name="option_density_str">頂点密度</string>
+<string-array name="trimming_sample_helps"><item>画像トリミング　サンプル</item>
+<item>この機能は&quot;ShakeDroid Advance&quot;で</item>
+<item>利用することができます。</item>
+</string-array>
+<string-array name="face_hit_helps"><item>上半身を認識しました。</item>
+<item>ShakeDroid Advanceなら</item>
+<item>この文字列を削除できます。</item>
+</string-array>
 </resources>

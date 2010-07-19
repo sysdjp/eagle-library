@@ -59,6 +59,10 @@ public class OptionDialog		implements	OnClickListener
 
 		//!	オプションをすべてリセット。
 		activity.getInitializeData().option.reset();
+		activity.getSharedData().setEnableResetDialog( false );
+		activity.getSharedData().setEnableFaceDetect( false );
+		activity.getSharedData().setShakePixelDensity( 0.5f );
+		activity.getSharedData().setMemorySavingLevel( 0.5f );
 
 		//!	ダイアログのビューをリセット
 		resetView( rootLayout );
@@ -124,10 +128,25 @@ public class OptionDialog		implements	OnClickListener
     		box.setChecked( option.isOrientationLock( ) );
     	}
     	*/
+    	//!	ピクセル密度設定
+    	{
+    		SeekBar		bar	=	( SeekBar )layout.findViewById( R.id.option_shake_density );
+    		bar.setProgress( ( int )( 100.0f * activity.getSharedData().getShakePixelDensity() ) );
+    	}
     	//!	リセットダイアログ設定
     	{
     		CheckBox	box =	( CheckBox )layout.findViewById( R.id.option_enable_resetdialog );
     		box.setChecked( activity.getSharedData().isEnableResetDialog( ) );
+    	}
+    	//!	顔認識設定
+    	{
+    		CheckBox	box =	( CheckBox )layout.findViewById( R.id.option_enable_facedetectcheck );
+    		box.setChecked( activity.getSharedData().isEnableFaceDetect() );
+    	}
+    	//!	メモリ節約レベル設定
+    	{
+    		SeekBar		bar =	( SeekBar )layout.findViewById( R.id.option_memory_saved );
+    		bar.setProgress( ( int )( 100.0f * activity.getSharedData().getMemorySavingLevel()) );
     	}
 
 	}
@@ -250,10 +269,25 @@ public class OptionDialog		implements	OnClickListener
     		option.setOrientationLock( box.isChecked( ) );
     	}
     	*/
+    	//!	ピクセル密度設定
+    	{
+    		SeekBar		bar	=	( SeekBar )alert.findViewById( R.id.option_shake_density );
+    		activity.getSharedData().setShakePixelDensity( ( ( float )bar.getProgress() ) / 100.0f );
+    	}
     	//!	リセットダイアログ設定
     	{
     		CheckBox	box =	( CheckBox )alert.findViewById( R.id.option_enable_resetdialog );
     		activity.getSharedData().setEnableResetDialog( box.isChecked() );
+    	}
+    	//!	リセットダイアログ設定
+    	{
+    		CheckBox	box =	( CheckBox )alert.findViewById( R.id.option_enable_facedetectcheck );
+    		activity.getSharedData().setEnableFaceDetect( box.isChecked() );
+    	}
+    	{
+    	//!	メモリ節約レベル設定
+    		SeekBar		bar	=	( SeekBar )alert.findViewById( R.id.option_memory_saved );
+    		activity.getSharedData().setMemorySavingLevel( ( float )( bar.getProgress() ) / 100.0f );
     	}
 
     	//!	オプションを確定させる。

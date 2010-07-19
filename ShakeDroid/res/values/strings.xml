@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="option_density_str">Vertex density</string>
     
     <string name="app_name">ShakeDroid</string><string name="app_name_advance">ShakeDroid Advance</string>
 
@@ -40,10 +41,24 @@
 
 <string name="savedialog_send_livewallpaper">forwards it to a live wallpaper. </string>
 <string name="savedialog_fail_sendwall">&quot;ShakeDroid Live&quot; is not installed. </string>
-<string name="main_ad_00">The screen can be set to &quot;Live Wallpaper&quot;. </string>
-<string name="main_ad_01">Please install &quot;ShakeDroid Advance&quot; (150JPY) and &quot;ShakeDroid Live&quot; (Free). </string>
+<string name="main_ad_00"></string>
+<string name="main_ad_01">If it is &quot;ShakeDroid Advance&quot;, all functions can be used. </string>
 <string name="main_ad_install">Install</string>
 <string name="str_reset_check">Do you reset it?</string>
 <string name="option_enable_resetdialog">It confirms it at reset. </string>
 <string name="str_inclination">Toggle V / H</string>
+<string name="option_enable_facedetect">Upper body recognition (beta-version)</string>
+<string name="toast_hit_faces">The upper-body was detected. </string>
+<string name="toast_nohit_face">The upper-body was not able to be detected. </string>
+<string name="option_memory_saving_str">Memory saving</string>
+<string-array name="trimming_sample_helps"><item>Trimming Sample</item>
+<item>This function can be used</item>
+<item>by &quot;ShakeDroid Advance&quot;. </item>
+</string-array>
+
+
+<string-array name="face_hit_helps"><item>The upper-body was detected. </item>
+<item>If it is &quot;ShakeDroid Advance&quot;,</item>
+<item>this character string can be deleted. </item>
+</string-array>
 </resources>

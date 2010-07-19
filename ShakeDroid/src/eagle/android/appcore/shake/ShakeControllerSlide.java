@@ -83,7 +83,27 @@ public class ShakeControllerSlide extends IShakeController
 	// TODO 自動生成されたメソッド・スタブ
 		TouchDisplay	touch = mt.getTouchDisplay();
 
-		if( touch.isReleaseOnce( ) )
+		if( touch.isTouch() )
+		{
+			weight	= 1.0f;
+			frame	= 90;
+
+			//!	移動ベクトル設定
+			slideVector.set( touch.getDrugVectorX(), -touch.getDrugVectorY(), 0 );
+
+			final	float	baseLength = 100.0f;
+			float	level	=	slideVector.length() / baseLength;
+
+			slideVector.normalize();
+
+			if( level < 1.0f )
+			{
+				slideVector.x *= level;
+				slideVector.y *= level;
+			}
+		}
+		/*
+		else if( touch.isReleaseOnce( ) )
 		{
 			Log.d( "ShakeDroid", "離された" );
 			weight	= 1.0f;
@@ -93,6 +113,7 @@ public class ShakeControllerSlide extends IShakeController
 			slideVector.set( touch.getDrugVectorX(), -touch.getDrugVectorY(), 0 );
 			slideVector.normalize();
 		}
+		*/
 
 
 		float	sin	=	( float )Math.sin( ( double )( frame ) );

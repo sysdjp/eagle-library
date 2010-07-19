@@ -22,6 +22,11 @@ public class ShakeInitialize
 	public	Uri				uri		=	null;
 
 	/**
+	 * URIより優先される画像情報。
+	 */
+	public	Bitmap			bmp		=	null;
+
+	/**
 	 * ユーザーの設定したオプション情報。
 	 */
 	public	Option			option	=	new	Option();
@@ -52,6 +57,11 @@ public class ShakeInitialize
 	 */
 	public	String			originFileName	=	"";
 
+	/**
+	 * 顔認識を行うか。
+	 */
+	public	boolean			isFaceDetect	=	false;
+
 	public	ShakeInitialize( )
 	{
 	}
@@ -60,5 +70,9 @@ public class ShakeInitialize
 	{
 		originFileName	= "";
 		weights			= null;
+		bmp				= null;
+		xDivision		= -1;
+		yDivision		= -1;
+		isFaceDetect	= false;
 	}
 }

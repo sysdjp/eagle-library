@@ -12,6 +12,8 @@ import eagle.android.appcore.shake.Option;
 import eagle.android.appcore.shake.ShakeDataFile;
 import eagle.android.appcore.shake.ShakeInitialize;
 import eagle.android.appcore.shake.ShakeLooper;
+import eagle.android.appcore.shake.ShakeVertices;
+import eagle.android.graphic.Graphics;
 import eagle.android.thread.ILooper;
 import eagle.android.thread.LooperThread;
 import eagle.android.thread.ILooper.ILooperListener;
@@ -23,6 +25,7 @@ import eagle.io.DataOutputStream;
 import eagle.io.FileAccessStream;
 import eagle.io.InputStreamBufferReader;
 import eagle.io.OutputStreamBufferWriter;
+import eagle.math.Vector2;
 import eagle.util.EagleUtil;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +36,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Bitmap.Config;
 import android.graphics.Region.Op;
 import android.net.Uri;
 import android.opengl.GLUtils;
@@ -84,6 +90,11 @@ public class ShakeDroid	extends		UtilActivity
 	 * 保存した情報の読み込み用コード。
 	 */
 	public	static	final	int			eRequestCodeLoadFileChoose	=	1;
+
+	/**
+	 * 画像のトリミングを行うコード。
+	 */
+	public	static	final	int			eRequestCodeImageTriming	=	2;
 
 	/**
 	 * メイン画面で使用するレイアウトID。
@@ -180,9 +191,10 @@ public class ShakeDroid	extends		UtilActivity
 
 		//!	手動広告
 		/*
+		*/
 		if( !info.isSharewareMode() )
 		{
-			if( UtilActivity.isSdkVersion2_x( ) )
+		//	if( UtilActivity.isSdkVersion2_x( ) )
 			{
 				View	ad = View.inflate( this, R.layout.mainview_adbutton, null );
 				Button	install = ( Button )ad.findViewById( R.id.main_ad_installbutton );
@@ -214,7 +226,6 @@ public class ShakeDroid	extends		UtilActivity
 				}
 			}
 		}
-		*/
 		setContentView( view );
     }
 
@@ -263,7 +274,22 @@ public class ShakeDroid	extends		UtilActivity
     {
 		if( shakeLooper != null )
 		{
-			shakeLooper.onOptionChange( option );
+			Vector2	v = UtilActivity.getDisplaySize( this, new Vector2( ) );
+			sharedData.getShakePixelDivisions( ( int )v.x, ( int )v.y, v );
+
+			//!	密度に変更があった
+			if( initData.xDivision != ( int )v.x
+			||	initData.yDivision != ( int )v.y )
+			{
+				initData.xDivision = ( int )v.x;
+				initData.yDivision = ( int )v.y;
+
+				createThread();
+			}
+			else
+			{
+				shakeLooper.onOptionChange( option, getSharedData( ) );
+			}
 		}
     }
 
@@ -355,6 +381,21 @@ public class ShakeDroid	extends		UtilActivity
 
     	EagleUtil.log( "create thread" );
     	OpenGLView	glView = new	OpenGLView( this );
+
+    	//!	密度変更
+    	if( initData.weights == null
+    	&&	initData.xDivision == -1
+    	&&	initData.yDivision == -1 )
+    	{
+    		Vector2	v = UtilActivity.getDisplaySize( this, new Vector2() );
+    		sharedData.getShakePixelDivisions( ( int  )v.x, ( int )v.y, v );
+    		initData.xDivision = ( int )v.x;
+    		initData.yDivision = ( int )v.y;
+    	}
+
+    	//!	顔認識
+    	initData.isFaceDetect = sharedData.isEnableFaceDetect();
+
     	shakeLooper	=	new	ShakeLooper( this, glView.getGLManager(), initData );
     	thread		=	new	LooperThread( shakeLooper );
     	thread.addSurface( glView );
@@ -501,6 +542,40 @@ public class ShakeDroid	extends		UtilActivity
     public	static	final	String		eLoadFileResultKey_FileBuffer	=	"FILE_BUFFER";
 
     /**
+     * 画像のトリミングを開始する。
+     * @author eagle.sakura
+     * @version 2010/07/14 : 新規作成
+     */
+    public	void	startTrimImageActivity( )
+    {
+    	try
+    	{
+		//	Intent	intent = new Intent( Intent.ACTION_GET_CONTENT );
+			Intent	intent = new Intent( "com.android.camera.action.CROP" );
+		//	intent.setClassName( "com.android.camera", "com.android.camera.CropImage" );
+			intent.setData( initData.uri );
+			intent.putExtra("crop", "true");
+			Vector2	size = UtilActivity.getDisplaySize( this, new Vector2() );
+			float	mul = ( 0.5f + ( 1.0f - sharedData.getMemorySavingLevel() ) / 2 );
+			size.x *= mul;
+			size.y *= mul;
+			intent.putExtra("return-data", true);
+			intent.putExtra("aspectX",	( int )size.x);
+			intent.putExtra("aspectY",	( int )size.y);
+			intent.putExtra("outputX",	( int )size.x);
+			intent.putExtra("outputY",	( int )size.y);
+			intent.putExtra("scale",	true );
+			startActivityForResult( intent, eRequestCodeImageTriming );
+    	}
+    	catch( Exception e )
+    	{
+    		EagleUtil.log( e );
+    	}
+
+    }
+
+
+    /**
      * 画像を選択終了した。
      * @author eagle.sakura
      * @param requestCode
@@ -562,6 +637,43 @@ public class ShakeDroid	extends		UtilActivity
     			EagleUtil.log( e );
     		}
     	}
+    	else if( requestCode == eRequestCodeImageTriming )
+    	{
+    		try
+    		{
+	    		Uri	photoURI = initData.uri;
+	    		Bitmap	bmp =	( Bitmap )data.getExtras().getParcelable( "data" );
+	    		{
+		    		int	height	=	bmp.getHeight(),
+		    			width	=	bmp.getWidth();
+	    			Bitmap	temp = Bitmap.createBitmap( width, height, Config.RGB_565 );
+	    			Canvas canvas = new Canvas( temp );
+	    			Graphics	graphics = new Graphics();
+	    			graphics.setCanvas( canvas );
+	    			graphics.drawBitmap( bmp, 0, 0 );
+	    			bmp = temp;
+	    			System.gc();
+	    		}
+
+	    		if( bmp != null )
+	    		{
+	    			//!	ファイル名
+	    			initData.onNewFile();
+	    			initData.uri = photoURI;
+	    			initData.bmp = bmp;
+	    			Toast.makeText( this, getString( R.string.touch_picture ), Toast.LENGTH_LONG ).show();
+	    			createThread();
+	    		}
+	    		else
+	    		{
+	    			EagleUtil.log( "URI null..." );
+	    			setContentView( eMainRayoutID );
+	    		}    		}
+    		catch( Exception e )
+    		{
+    			EagleUtil.log( e );
+    		}
+    	}
     	else
     	{
     		EagleUtil.log( "RequestCode error : " + requestCode );
@@ -603,6 +715,11 @@ public class ShakeDroid	extends		UtilActivity
     public	static	final	int		eMenuToggleVH			=	Menu.FIRST + 7;
 
     /**
+     * 画像のトリミングを行う。
+     */
+    public	static	final	int		eMenuTrimImage			=	Menu.FIRST + 8;
+
+    /**
      *
      */
     private	Menu	menu	=	null;
@@ -629,6 +746,16 @@ public class ShakeDroid	extends		UtilActivity
     					getString( R.string.change_picture )
     				).setIcon( android.R.drawable.ic_menu_gallery );
     	}
+
+    	//!	設定ダイアログ
+    	{
+    		menu.add(	Menu.NONE + 1,
+    					eMenuShakeTypeDialog,
+    					Menu.NONE,
+    					getString( R.string.menu_shaketype )
+    					).setIcon( android.R.drawable.ic_menu_preferences );
+    	}
+
     	//!	ファイル読み込み
     	if( info.isSharewareMode() )
     	{
@@ -639,6 +766,7 @@ public class ShakeDroid	extends		UtilActivity
     					).setIcon( android.R.drawable.ic_menu_save );
     	}
 
+
     	//!	トグル
     	{
     		menu.add(	Menu.NONE + 4,
@@ -647,6 +775,7 @@ public class ShakeDroid	extends		UtilActivity
     					getString( R.string.str_inclination )
     					).setIcon( android.R.drawable.ic_menu_always_landscape_portrait );
     	}
+
 		addShakeMenu();
     	return super.onCreateOptionsMenu(menu);
     }
@@ -662,8 +791,9 @@ public class ShakeDroid	extends		UtilActivity
     	{
 			menu.removeItem( eMenuToggleMode		);
 			menu.removeItem( eMenuResetWeight		);
-			menu.removeItem( eMenuShakeTypeDialog	);
+		//	menu.removeItem( eMenuShakeTypeDialog	);
 			menu.removeItem( eMenuSave				);
+			menu.removeItem( eMenuTrimImage			);
     	}
     }
 
@@ -681,15 +811,6 @@ public class ShakeDroid	extends		UtilActivity
 			removeShakeMenu();
 			menu.removeItem( eMenuFileActivity		);
 			menu.removeItem( eMenuToggleVH			);
-	    	//!	設定ダイアログ
-	    	{
-	    		menu.add(	Menu.NONE + 1,
-	    					eMenuShakeTypeDialog,
-	    					Menu.NONE,
-	    					getString( R.string.menu_shaketype )
-	    					).setIcon( android.R.drawable.ic_menu_preferences );
-	    	}
-
 	    	//!	モードトグル
 	    	{
 	    		menu.add(	Menu.NONE + 2,
@@ -735,9 +856,18 @@ public class ShakeDroid	extends		UtilActivity
 	    					getString( R.string.str_inclination )
 	    					).setIcon( android.R.drawable.ic_menu_always_landscape_portrait );
 	    	}
+
+	    	//!	画像トリミング
+	    	{
+	    		menu.add(	Menu.NONE + 4,
+	    					eMenuTrimImage,
+	    					Menu.NONE,
+	    					"トリミング"
+	    					).setIcon( android.R.drawable.ic_menu_crop );
+	    	}
+
 		}
     }
-
     /**
      * GL用スレッドの削除を行う。
      * @author eagle.sakura
@@ -814,6 +944,9 @@ public class ShakeDroid	extends		UtilActivity
     		return	true;
     	case	eMenuToggleVH:
     		UtilActivity.toggleOrientationFixed( this );
+    		return	true;
+    	case	eMenuTrimImage:
+    		startTrimImageActivity( );
     		return	true;
     	}
 

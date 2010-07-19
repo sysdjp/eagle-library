@@ -19,12 +19,18 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.BitmapFactory.Options;
+import android.media.FaceDetector;
+import android.media.FaceDetector.Face;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Config;
 import android.widget.Toast;
+import eagle.android.app.appinfo.AppInfomation;
+import eagle.android.app.shake.R;
+import eagle.android.app.shake.SharedData;
 import eagle.android.device.SensorDevice;
 import eagle.android.device.TouchDisplay;
 import eagle.android.gles11.BmpTexture;
@@ -41,11 +47,13 @@ import eagle.android.graphic.Graphics;
 import eagle.android.math.Matrix4x4;
 import eagle.android.math.Matrix4x4;
 import eagle.android.thread.ILooper;
+import eagle.android.util.UtilActivity;
 import eagle.android.view.OpenGLView;
 import eagle.io.DataInputStream;
 import eagle.io.DataOutputStream;
 import eagle.io.InputStreamBufferReader;
 import eagle.io.OutputStreamBufferWriter;
+import eagle.math.Vector2;
 import eagle.math.Vector3;
 import eagle.util.EagleException;
 import eagle.util.EagleUtil;
@@ -182,7 +190,7 @@ public class ShakeLooper extends ILooper
 		// TODO 自動生成されたメソッド・スタブ
 		if(texture != null)
 		{
-			texture.unbind(glManager);
+			texture.unbind( );
 			texture.dispose();
 			texture = null;
 		}
@@ -203,6 +211,8 @@ public class ShakeLooper extends ILooper
 		return	upperFreePixel;
 	}
 
+	private	Face	mainFace	=	null;
+
 	/**
 	 *
 	 * @author eagle.sakura
@@ -213,30 +223,65 @@ public class ShakeLooper extends ILooper
 		Bitmap texSrc = null;
 		Bitmap origin = null;
 		// ! 元となるテクスチャを読み出す。
-		try
+
+		if( getInitializeData().bmp == null )
 		{
-			EagleUtil.log( "image open start" );
-			origin = MediaStore.Images.Media.getBitmap(context.getContentResolver(), shakeData.uri);
+			try
+			{
+				EagleUtil.log( "image open start" );
+				origin = MediaStore.Images.Media.getBitmap(context.getContentResolver(), shakeData.uri);
+			}
+			catch (FileNotFoundException fnfe)
+			{
+				EagleUtil.log(fnfe);
+				return;
+			}
+			catch (IOException ioe)
+			{
+				EagleUtil.log(ioe);
+				return;
+			}
+			catch (OutOfMemoryError oome)
+			{
+				EagleUtil.log(oome.toString());
+				return;
+			}
+			catch (Exception e)
+			{
+				EagleUtil.log(e);
+				return;
+			}
 		}
-		catch (FileNotFoundException fnfe)
+		else
 		{
-			EagleUtil.log(fnfe);
-			return;
-		}
-		catch (IOException ioe)
-		{
-			EagleUtil.log(ioe);
-			return;
-		}
-		catch (OutOfMemoryError oome)
-		{
-			EagleUtil.log(oome.toString());
-			return;
-		}
-		catch (Exception e)
-		{
-			EagleUtil.log(e);
-			return;
+			origin = getInitializeData().bmp;
+
+
+			AppInfomation		info = new AppInfomation();
+
+			//! 無料版なら塗りつぶす
+			if( ! info.isSharewareMode() )
+			{
+				Graphics	graphics = new Graphics();
+				graphics.setCanvas( new Canvas( origin ) );
+
+				graphics.setColorARGB( 180, 0, 0, 0  );
+				graphics.fillRect( 0, 0, graphics.getWidth(), graphics.getHeight() );
+				graphics.setColorARGB( 255, 255, 255, 255 );
+
+				String[]	strings = context.getResources().getStringArray( R.array.trimming_sample_helps );
+				graphics.drawString(	strings[ 0 ],
+										graphics.getWidth() / 2, graphics.getHeight() / 2, -1, -1,
+										Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+
+				int	height = graphics.getStringHeight( strings[ 0 ] ) + 3;
+				graphics.drawString(	strings[ 1 ],
+										graphics.getWidth() / 2, graphics.getHeight() / 2 + 25 + height * 1, -1, -1,
+										Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+				graphics.drawString(	strings[ 2 ],
+										graphics.getWidth() / 2, graphics.getHeight() / 2 + 25 + height * 2, -1, -1,
+										Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+			}
 		}
 
 		if(origin == null)
@@ -345,149 +390,88 @@ public class ShakeLooper extends ILooper
 			EagleUtil.log( "tex image complete" );
 		}
 
+		if( getInitializeData().isFaceDetect
+		&&	getInitializeData().weights == null
+		)
+		{
+			//!	顔認識する
+			Face[]	faces = new Face[ 1 ];
+			FaceDetector	fd = new	FaceDetector( texSrc.getWidth(), texSrc.getHeight(), faces.length );
+			int	faceNum =	fd.findFaces( texSrc, faces );
+
+			Graphics	graphics = new Graphics();
+			graphics.setCanvas( new Canvas( texSrc ) );
+
+			mainFace = faces[ 0 ];
+
+			/*
+			if( faceNum > 0 )
+			{
+				Toast.makeText( context, context.getResources().getString( R.string.toast_hit_faces ), Toast.LENGTH_LONG ).show( );
+			}
+			else
+			{
+				Toast.makeText( context, context.getResources().getString( R.string.toast_nohit_face ), Toast.LENGTH_LONG ).show( );
+			}
+
+			*/
+
+
+			/*
+			*/
+			if( ! ( new AppInfomation() ).isSharewareMode() )
+			{
+				for( int i = 0; i < faceNum; ++i )
+				{
+					Face face = faces[ i ];
+					PointF	center = new PointF();
+					face.getMidPoint( center );
+					float	eye = face.eyesDistance();
+					center.y += ( eye * 4.5f );
+					float	w = ( eye * 4.0f ),
+							h = ( eye * 2.75f );
+					graphics.setColorARGB( 255, 255, 0, 0 );
+					graphics.drawRect( 	( int )( center.x - ( w/2 ) ),
+										( int )( center.y - ( h/2 ) ),
+										( int )w,
+										( int )h
+									);
+					graphics.setColorARGB( 128, 255, 255, 255 );
+					graphics.fillRect( 	( int )( center.x - ( w/2 ) ),
+										( int )( center.y - ( h/2 ) ),
+										( int )w,
+										( int )h
+									);
+
+					graphics.setColorARGB( 255, 0, 0, 0 );
+					graphics.setFontSize( 12 );
+					String[]	strings = context.getResources().getStringArray( R.array.face_hit_helps );
+					graphics.drawString(	strings[ 0 ],
+											( int )center.x, ( int )center.y, -1, -1,
+											Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+
+					int	height = graphics.getStringHeight( strings[ 0 ] ) + 3;
+					graphics.drawString(	strings[ 1 ],
+											( int )center.x, ( int )center.y + 25 + height * 1, -1, -1,
+											Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+					graphics.drawString(	strings[ 2 ],
+											( int )center.x, ( int )center.y + 25 + height * 2, -1, -1,
+											Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+				}
+			}
+		}
+
+
 		// ! テクスチャ作成
 		{
 			EagleUtil.log( "tex create start..." );
 			// texture = new Texture2D( glManager );
 			// texture.init( bmp );
 			texture = new BmpTexture(texSrc, glManager);
-			texture.bind(glManager);
+			texture.bind();
 
 		}
 	}
-
-
-	/**
-	 * 旧バージョンのテクスチャ作成メソッド。
-	 * @author eagle.sakura
-	 * @version 2010/05/21 : 新規作成
-	 */
-	private void createTextureBefore()
-	{
-		Bitmap texSrc = null;
-		Bitmap origin = null;
-		// ! 元となるテクスチャを読み出す。
-		try
-		{
-			EagleUtil.log( "image open start" );
-			origin = MediaStore.Images.Media.getBitmap(context
-					.getContentResolver(), shakeData.uri);
-
-			if(origin == null)
-			{
-				Options opt = new Options();
-				opt.inScaled = true;
-				opt.inSampleSize = 2;
-				origin = BitmapFactory
-						.decodeFile(shakeData.uri.toString(), opt);
-			}
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			EagleUtil.log(fnfe);
-			return;
-		}
-		catch (IOException ioe)
-		{
-			EagleUtil.log(ioe);
-			return;
-		}
-		catch (OutOfMemoryError oome)
-		{
-			EagleUtil.log(oome.toString());
-			return;
-		}
-		catch (Exception e)
-		{
-			EagleUtil.log(e);
-			return;
-		}
-
-		if(origin == null)
-		{
-			return;
-		}
-
-		EagleUtil.log( "complete image open" );
-		int displayW = glManager.getDisplayWidth(),
-			displayH = glManager.getDisplayHeight();
-		displayW = 320;
-		displayH = 480;
-
-		EagleUtil.log( "DisplaySize : " + displayW + " x " + displayH );
-		// ! テクスチャ用画像を再生成
-		{
-			Bitmap target = Bitmap.createBitmap(displayW, displayH,
-													android.graphics.Bitmap.Config.ARGB_8888);
-			Canvas canvas = new Canvas(target);
-			Graphics graphics = new Graphics();
-			graphics.setCanvas(canvas);
-
-			graphics.clearRGBA(0, 0, 0, 255);
-			int imageWidth = origin.getWidth(),
-				imageHeight = origin.getHeight();
-
-			int outWidth = 0, outHeight = 0;
-
-			if(imageWidth < imageHeight)
-			{
-				// ! 縦に合わせる
-				outHeight = displayH;
-				outWidth = imageWidth * outHeight / imageHeight;
-			}
-			else
-			{
-				// ! 横に合わせる
-				outWidth = displayW;
-				outHeight = imageHeight * outWidth / imageWidth;
-			}
-
-			int x = (displayW - outWidth) / 2, y = (displayH - outHeight) / 2;
-			graphics.drawBitmap(origin,
-					new Rect(0, 0, imageWidth, imageHeight), new Rect(x, y, x
-							+ outWidth, y + outHeight));
-
-			origin = null;
-			texSrc = target;
-			EagleUtil.log( "tex image complete" );
-		}
-
-		// ! テクスチャ作成
-		{
-			Bitmap bmp = null;
-			try
-			{
-				bmp = Bitmap.createScaledBitmap(texSrc, 512 << 1, 512 << 1,
-						false);
-				// bmp = Bitmap.createScaledBitmap( texSrc, 512 >> 1, 512 >> 1,
-				// false );
-				// bmp = Bitmap.createScaledBitmap( texSrc, displayW, displayH,
-				// true );
-			}
-			catch (OutOfMemoryError oome)
-			{
-				bmp = Bitmap.createScaledBitmap(texSrc, 512, 512, true);
-			}
-
-			EagleUtil.log( "tex create start..." );
-			// texture = new Texture2D( glManager );
-			// texture.init( bmp );
-			texture = new BmpTexture(bmp, glManager);
-			texture.bind(glManager);
-
-			// ! サムネイル画像を作成する。
-			try
-			{
-				thumbnail = Bitmap.createScaledBitmap(texSrc, 64, 64, true);
-			}
-			catch (OutOfMemoryError oome)
-			{
-
-			}
-		}
-	}
-
-
 
 
 	/**
@@ -562,7 +546,51 @@ public class ShakeLooper extends ILooper
 
 		// ! 振動コントロール
 		// shakeController = createShakeController();
-		onOptionChange(getOption());
+		onOptionChange( getOption(), null );
+
+		//!	頂点設定
+		if( mainFace != null )
+		{
+			PointF	center = new PointF();
+			mainFace.getMidPoint( center );
+			float	eye = mainFace.eyesDistance();
+				center.y += ( eye * 4.5f );
+				float	w = ( eye * 4.0f ),
+						h = ( eye * 2.75f );
+
+			float	left 	= center.x - ( w / 2 ),
+					right	= center.x + ( w / 2 ),
+					top		= center.y - ( h / 2 ),
+					bottom	= center.y + ( h / 2 );
+
+			float	addX = 15.0f,
+					addY = 10.0f;
+			float	addWeight = getOption().getTouchWeightAdd();
+		//	getOption().setTouchWeightAdd( addWeight / 4 );
+
+			Vector2	p0 = new Vector2( center.x, center.y ),
+					p1 = new Vector2( left, top );
+			float	lenMax = p0.length( p1 );
+
+			for( float px = left; px < ( right + addX ); px += addX )
+			{
+				for( float py = top; py < ( bottom + addY ); py += addY )
+				{
+					float touchX = px	/ (float) glManager.getDisplayWidth();
+					float touchY = py 	/ (float) glManager.getDisplayHeight();
+
+					p1.set( px, py );
+					float	len = p0.length( p1 );
+					option.setTouchWeightAdd( 2 * addWeight * ( 1.0f -(  len / lenMax ) ) );
+
+
+					vertices.onTouch(getOption(), touchX, touchY);
+				}
+			}
+			getOption().setTouchWeightAdd( addWeight );
+
+
+		}
 
 		// ! メモリ整理
 		System.gc();
@@ -575,7 +603,7 @@ public class ShakeLooper extends ILooper
 	 * @param option
 	 * @version 2010/05/22 : 新規作成
 	 */
-	public void onOptionChange(Option option)
+	public void onOptionChange( Option option, SharedData sd )
 	{
 		shakeController = createShakeController();
 		//!	仕様変更。

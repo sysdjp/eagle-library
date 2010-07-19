@@ -6,6 +6,9 @@
 package eagle.android.app.shake;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,6 +26,9 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.CheckBox;
@@ -215,17 +221,6 @@ public class SaveDialog	implements	OnClickListener
 
     	try
     	{
-    		//!	一度メモリ上に作成する
-    		byte[]	buffer = null;
-    		{
-    			ByteArrayOutputStream	baos	=	new	ByteArrayOutputStream();
-    			DataOutputStream		dos		=	new	DataOutputStream( new OutputStreamBufferWriter( baos ) );
-    			data.serialize( dos );
-
-    			//!	配列化する。
-    			buffer = baos.toByteArray();
-    			dos.dispose();
-    		}
 
     		//!	ファイル名を設定する
     		{
@@ -246,6 +241,35 @@ public class SaveDialog	implements	OnClickListener
     			//!	元ファイル名が指定されていない場合
     				data.getInitData().originFileName = data.getFileName(	);
     			}
+    		}
+
+    		{
+    			//!	トリミングしたデータ？
+    			if(	data.getInitData().bmp != null )
+    			{
+    				Bitmap	bmp = data.getInitData().bmp;
+    				String	fileName = UtilActivity.toSDPath( ShakeDataFile.eSaveDirectory + "/" + data.getFileName() + "img" );
+    				OutputStream	os = new FileOutputStream( fileName );
+    				bmp.compress( CompressFormat.JPEG, 95, os );
+    				os.close();
+
+    				//!	URIを上書き
+    				data.getInitData().uri =	Uri.parse( "file://" + fileName );
+    			}
+    		}
+
+
+
+    		//!	一度メモリ上に作成する
+    		byte[]	buffer = null;
+    		{
+    			ByteArrayOutputStream	baos	=	new	ByteArrayOutputStream();
+    			DataOutputStream		dos		=	new	DataOutputStream( new OutputStreamBufferWriter( baos ) );
+    			data.serialize( dos );
+
+    			//!	配列化する。
+    			buffer = baos.toByteArray();
+    			dos.dispose();
     		}
 
     		//!	ライブ壁紙に転送する？
