@@ -41,6 +41,25 @@ public class Frame extends Node
 	private		Figure			figure		=	null;
 
 	/**
+	 *
+	 * @author eagle.sakura
+	 * @version 2010/07/12 : 新規作成
+	 */
+	@Override
+	public void dispose()
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		super.dispose();
+
+		vertices.dispose();
+		vertices = null;
+		for( FrameSubset fs : subsets )
+		{
+			fs.dispose();
+		}
+	}
+
+	/**
 	 * 描画用のメッシュ・スキンメッシュを管理する。
 	 * @author eagle.sakura
 	 * @param figure

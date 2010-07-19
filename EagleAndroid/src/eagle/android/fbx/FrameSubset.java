@@ -60,4 +60,15 @@ public class FrameSubset
 		indices.drawElements( gl );
 		material.unbind();
 	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @version 2010/07/12 : 新規作成
+	 */
+	public	void	dispose( )
+	{
+		indices.dispose();
+		indices = null;
+	}
 }

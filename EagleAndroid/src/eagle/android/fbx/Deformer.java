@@ -45,6 +45,16 @@ public class Deformer
 	/**
 	 *
 	 * @author eagle.sakura
+	 * @version 2010/07/12 : 新規作成
+	 */
+	public	void	dispose( )
+	{
+		deform.dispose();
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
 	 * @param paletteSize
 	 * @param gl
 	 * @version 2010/07/10 : 新規作成

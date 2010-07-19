@@ -297,4 +297,13 @@ public class Node
 	public	void	draw( )
 	{
 	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @version 2010/07/12 : 新規作成
+	 */
+	public	void	dispose( )
+	{
+	}
 }

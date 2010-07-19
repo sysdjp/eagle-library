@@ -44,6 +44,17 @@ public class DeformBufferSW
 	/**
 	 *
 	 * @author eagle.sakura
+	 * @version 2010/07/12 : 新規作成
+	 */
+	public	void	dispose( )
+	{
+		weights = null;
+		palettes = null;
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
 	 * @return
 	 * @version 2010/07/10 : 新規作成
 	 */

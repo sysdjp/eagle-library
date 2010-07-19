@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 
+import eagle.math.Vector2;
 import eagle.util.EagleUtil;
 
 import android.app.Activity;
@@ -23,6 +24,7 @@ import android.graphics.Bitmap.Config;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.view.WindowManager;
 
 /**
  * @author eagle.sakura
@@ -49,6 +51,23 @@ public class UtilActivity extends Activity
 
 		EagleUtil.log( "path : " + path );
 		return	new	FileOutputStream( Environment.getExternalStorageDirectory().getPath() + path );
+	}
+
+	/**
+	 * SDカード以下のパスをSDカードまでを含めたフルパスに変換する。
+	 * @author eagle.sakura
+	 * @param path
+	 * @return
+	 * @version 2010/07/17 : 新規作成
+	 */
+	public	static	String				toSDPath( String path )
+	{
+		if( path.charAt( 0 ) != '/'
+		&&	path.charAt( 0 ) != '\\' )
+		{
+			path = "/" + path;
+		}
+		return	Environment.getExternalStorageDirectory().getPath() + path;
 	}
 
 	/**
@@ -98,6 +117,23 @@ public class UtilActivity extends Activity
 		}
 
 		return	getSDCardRootPath() + path;
+	}
+
+	/**
+	 * ディスプレイのXYサイズを取得する。
+	 * @author eagle.sakura
+	 * @param context
+	 * @param result
+	 * @return
+	 * @version 2010/07/14 : 新規作成
+	 */
+	public	static	Vector2				getDisplaySize( Context context, Vector2 result )
+	{
+		WindowManager	wm =	( WindowManager )context.getSystemService( Context.WINDOW_SERVICE );
+		int	displayW	= wm.getDefaultDisplay().getWidth(),
+			displayH	= wm.getDefaultDisplay().getHeight();
+		result.set( ( float )displayW, ( float )displayH );
+		return	result;
 	}
 
 	/**

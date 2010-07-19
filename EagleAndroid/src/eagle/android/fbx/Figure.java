@@ -11,6 +11,7 @@ import eagle.android.gles11.GLManager;
 import eagle.android.gles11.ITexture;
 import eagle.android.math.Matrix4x4;
 import eagle.io.DataInputStream;
+import eagle.util.Disposable;
 import eagle.util.EagleException;
 import eagle.util.EagleUtil;
 
@@ -19,7 +20,7 @@ import eagle.util.EagleUtil;
  * @author eagle.sakura
  * @version 2010/07/08 : 新規作成
  */
-public class Figure
+public class Figure		implements	Disposable
 {
 	/**
 	 *
@@ -27,6 +28,7 @@ public class Figure
 	private	Node[]			nodes;		//!<	ノードを直線状にした配列。
 
 	private	GLManager		glManager;
+
 
 	/**
 	 *
@@ -36,6 +38,37 @@ public class Figure
 	private	Figure( )
 	{
 
+	}
+
+	/**
+	 * gc時の処理。
+	 * @author eagle.sakura
+	 * @throws Throwable
+	 * @version 2010/07/12 : 新規作成
+	 */
+	@Override
+	protected void finalize() throws Throwable
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		super.finalize();
+		dispose( );
+	}
+
+	/**
+	 * GL関連リソースを処理する。
+	 * @author eagle.sakura
+	 * @version 2010/07/12 : 新規作成
+	 */
+	public	void	dispose( )
+	{
+		if( nodes != null )
+		{
+			for( Node node : nodes )
+			{
+				node.dispose();
+			}
+			nodes = null;
+		}
 	}
 
 	/**

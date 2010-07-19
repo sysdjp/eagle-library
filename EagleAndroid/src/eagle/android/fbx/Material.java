@@ -102,7 +102,7 @@ public class Material
 		GL11	gl = glManager.getGL();
 		if( texture != null )
 		{
-			texture.bind( glManager );
+			texture.bind(  );
 		}
 
 		gl.glMaterialfv( GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE,	diffuse );
@@ -119,7 +119,7 @@ public class Material
 	{
 		if( texture != null )
 		{
-			texture.unbind( glManager );
+			texture.unbind(  );
 		}
 	}
 

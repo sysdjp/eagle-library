@@ -38,7 +38,7 @@ public class OpenGLView extends LooperSurfaceView
 	//	getHolder().setFormat( PixelFormat.RGBA_8888 );
 	//	getHolder().setFormat( PixelFormat.RGB_888 );
 		getHolder().setType( SurfaceHolder.SURFACE_TYPE_GPU );
-
+		glManager.setSurfaceHolder( getHolder() );
 	}
 
 	/**
@@ -55,6 +55,7 @@ public class OpenGLView extends LooperSurfaceView
 	//	getHolder().setFormat( PixelFormat.TRANSPARENT );
 
 		getHolder().setType( SurfaceHolder.SURFACE_TYPE_GPU );
+		glManager.setSurfaceHolder( getHolder() );
 	}
 
 	/**

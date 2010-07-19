@@ -29,7 +29,18 @@ public class SurfaceCanvas	extends	Graphics
 	 */
 	public	SurfaceCanvas( SurfaceHolder holder )
 	{
-		this.holder	= holder;
+		setHolder( holder );
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @param holder
+	 * @version 2010/07/16 : 新規作成
+	 */
+	public	void	setHolder( SurfaceHolder holder )
+	{
+		this.holder = holder;
 	}
 
 	/**

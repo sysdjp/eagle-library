@@ -7,12 +7,14 @@ package eagle.android.gles11;
 
 import javax.microedition.khronos.opengles.GL11;
 
+import eagle.util.Disposable;
+
 /**
  * テクスチャを示す基底クラス。
  * @author eagle.sakura
  * @version 2010/04/08 : 新規作成
  */
-public	abstract class ITexture		extends	IGLResource
+public	abstract class ITexture		implements	Disposable
 {
 	/**
 	 * 不明なテクスチャの型を示す。
@@ -154,11 +156,10 @@ public	abstract class ITexture		extends	IGLResource
 	 * @param glMgr
 	 * @version 2010/05/30 : 新規作成
 	 */
-	@Override
-	public void bind(GLManager glMgr)
+	public void bind( )
 	{
 	// TODO 自動生成されたメソッド・スタブ
-		GL11	gl = glMgr.getGL();
+		GL11	gl = glManager.getGL();
 		gl.glEnable( GL11.GL_TEXTURE_2D );
 		gl.glBindTexture( GL11.GL_TEXTURE_2D, getTextureID() );
 	}
@@ -168,7 +169,7 @@ public	abstract class ITexture		extends	IGLResource
 	 * @version 2010/05/30 : 新規作成
 	 */
 	@Override
-	public void dispose()
+	public void dispose( )
 	{
 	// TODO 自動生成されたメソッド・スタブ
 		if( textureId == -1 )
@@ -185,11 +186,10 @@ public	abstract class ITexture		extends	IGLResource
 	 * @param glMgr
 	 * @version 2010/05/30 : 新規作成
 	 */
-	@Override
-	public void unbind(GLManager glMgr)
+	public void unbind( )
 	{
 	// TODO 自動生成されたメソッド・スタブ
-		GL11	gl = glMgr.getGL();
+		GL11	gl = glManager.getGL();
 		gl.glBindTexture( GL11.GL_TEXTURE_2D, 0 );
 		gl.glDisable( GL11.GL_TEXTURE_2D );
 	}
