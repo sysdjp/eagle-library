@@ -36,7 +36,7 @@ public	final class Vector2
 	 * @param z
 	 * @version 2009/11/14 : 新規作成
 	 */
-	public	Vector2( float x, float y, float z )
+	public	Vector2( float x, float y )
 	{
 		this.x = x;
 		this.y = y;
@@ -86,6 +86,20 @@ public	final class Vector2
 	public	float	length( )
 	{
 		return	( float )Math.sqrt( ( double )( (x*x) + (y*y) ) );
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @param p
+	 * @return
+	 * @version 2010/07/17 : 新規作成
+	 */
+	public	float	length( Vector2 p )
+	{
+		float	tx = x - p.x,
+				ty = y - p.y;
+		return	( float )Math.sqrt( ( double )( ( tx*tx ) + ( ty * ty ) ) );
 	}
 
 	/**

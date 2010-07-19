@@ -348,8 +348,25 @@ public class DataInputStream	implements	Disposable
 	@Override
 	public	void	dispose( )
 	{
-		reader.dispose();
-		reader = null;
+		if( reader != null )
+		{
+			reader.dispose();
+			reader = null;
+		}
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @throws Throwable
+	 * @version 2010/07/12 : 新規作成
+	 */
+	@Override
+	protected void finalize() throws Throwable
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		super.finalize();
+		dispose();
 	}
 
 	/**
