@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import eagle.android.device.TouchDisplay;
 import eagle.android.gles11.GLManager;
-import eagle.android.thread.ILooper.ILooperListener;
 import eagle.android.view.ILooperSurface;
 import eagle.android.view.LooperSurfaceView;
 import eagle.util.EagleUtil;
@@ -39,11 +38,6 @@ public class LooperThread	extends	Thread
 	private	List< ILooperSurface >		viewList	=	new	ArrayList();
 
 	/**
-	 * 通知対象。
-	 */
-	private	List< ILooperListener >		listenerList	=	new	ArrayList();
-
-	/**
 	 * メインループクラス。
 	 */
 	private	ILooper						looper		=	null;
@@ -58,17 +52,6 @@ public class LooperThread	extends	Thread
 	public	LooperThread( ILooper looper )
 	{
 		setLooper( looper );
-	}
-
-	/**
-	 * リスナを追加する。
-	 * @author eagle.sakura
-	 * @param listener
-	 * @version 2010/06/20 : 新規作成
-	 */
-	public	void		addLooperListener( ILooperListener listener )
-	{
-		listenerList.add( listener );
 	}
 
 	/**
@@ -145,11 +128,6 @@ public class LooperThread	extends	Thread
 		if( looper != null )
 		{
 			looper.onInitialize();
-
-			for( ILooperListener ll : listenerList )
-			{
-				ll.onInitialize( this, looper );
-			}
 		}
 	}
 
@@ -186,10 +164,6 @@ public class LooperThread	extends	Thread
 		&&	!isSleeping() )
 		{
 			looper.onLoop();
-			for( ILooperListener ll : listenerList )
-			{
-				ll.onLoop( this, looper );
-			}
 		}
 		else
 		{
@@ -215,13 +189,6 @@ public class LooperThread	extends	Thread
 		if( looper != null )
 		{
 			looper.onFinalize();
-
-			for( ILooperListener ll : listenerList )
-			{
-				ll.onFinalize( this, looper );
-			}
-
-			listenerList.clear();
 			viewList.clear();
 			looper = null;
 		}

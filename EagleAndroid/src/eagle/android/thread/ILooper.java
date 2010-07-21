@@ -24,6 +24,17 @@ public abstract class ILooper
 	public	TouchDisplay		getTouchDisplay( )	{	return	touchDisplay;	}
 
 	/**
+	 * タッチディスプレイ管理クラスを設定する。
+	 * @author eagle.sakura
+	 * @param td
+	 * @version 2010/07/20 : 新規作成
+	 */
+	public	void				setTouchDisplay( TouchDisplay td )
+	{
+		touchDisplay = td;
+	}
+
+	/**
 	 * ループの最初に呼ばれる。
 	 * @author eagle.sakura
 	 * @version 2010/05/31 : 新規作成
@@ -44,39 +55,4 @@ public abstract class ILooper
 	 */
 	public	abstract	void	onFinalize( );
 
-
-	/**
-	 * Looperの状態通知を受ける。
-	 * @author eagle.sakura
-	 * @version 2010/06/20 : 新規作成
-	 */
-	public	interface	ILooperListener
-	{
-		/**
-		 * 初期化前に呼ばれる。
-		 * @author eagle.sakura
-		 * @param thread
-		 * @param looper
-		 * @version 2010/06/20 : 新規作成
-		 */
-		public	void		onInitialize( Object thread, ILooper looper );
-
-		/**
-		 * 毎フレームの処理時に呼ばれる。
-		 * @author eagle.sakura
-		 * @param thread
-		 * @param looper
-		 * @version 2010/06/20 : 新規作成
-		 */
-		public	void		onLoop( Object thread, ILooper looper );
-
-		/**
-		 * 処理終了時に呼ばれる。
-		 * @author eagle.sakura
-		 * @param thread
-		 * @param looper
-		 * @version 2010/06/20 : 新規作成
-		 */
-		public	void		onFinalize( Object thread, ILooper looper );
-	}
 }

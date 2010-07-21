@@ -257,31 +257,6 @@ public class ShakeLooper extends ILooper
 			origin = getInitializeData().bmp;
 
 
-			AppInfomation		info = new AppInfomation();
-
-			//! 無料版なら塗りつぶす
-			if( ! info.isSharewareMode() )
-			{
-				Graphics	graphics = new Graphics();
-				graphics.setCanvas( new Canvas( origin ) );
-
-				graphics.setColorARGB( 180, 0, 0, 0  );
-				graphics.fillRect( 0, 0, graphics.getWidth(), graphics.getHeight() );
-				graphics.setColorARGB( 255, 255, 255, 255 );
-
-				String[]	strings = context.getResources().getStringArray( R.array.trimming_sample_helps );
-				graphics.drawString(	strings[ 0 ],
-										graphics.getWidth() / 2, graphics.getHeight() / 2, -1, -1,
-										Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
-
-				int	height = graphics.getStringHeight( strings[ 0 ] ) + 3;
-				graphics.drawString(	strings[ 1 ],
-										graphics.getWidth() / 2, graphics.getHeight() / 2 + 25 + height * 1, -1, -1,
-										Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
-				graphics.drawString(	strings[ 2 ],
-										graphics.getWidth() / 2, graphics.getHeight() / 2 + 25 + height * 2, -1, -1,
-										Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
-			}
 		}
 
 		if(origin == null)
@@ -362,6 +337,36 @@ public class ShakeLooper extends ILooper
 			graphics.getPaint().setAntiAlias( true );
 			graphics.drawBitmap( origin, x, y );
 			upperFreePixel	=	y;
+
+			if( getInitializeData().bmp != null )
+			{
+				AppInfomation		info = new AppInfomation();
+
+				//! 無料版なら塗りつぶす
+				if( ! info.isSharewareMode() )
+				{
+					graphics.setColorARGB( 180, 0, 0, 0  );
+					graphics.fillRect( 0, 0, graphics.getWidth(), graphics.getHeight() );
+					graphics.setColorARGB( 255, 255, 255, 255 );
+
+					int	width 	= glManager.getDisplayWidth() / 2,
+						_height	= glManager.getDisplayHeight() / 2;
+
+					String[]	strings = context.getResources().getStringArray( R.array.trimming_sample_helps );
+					graphics.drawString(	strings[ 0 ],
+											width, _height, -1, -1,
+											Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+
+					int	height = graphics.getStringHeight( strings[ 0 ] ) + 3;
+					graphics.drawString(	strings[ 1 ],
+											width, _height + 25 + height * 1, -1, -1,
+											Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+					graphics.drawString(	strings[ 2 ],
+											width, _height + 25 + height * 2, -1, -1,
+											Graphics.eStringFlagXCenter | Graphics.eStringFlagYCenter );
+				}
+			}
+
 
 			// ! サムネイル画像を作成する。
 			try

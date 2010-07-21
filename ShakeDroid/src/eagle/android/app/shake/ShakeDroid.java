@@ -16,7 +16,6 @@ import eagle.android.appcore.shake.ShakeVertices;
 import eagle.android.graphic.Graphics;
 import eagle.android.thread.ILooper;
 import eagle.android.thread.LooperThread;
-import eagle.android.thread.ILooper.ILooperListener;
 import eagle.android.util.UtilActivity;
 import eagle.android.util.UtilBridgeAndroid;
 import eagle.android.view.OpenGLView;

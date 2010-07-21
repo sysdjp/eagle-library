@@ -78,6 +78,18 @@ public	final class Vector2
 	}
 
 	/**
+	 * 内積を取得する。
+	 * @author eagle.sakura
+	 * @param v
+	 * @return
+	 * @version 2010/07/20 : 新規作成
+	 */
+	public	float	dot( Vector2 v )
+	{
+		return	( x * v.x ) + ( y * v.y );
+	}
+
+	/**
 	 * 長さを取得する。
 	 * @author eagle.sakura
 	 * @return

@@ -12,6 +12,8 @@ import android.view.SurfaceHolder;
 import eagle.android.gles11.GLManager;
 import eagle.android.graphic.SurfaceCanvas;
 import eagle.android.thread.LooperThread;
+import eagle.android.util.UtilActivity;
+import eagle.math.Vector2;
 import eagle.util.EagleUtil;
 
 /**
@@ -24,6 +26,8 @@ public class OpenGLView extends LooperSurfaceView
 	 * OGL管理。
 	 */
 	private		GLManager		glManager	=	new	GLManager(  );
+
+	private		Context			context		=	null;
 
 	/**
 	 *
@@ -39,6 +43,7 @@ public class OpenGLView extends LooperSurfaceView
 	//	getHolder().setFormat( PixelFormat.RGB_888 );
 		getHolder().setType( SurfaceHolder.SURFACE_TYPE_GPU );
 		glManager.setSurfaceHolder( getHolder() );
+		this.context = context;
 	}
 
 	/**
@@ -56,6 +61,7 @@ public class OpenGLView extends LooperSurfaceView
 
 		getHolder().setType( SurfaceHolder.SURFACE_TYPE_GPU );
 		glManager.setSurfaceHolder( getHolder() );
+		this.context = context;
 	}
 
 	/**
@@ -73,6 +79,9 @@ public class OpenGLView extends LooperSurfaceView
 
 		// TODO 自動生成されたメソッド・スタブ
 		super.surfaceCreated(arg0);
+		Vector2	v = UtilActivity.getDisplaySize( context, new Vector2() );
+		EagleUtil.log( "DisplaySize : " + v );
+		glManager.setSurfaceSize( ( int )v.x, ( int )v.y );
 	}
 
 	/**
@@ -101,6 +110,10 @@ public class OpenGLView extends LooperSurfaceView
 	{
 		// TODO 自動生成されたメソッド・スタブ
 		super.surfaceChanged(holder, format, width, height);
+
+		Vector2	v = UtilActivity.getDisplaySize( context, new Vector2() );
+		EagleUtil.log( "DisplaySize : " + v );
+		glManager.setSurfaceSize( ( int )v.x, ( int )v.y );
 	}
 
 	/**
