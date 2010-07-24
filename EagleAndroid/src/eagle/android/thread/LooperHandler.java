@@ -12,12 +12,15 @@ import eagle.android.view.ILooperSurface;
 import eagle.android.view.LooperSurfaceView;
 import eagle.util.EagleUtil;
 import android.os.Handler;
+import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
 
 /**
  * @author eagle.sakura
  * @version 2010/07/21 : 新規作成
  */
-public class LooperHandler
+public class LooperHandler	implements	ILoopManager,
+										Callback
 {
 	private	Handler		handler = null;
 	private	ILooper		looper	= null;
@@ -73,6 +76,7 @@ public class LooperHandler
 			surface.setTouchDisplay( looper.getTouchDisplay( ) );
 		}
 
+		surface.getHolder().addCallback( this );
 		viewList.add( surface );	//!<	サーフェイスを登録する。
 	}
 
@@ -82,7 +86,7 @@ public class LooperHandler
 	 * @return
 	 * @version 2010/05/30 : 新規作成
 	 */
-	protected	boolean		isCreateComplete( )
+	public	boolean		isSurfaceCreateComplete( )
 	{
 		for( ILooperSurface view : viewList )
 		{
@@ -148,7 +152,7 @@ public class LooperHandler
 		public void run()
 		{
 		// TODO 自動生成されたメソッド・スタブ
-			if( LooperHandler.this.isCreateComplete() )
+			if( LooperHandler.this.isSurfaceCreateComplete() )
 			{
 				//!	すべてのビューが初期化完了した
 				LooperHandler.this.looper.onInitialize();
@@ -203,7 +207,7 @@ public class LooperHandler
 	 * @author eagle.sakura
 	 * @version 2010/07/21 : 新規作成
 	 */
-	public	void	start( )
+	public	void	startLoop( )
 	{
 		handler.postDelayed(	new InitializeRunnable(),
 							//!	適当な秒数待つ。
@@ -221,5 +225,31 @@ public class LooperHandler
 		LooperHandler.this.looper.onFinalize();
 		LooperHandler.this.looper = null;
 		LooperHandler.this.finish = true;
+	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		if( isSurfaceCreateComplete() )
+		{
+			EagleUtil.log( "Surface create complete" );
+			startLoop();
+		}
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 }

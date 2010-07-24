@@ -310,7 +310,20 @@ public class GLManager
 	 */
 	public	void		setSurfaceHolder( SurfaceHolder holder )
 	{
+		EagleUtil.log( "" +  holder );
+		EagleUtil.log( "" +  this.holder );
 		this.holder = holder;
+	}
+
+	/**
+	 * サーフェイスを返す。
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/07/23 : 新規作成
+	 */
+	public	SurfaceHolder	getSurfaceHolder( )
+	{
+		return	holder;
 	}
 
 	/**
@@ -320,12 +333,16 @@ public class GLManager
 	 */
 	public	void	initGL(  )
 	{
-		this.holder = holder;
 		//GL ES操作モジュール取得
 		egl = ( EGL10 )EGLContext.getEGL();
+		EagleUtil.log( "egl : " + egl );
+		EagleUtil.log( "eglGetCurrentContext : " +  egl.eglGetCurrentContext() );
+		EagleUtil.log( "eglGetCurrentDisplay : " +  egl.eglGetCurrentDisplay() );
 		{
 			//ディスプレイコネクション作成
 			glDisplay = egl.eglGetDisplay( EGL10.EGL_DEFAULT_DISPLAY );
+			EagleUtil.log( "glDisplay : " + glDisplay );
+			EagleUtil.log( "ERROR : " + egl.eglGetError() );
 			if( glDisplay == EGL10.EGL_NO_DISPLAY )
 			{
 				return;
@@ -335,11 +352,10 @@ public class GLManager
 			int[] version =  { -1, -1 };
 			if( !egl.eglInitialize( glDisplay, version ) )
 			{
-				EagleUtil.logDebug( "ディスプレイコネクション初期化失敗" );
+				EagleUtil.log( "eglInitialize error" );
 			//	Log.e(mName, "ディスプレイコネクション初期化失敗");
 				return;
 			}
-
 			//OpenGLバージョン出力
 			EagleUtil.log("OpenGL ES Version[" + version[0] + "." + version[1] + "]" );
 		}
@@ -352,12 +368,13 @@ public class GLManager
 				 * 2008/12/1 修正
 				 * 以下の設定が実機では使えないようなのでカット。
 				 * この部分をはずすと、サポートされている設定が使われる(明示的に設定しないと機種依存で変わる可能性あり?)。
-				*/
+				 *
 				EGL10.EGL_RED_SIZE,		5,	//!	赤要素：8ビット
 				EGL10.EGL_GREEN_SIZE,	6,	//!	緑要素：8ビット
 				EGL10.EGL_BLUE_SIZE,	5,	//!	青要素：8ビット
 			//	EGL10.EGL_ALPHA_SIZE,	8,	//!	アルファチャンネル：8ビット
 				EGL10.EGL_DEPTH_SIZE,	16,	//!	深度バッファ：16ビット
+				*/
 				EGL10.EGL_NONE				//!	終端にはEGL_NONEを入れる
 			};
 			EGLConfig[] configs = new EGLConfig[ 1 ];
@@ -368,6 +385,8 @@ public class GLManager
 				return;
 			}
 			glConfig = configs[0];
+			EagleUtil.log( "glConfig : " + glConfig );
+			EagleUtil.log( "ERROR : " + egl.eglGetError() );
 
 			if( glConfig != null )
 			{
@@ -407,8 +426,11 @@ public class GLManager
 		{
 			//レンダリングコンテキスト作成
 			glContext = egl.eglCreateContext( glDisplay, glConfig, EGL10.EGL_NO_CONTEXT, null);
+			EagleUtil.log( "glContext : " + glContext );
+			EagleUtil.log( "ERROR : " + egl.eglGetError() );
 			if( glContext == EGL10.EGL_NO_CONTEXT )
 			{
+				EagleUtil.log( "Create Context Error" );
 			//	Log.e(mName, "レンダリングコンテキスト作成失敗");
 				return;
 			}
@@ -424,7 +446,7 @@ public class GLManager
 			//サーフェイス作成(あとで分けるので別メソッド)
 			if( !createSurface() )
 			{
-			//	Log.e(mName, "サーフェイス作成失敗");
+				EagleUtil.log( "Surface create error..." );
 				return;
 			}
 		}
@@ -443,7 +465,9 @@ public class GLManager
 			}
 		}
 
+		EagleUtil.log( "set default begin" );
 		_setDefGLStatus();
+		EagleUtil.log( "set default out" );
 	}
 
 	private	void	_setDefGLStatus( )
@@ -454,6 +478,7 @@ public class GLManager
 		gl.glEnable( GL11.GL_BLEND );
 		gl.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 
+		/*
 		{
 			int[]	buf = { -1 };
 			gl.glGetIntegerv( GL11Ext.GL_MAX_PALETTE_MATRICES_OES, buf, 0 );
@@ -469,7 +494,6 @@ public class GLManager
 			EagleUtil.log( "GL_MAX_PROJECTION_STACK_DEPTH : " + buf[ 0 ] );
 
 		}
-		/*
 */
 		//!	カリング無効
 		gl.glDisable( GL11.GL_CULL_FACE );
@@ -525,10 +549,18 @@ public class GLManager
 	{
 		{
 			EagleUtil.log( "eglCreateWindowSurface" );
+			if( egl.eglMakeCurrent( glDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT ) )
+			{
+				EagleUtil.log( "eglMakeCurrent boot ok" );
+			}
+
 			//サーフェイス作成
-			glSurface =
-				egl.eglCreateWindowSurface( glDisplay, glConfig, holder, null );
-			if( glSurface == EGL10.EGL_NO_SURFACE ){
+			glSurface =	egl.eglCreateWindowSurface( glDisplay, glConfig, holder, null );
+			EagleUtil.log( "glSurface : " + glSurface );
+			if( glSurface == EGL10.EGL_NO_SURFACE )
+			{
+				EagleUtil.log( "ERROR : " + egl.eglGetError() );
+				EagleUtil.log( "Error eglCreateWindowSurface" );
 			//	Log.e(mName, "サーフェイス作成失敗");
 				return false;
 			}
@@ -539,11 +571,14 @@ public class GLManager
 			//サーフェイスとレンダリングコンテキスト結びつけ
 			if( !egl.eglMakeCurrent( glDisplay,  glSurface, glSurface, glContext) )
 			{
+				EagleUtil.log( "ERROR : " + egl.eglGetError() );
+				EagleUtil.log( "Error eglMakeCurrent" );
 			//	Log.e(mName, "レンダリングコンテキストとの結びつけ失敗");
 				return false;
 			}
 		}
 
+		EagleUtil.log( "createSurface exit" );
 		return true;
 	}
 

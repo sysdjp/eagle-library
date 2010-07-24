@@ -10,6 +10,7 @@ import java.util.List;
 
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
 import eagle.android.device.TouchDisplay;
 import eagle.android.gles11.GLManager;
 import eagle.android.view.ILooperSurface;
@@ -20,7 +21,9 @@ import eagle.util.EagleUtil;
  * @author eagle.sakura
  * @version 2010/05/25 : 新規作成
  */
-public class LooperThread	extends	Thread
+public class LooperThread	extends			Thread
+							implements		ILoopManager,
+											Callback
 {
 	/**
 	 * 終了待ちフラグ。
@@ -41,6 +44,11 @@ public class LooperThread	extends	Thread
 	 * メインループクラス。
 	 */
 	private	ILooper						looper		=	null;
+
+	/**
+	 * フレームレート
+	 */
+	private	int							frameRate	=	15;
 
 
 	/**
@@ -72,6 +80,7 @@ public class LooperThread	extends	Thread
 			surface.setTouchDisplay( looper.getTouchDisplay( ) );
 		}
 
+		surface.getHolder().addCallback( this );
 		viewList.add( surface );	//!<	サーフェイスを登録する。
 	}
 
@@ -81,7 +90,7 @@ public class LooperThread	extends	Thread
 	 * @return
 	 * @version 2010/05/30 : 新規作成
 	 */
-	public	boolean		isCreateComplete( )
+	public	boolean		isSurfaceCreateComplete( )
 	{
 		for( ILooperSurface view : viewList )
 		{
@@ -123,7 +132,7 @@ public class LooperThread	extends	Thread
 	 * @author eagle.sakura
 	 * @version 2009/11/15 : 新規作成
 	 */
-	public	void	onLoopBegin( )
+	protected	void	onLoopBegin( )
 	{
 		if( looper != null )
 		{
@@ -158,12 +167,32 @@ public class LooperThread	extends	Thread
 	 * @author eagle.sakura
 	 * @version 2009/11/14 : 新規作成
 	 */
-	public	void	onLoop( )
+	protected	void	onLoop( )
 	{
 		if( looper != null
 		&&	!isSleeping() )
 		{
-			looper.onLoop();
+			long	sTime = System.currentTimeMillis();
+			//!	フレーム処理
+			{
+				looper.onLoop();
+			}
+			long	eTime = System.currentTimeMillis();
+
+			//!	1フレームにかけていい時間
+			final int	frameMilliSec = ( 1000 / frameRate );
+			int		sleepTime	=	frameMilliSec - ( int )( eTime - sTime );
+			sleepTime = Math.max( 1, sleepTime );
+
+			//!	スレッドを休眠させる
+			try
+			{
+				sleep( sleepTime );
+			}
+			catch( Exception e )
+			{
+				EagleUtil.log( e );
+			}
 		}
 		else
 		{
@@ -184,7 +213,7 @@ public class LooperThread	extends	Thread
 	 * @author eagle.sakura
 	 * @version 2009/11/14 : 新規作成
 	 */
-	public	void	onFinalize( )
+	protected	void	onFinalize( )
 	{
 		if( looper != null )
 		{
@@ -195,56 +224,12 @@ public class LooperThread	extends	Thread
 	}
 
 	/**
-	 * サーフェイスの作成が完了するまで待つ。
-	 * @author eagle.sakura
-	 * @version 2010/05/25 : 新規作成
-	 */
-	protected	void		waitSurfaceCreated( )
-	{
-		try
-		{
-			long	current = System.currentTimeMillis();
-			for( ILooperSurface surface : viewList )
-			{
-				while( !surface.isCreated( ) )
-				{
-					//!	適当な時間待つ。
-					sleep( 5 );
-
-					long	time = System.currentTimeMillis() - current;
-					if( done
-					||	time > ( 1000 * 5) )
-					{
-						done = true;
-						EagleUtil.log( "thread done" );
-						return;
-					}
-				}
-			}
-			//!	適当な時間待つ。
-			sleep( 15 );
-		}
-		catch( Exception e )
-		{
-			EagleUtil.log( e );
-		}
-	}
-
-	/**
 	 * スレッド処理を行う。
 	 * @author eagle.sakura
 	 * @version 2009/11/14 : 新規作成
 	 */
 	public	void	run( )
 	{
-		EagleUtil.log( "wait create..." );
-		waitSurfaceCreated();
-		EagleUtil.log( "wait create complete" );
-		if( done )
-		{
-			return;
-		}
-
 		onLoopBegin( );
 		//!	終了要求まで繰り返す。
 		while( !done )
@@ -252,6 +237,19 @@ public class LooperThread	extends	Thread
 			onLoop( );
 		}
 		onFinalize( );
+	}
+
+	/**
+	 * ループを開始する。
+	 * @author eagle.sakura
+	 * @version 2010/07/22 : 新規作成
+	 */
+	@Override
+	public void startLoop()
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		//!	スレッドを開始させる
+		start();
 	}
 
 	/**
@@ -274,6 +272,32 @@ public class LooperThread	extends	Thread
 		{
 			Thread.currentThread().interrupt();
 		}
+	}
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		if( isSurfaceCreateComplete() )
+		{
+			EagleUtil.log( "Surface create complete thread" );
+			startLoop();
+		}
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 
 }

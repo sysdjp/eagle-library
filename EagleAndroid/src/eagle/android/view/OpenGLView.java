@@ -73,15 +73,18 @@ public class OpenGLView extends LooperSurfaceView
 	@Override
 	public void surfaceCreated(SurfaceHolder arg0)
 	{
-		glManager.setSurfaceHolder( arg0 );
+		EagleUtil.log( "arg0 : " + arg0 );
+		EagleUtil.log( "cur holder : " + glManager.getSurfaceHolder() );
+	//	glManager.setSurfaceHolder( arg0 );
 	//	glManager.initGL();
 	//	glManager.clearTest( );
 
 		// TODO 自動生成されたメソッド・スタブ
-		super.surfaceCreated(arg0);
 		Vector2	v = UtilActivity.getDisplaySize( context, new Vector2() );
 		EagleUtil.log( "DisplaySize : " + v );
 		glManager.setSurfaceSize( ( int )v.x, ( int )v.y );
+
+		super.surfaceCreated(arg0);
 	}
 
 	/**
