@@ -14,7 +14,9 @@ import eagle.android.appcore.shake.ShakeInitialize;
 import eagle.android.appcore.shake.ShakeLooper;
 import eagle.android.appcore.shake.ShakeVertices;
 import eagle.android.graphic.Graphics;
+import eagle.android.thread.ILoopManager;
 import eagle.android.thread.ILooper;
+import eagle.android.thread.LooperHandler;
 import eagle.android.thread.LooperThread;
 import eagle.android.util.UtilActivity;
 import eagle.android.util.UtilBridgeAndroid;
@@ -45,6 +47,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
@@ -73,9 +76,10 @@ public class ShakeDroid	extends		UtilActivity
 	 */
 	private	ShakeLooper					shakeLooper	=	null;
 	/**
-	 * メインスレッド。
+	 * ループ管理クラス。
 	 */
-	private	LooperThread				thread		=	null;
+	private	ILoopManager				loopManager	=	null;
+
 	/**
 	 * 初期化データ。
 	 */
@@ -116,6 +120,19 @@ public class ShakeDroid	extends		UtilActivity
 		return	sharedData;
 	}
 
+	/**
+	 * 処理に必要なループ管理クラスを返す。
+	 * @author eagle.sakura
+	 * @param looper
+	 * @return
+	 * @version 2010/07/23 : 新規作成
+	 */
+	public	ILoopManager		createLoopManager( ILooper looper )
+	{
+	//	return	new LooperHandler( new Handler(), looper );
+		return	new LooperThread( looper );
+	}
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +142,7 @@ public class ShakeDroid	extends		UtilActivity
 		UtilActivity.setOrientationFixed( this, true );
     	EagleUtil.init( new UtilBridgeAndroid( "ShakeDroid" ) );
     	EagleUtil.log( "onCreate" );
+    	EagleUtil.log( "handler type" );
 
     	sharedData = 	new	SharedData( this, null );
     	initData = new ShakeInitialize();
@@ -396,8 +414,17 @@ public class ShakeDroid	extends		UtilActivity
     	initData.isFaceDetect = sharedData.isEnableFaceDetect();
 
     	shakeLooper	=	new	ShakeLooper( this, glView.getGLManager(), initData );
-    	thread		=	new	LooperThread( shakeLooper );
-    	thread.addSurface( glView );
+
+    	/*
+    	{
+	    	thread		=	new	LooperThread( shakeLooper );
+	    	thread.addSurface( glView );
+    	}
+    	*/
+    	{
+    		loopManager		=	createLoopManager( shakeLooper );
+    		loopManager.addSurface( glView );
+    	}
 
 		setContentView( glView );
 	//	initFreeSpaceAdview( );
@@ -415,7 +442,14 @@ public class ShakeDroid	extends		UtilActivity
     	}
 
 		//!	スレッド処理開始
-    	thread.start();
+    	/*
+    	{
+    		thread.start();
+    	}
+    	{
+    		handler.startLoop();
+    	}
+    	*/
 
 		addShakeMenu();
     	EagleUtil.log( "create thread complete!" );
@@ -442,13 +476,28 @@ public class ShakeDroid	extends		UtilActivity
 	    	shakeLooper	=	sdf.createLooper( this, glView.getGLManager() );
 	    	initData	=	shakeLooper.getInitializeData(	);
 	    	initData.originFileName	=	intent.getStringExtra( eLoadFileResultKey_FileName );
-	    	thread		=	new	LooperThread( shakeLooper );
-	    	thread.addSurface( glView );
+	    	/*
+	    	{
+		    	thread		=	new	LooperThread( shakeLooper );
+		    	thread.addSurface( glView );
+	    	}
+	    	*/
+	    	{
+	    		loopManager = createLoopManager( shakeLooper );
+	    		loopManager.addSurface( glView );
+	    	}
 			setContentView( glView );
 	//		initFreeSpaceAdview( );
 
 			//!	スレッド処理開始
-	    	thread.start();
+			/*
+			{
+				thread.start();
+			}
+			{
+				handler.startLoop();
+			}
+			*/
 
 			addShakeMenu();
 	    	EagleUtil.log( "create thread complete!" );
@@ -523,7 +572,10 @@ public class ShakeDroid	extends		UtilActivity
     	// TODO 自動生成されたメソッド・スタブ
     	super.onRestart();
     	if( initData.uri	!= null
-    	&&	thread			== null	)
+    //	&&	thread			== null
+    //	&&	handler			== null
+    	&&	loopManager		== null
+    	)
 		{
     		EagleUtil.log( "onRestar thread" );
 			//!	その情報を元に、処理スレッドを作成。
@@ -805,7 +857,10 @@ public class ShakeDroid	extends		UtilActivity
     {
     	IAppInfomation	info = new AppInfomation();
 		if( menu	!= null
-		&&	thread	!= null	)
+	//	&&	thread	!= null
+	//	&&	handler != null
+		&&	loopManager != null
+		)
 		{
 			removeShakeMenu();
 			menu.removeItem( eMenuFileActivity		);
@@ -875,12 +930,28 @@ public class ShakeDroid	extends		UtilActivity
     private void	removeGLThread(  )
     {
 		//!	スレッドを殺す。
-		if( thread != null )
+		if(
+		//	thread != null
+		//	handler != null
+			loopManager != null
+		)
 		{
 			EagleUtil.log( "remove thread" );
 			shakeLooper	=	null;
-			thread.dispose();
-			thread = null;
+			/*
+			{
+				thread.dispose();
+				thread = null;
+			}
+			{
+				handler.dispose();
+				handler = null;
+			}
+			*/
+			{
+				loopManager.dispose();
+				loopManager = null;
+			}
     		setContentView( R.layout.mainview );
 		}
 		//	カラのビューを入れる。

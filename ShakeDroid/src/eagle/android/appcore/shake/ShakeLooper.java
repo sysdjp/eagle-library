@@ -68,7 +68,7 @@ public class ShakeLooper extends ILooper
 	private ITexture texture = null;
 	private Context context = null;
 	private ShakeVertices vertices = null;
-	private FrameController frames = null;
+//	private FrameController frames = null;
 	private ShakeInitialize shakeData = null;
 	private Option option = null;
 	private SensorDevice sensor = null;
@@ -418,7 +418,6 @@ public class ShakeLooper extends ILooper
 			{
 				Toast.makeText( context, context.getResources().getString( R.string.toast_nohit_face ), Toast.LENGTH_LONG ).show( );
 			}
-
 			*/
 
 
@@ -533,7 +532,7 @@ public class ShakeLooper extends ILooper
 			shakeData.weights = null;
 		}
 
-		frames = new FrameController(15);
+//		frames = new FrameController(15);
 		// 行列を作成
 		{
 			Matrix4x4 m = Matrix4x4.create(new Vector3(2.0f, 2.0f, 2.0f),
@@ -691,7 +690,7 @@ public class ShakeLooper extends ILooper
 		if(texture == null)
 		{
 			glMgr.swapBuffers();
-			frames.update();
+		//	frames.update();
 			return;
 		}
 
@@ -726,7 +725,7 @@ public class ShakeLooper extends ILooper
 
 		glMgr.swapBuffers();
 
-		frames.update();
+	//	frames.update();
 	}
 
 	/**

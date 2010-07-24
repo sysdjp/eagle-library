@@ -45,5 +45,8 @@
 <string-array name="face_hit_helps"><item>上半身を認識しました。</item>
 <item>ShakeDroid Advanceなら</item>
 <item>この文字列を削除できます。</item>
+
 </string-array>
+<string name="toast_hit_faces">上半身を認識しました。</string>
+<string name="toast_nohit_face">上半身を認識できませんでした。</string>
 </resources>
