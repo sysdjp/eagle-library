@@ -479,6 +479,7 @@ public class GLManager
 		gl.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 
 		/*
+*/
 		{
 			int[]	buf = { -1 };
 			gl.glGetIntegerv( GL11Ext.GL_MAX_PALETTE_MATRICES_OES, buf, 0 );
@@ -492,9 +493,8 @@ public class GLManager
 
 			gl.glGetIntegerv( GL11.GL_MAX_PROJECTION_STACK_DEPTH, buf, 0 );
 			EagleUtil.log( "GL_MAX_PROJECTION_STACK_DEPTH : " + buf[ 0 ] );
-
 		}
-*/
+
 		//!	カリング無効
 		gl.glDisable( GL11.GL_CULL_FACE );
 
