@@ -62,6 +62,16 @@ public class ShakeInitialize
 	 */
 	public	boolean			isFaceDetect	=	false;
 
+	/**
+	 * ディスプレイ幅。
+	 */
+	public	int				displayWidth	=	-1;
+
+	/**
+	 * ディスプレイ高。
+	 */
+	public	int				displayHeight	=	-1;
+
 	public	ShakeInitialize( )
 	{
 	}
@@ -74,5 +84,8 @@ public class ShakeInitialize
 		xDivision		= -1;
 		yDivision		= -1;
 		isFaceDetect	= false;
+
+		displayWidth	= -1;
+		displayHeight	= -1;
 	}
 }

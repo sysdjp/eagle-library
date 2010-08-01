@@ -66,12 +66,12 @@ public class ShakeVertices
 	/**
 	 * 頂点バッファ。
 	 */
-	private	VertexBufferSW		vertexBuffer	=	new	VertexBufferSW();
+	private	VertexBufferSW		vertexBuffer;
 
 	/**
 	 * 頂点バッファ。
 	 */
-	private	IndexBufferSW		indexBuffer		=	new	IndexBufferSW();
+	private	IndexBufferSW		indexBuffer;
 
 	/**
 	 *
@@ -81,6 +81,9 @@ public class ShakeVertices
 	 */
 	public	ShakeVertices( GLManager gl, int divX, int divY )
 	{
+		vertexBuffer 	= new VertexBufferSW( gl );
+		indexBuffer 	= new IndexBufferSW( gl );
+
 		glMgr 		= gl;
 		divisionX	= divX;
 		divisionY	= divY;
@@ -469,13 +472,11 @@ public class ShakeVertices
 
 
 		{
-			vb.bind( glMgr );
-			ib.bind( glMgr );
+			vb.bind(  );
 
-			ib.drawElements( glMgr );
+			ib.drawElements(  );
 
-			ib.unbind( glMgr );
-			vb.unbind( glMgr );
+			vb.unbind(  );
 
 		}
 	}

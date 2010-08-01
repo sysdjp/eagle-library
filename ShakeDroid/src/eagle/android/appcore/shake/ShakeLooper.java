@@ -84,7 +84,12 @@ public class ShakeLooper extends ILooper
 	/**
 	 * サムネイル用画像。
 	 */
-	private Bitmap thumbnail = null;
+	private Bitmap thumbnail		 = null;
+
+	/**
+	 * テクスチャ作成元のBMP
+	 */
+	private	Bitmap	textureOrigin	=	null;
 
 	/**
 	 *
@@ -266,6 +271,7 @@ public class ShakeLooper extends ILooper
 
 		EagleUtil.log( "complete image open" );
 		EagleUtil.log( "glManager : " + glManager );
+		EagleUtil.log( "OriginBMP Size : " + origin.getWidth() + " x " + origin.getHeight() );
 		int displayW = glManager.getDisplayWidth(),
 			displayH = glManager.getDisplayHeight();
 		int	texWidth	= 2,
@@ -332,7 +338,11 @@ public class ShakeLooper extends ILooper
 
 			int x = (displayW - outWidth) / 2, y = (displayH - outHeight) / 2;
 
-			origin =	Bitmap.createScaledBitmap(	 origin, outWidth, outHeight, true );
+			if( origin.getWidth()	!= outWidth
+			||	origin.getHeight() 	!= outHeight )
+			{
+				origin =	Bitmap.createScaledBitmap(	 origin, outWidth, outHeight, true );
+			}
 
 			graphics.getPaint().setAntiAlias( true );
 			graphics.drawBitmap( origin, x, y );
@@ -474,6 +484,8 @@ public class ShakeLooper extends ILooper
 			texture = new BmpTexture(texSrc, glManager);
 			texture.bind();
 
+			textureOrigin = texSrc;
+		//	getInitializeData().bmp = textureOrigin;
 		}
 	}
 

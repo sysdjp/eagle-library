@@ -129,8 +129,8 @@ public class ShakeDroid	extends		UtilActivity
 	 */
 	public	ILoopManager		createLoopManager( ILooper looper )
 	{
-	//	return	new LooperHandler( new Handler(), looper );
-		return	new LooperThread( looper );
+		return	new LooperHandler( new Handler(	), looper );
+	//	return	new LooperThread( looper );
 	}
 
     /** Called when the activity is first created. */
@@ -541,6 +541,7 @@ public class ShakeDroid	extends		UtilActivity
     @Override
     protected void onPause()
     {
+    	EagleUtil.log( "onPause" );
     	// TODO 自動生成されたメソッド・スタブ
     	super.onPause();
 
@@ -554,6 +555,7 @@ public class ShakeDroid	extends		UtilActivity
     @Override
     protected void onStop()
     {
+    	EagleUtil.log( "onStop" );
     	// TODO 自動生成されたメソッド・スタブ
     	super.onStop();
     }
@@ -561,8 +563,17 @@ public class ShakeDroid	extends		UtilActivity
     @Override
     protected void onResume()
     {
+    	EagleUtil.log( "onResume" );
     	// TODO 自動生成されたメソッド・スタブ
     	super.onResume();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+    	EagleUtil.log( "onDestroy" );
+    	// TODO 自動生成されたメソッド・スタブ
+    	super.onDestroy();
     }
 
     @Override
@@ -697,6 +708,9 @@ public class ShakeDroid	extends		UtilActivity
 	    		{
 		    		int	height	=	bmp.getHeight(),
 		    			width	=	bmp.getWidth();
+
+		    		EagleUtil.log( "BitmapSize : " + width + " x " + height );
+
 	    			Bitmap	temp = Bitmap.createBitmap( width, height, Config.RGB_565 );
 	    			Canvas canvas = new Canvas( temp );
 	    			Graphics	graphics = new Graphics();

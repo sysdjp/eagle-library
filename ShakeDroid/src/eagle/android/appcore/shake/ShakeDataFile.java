@@ -6,8 +6,12 @@
 package eagle.android.appcore.shake;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import eagle.android.gles11.GLManager;
 import eagle.android.gles11.GLManager;
@@ -16,10 +20,13 @@ import eagle.io.DataInputStream;
 import eagle.io.DataOutputStream;
 import eagle.io.InputStreamBufferReader;
 import eagle.io.OutputStreamBufferWriter;
+import eagle.io.TableFileSystem;
 import eagle.util.EagleException;
 import eagle.util.EagleUtil;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.net.Uri;
 
@@ -33,7 +40,7 @@ public class ShakeDataFile
 	/**
 	 * サポートしているファイルバージョン。
 	 */
-	public	static	final	int		eFileVersion = 0x1;
+	public	static	final	int		eFileVersion = 0x2;
 
 	/**
 	 * 初期化用データ。
@@ -76,14 +83,19 @@ public class ShakeDataFile
 	public	static	final	String		eFileExt	=	"sdf";
 
 	/**
+	 * ファイルバージョン２の拡張子。
+	 */
+	public	static	final	String		eFileExt_2	=	"sdp";
+
+	/**
 	 * 無料版でのファイル名（縦）。
 	 */
-	public	static	final	String		eFreeModeFileName_v	=	"shake_v.sdf";
+	public	static	final	String		eFreeModeFileName_v	=	"shake_v." + eFileExt_2;
 
 	/**
 	 * 無料版でのファイル名（横）。
 	 */
-	public	static	final	String		eFreeModeFileName_h	=	"shake_h.sdf";
+	public	static	final	String		eFreeModeFileName_h	=	"shake_h." + eFileExt_2;
 
 	/**
 	 * 保存先のディレクトリ名。
@@ -310,6 +322,35 @@ public class ShakeDataFile
 
 				dos.writeFloatArray( weightTable );
 			}
+
+
+
+			//!	version2
+			{
+				//!	ディスプレイW/H
+				dos.writeS32( initData.displayWidth  );
+				dos.writeS32( initData.displayHeight );
+
+				//!	画像のパッケージング
+				{
+					ByteArrayOutputStream	baos = new ByteArrayOutputStream();
+
+					ZipOutputStream	zos = new ZipOutputStream( baos );
+					zos.putNextEntry( new ZipEntry( "image.img" ) );
+					{
+						initData.bmp.compress( CompressFormat.PNG, 100, zos );
+					}
+					zos.closeEntry();
+					zos.close();
+
+					byte[]	buffer = baos.toByteArray();
+					baos.close();
+
+
+					//!	実バッファの書き出し
+					dos.writeFile( buffer );
+				}
+			}
 		}
 		catch( IOException ioe )
 		{
@@ -344,7 +385,9 @@ public class ShakeDataFile
 		try
 		{
 			//!	ファイルバージョンチェック
-			if( dis.readS32() != eFileVersion )
+			int	version = dis.readS32();
+			if( version != 0x01
+			&&	version != 0x02 )
 			{
 				throw	new EagleException( EagleException.eStatusUnknownFileVersion );
 			}
@@ -395,7 +438,23 @@ public class ShakeDataFile
 				{
 					weightTable = si.weights;
 				}
+			}
 
+			//!	ディスプレイ情報
+			if( version == 2 )
+			{
+				si.displayWidth		= dis.readS32();
+				si.displayHeight	= dis.readS32();
+
+				byte[]	buffer = dis.readFile();
+
+				ZipInputStream		zis = new ZipInputStream( new ByteArrayInputStream( buffer ) );
+				TableFileSystem		tfs	= TableFileSystem.createInstance( zis );
+				zis.close();
+				zis = null;
+
+				byte[]	imageBuffer =	tfs.getFile( "image.img" );
+				si.bmp = BitmapFactory.decodeByteArray( imageBuffer, 0, imageBuffer.length );
 			}
 		}
 		catch( IOException ioe )
