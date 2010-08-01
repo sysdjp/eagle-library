@@ -7,10 +7,13 @@ package eagle.android.gles11;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.opengles.GL11;
+
+import eagle.util.EagleUtil;
 
 
 /**
@@ -23,8 +26,9 @@ import javax.microedition.khronos.opengles.GL11;
 public class VertexBufferHW implements IVertexBuffer
 {
 	private	GLManager		glManager	=	null;
-	private	VRAMResource	vram		=	null;
+	private	VRAMResource[]	vrams		=	null;
 	private	int				vertexNum	=	0;
+	private	int				attibutes	=	0;
 
 	/**
 	 * @author eagle.sakura
@@ -34,59 +38,105 @@ public class VertexBufferHW implements IVertexBuffer
 	public	VertexBufferHW( GLManager glManager )
 	{
 		this.glManager	=	glManager;
+		vrams = new VRAMResource[ 4 ];
 	}
 
 	private	static	int		eVramIndexPositions	=	0;
-	private	static	int		eVramIndexUVs		=	1;
-	private	static	int		eVramIndexNormals	=	2;
-	private	static	int		eVramIndexColors	=	3;
+	private	static	int		eVramIndexColors	=	1;
+	private	static	int		eVramIndexUVs		=	2;
+	private	static	int		eVramIndexNormals	=	3;
 
 	/**
-	 *
+	 * 位置バッファへ転送する。
 	 * @author eagle.sakura
 	 * @param positions
+	 * @version 2010/07/25 : 新規作成
+	 */
+	public	void	initPosBuffer( float[] positions )
+	{
+		vertexNum = ( positions.length / 3 );
+		if( positions != null )
+		{
+			vrams[ eVramIndexPositions ] = new VRAMResource( glManager );
+			vrams[ eVramIndexPositions ].create( 1 );
+			VRAMResource	vram = vrams[ eVramIndexPositions ];
+
+			IntBuffer	buffer = GLManager.toGLFixed(	positions,
+														( ByteBuffer.allocateDirect( positions.length * 4 ).order( ByteOrder.nativeOrder() ).asIntBuffer() )
+														);
+			buffer.position( 0 );
+			vram.toGLBuffer( 0, buffer, buffer.capacity() * 4, GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
+
+			attibutes |= 0x1 << eVramIndexPositions;
+		}
+	}
+
+	/**
+	 * UVバッファへ転送する。
+	 * @author eagle.sakura
 	 * @param uv
-	 * @param normals
+	 * @version 2010/07/25 : 新規作成
+	 */
+	public	void	initUVBuffer( float[] uv )
+	{
+		if( uv != null )
+		{
+			vrams[ eVramIndexUVs ] = new VRAMResource( glManager );
+			vrams[ eVramIndexUVs ].create( 1 );
+			VRAMResource	vram = vrams[ eVramIndexUVs ];
+
+			IntBuffer	buffer = GLManager.toGLFixed(	uv,
+														( ByteBuffer.allocateDirect( uv.length * 4 ).order( ByteOrder.nativeOrder() ).asIntBuffer() )
+														);
+			buffer.position( 0 );
+			vram.toGLBuffer( 0, buffer, buffer.capacity() * 4, GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
+
+			attibutes |= 0x1 << eVramIndexUVs;
+		}
+	}
+
+	/**
+	 * 色バッファへ転送する。
+	 * @author eagle.sakura
 	 * @param colors
 	 * @version 2010/07/25 : 新規作成
 	 */
-	public	void	initialize( float[] 	positions,
-								float[]		uv,
-								float[]		normals,
-								byte[]		colors	)
+	public	void	initColBuffer( byte[] colors )
 	{
-		vertexNum = ( positions.length / 3 );
-		vram = new VRAMResource( glManager );
-		vram.create( 4 );
-
-		if( positions != null )
-		{
-			IntBuffer	buffer = GLManager.toGLFixed(	positions,
-														( ByteBuffer.allocate( positions.length * 4 ).asIntBuffer() )
-														);
-			vram.toGLBuffer( eVramIndexPositions, buffer, buffer.capacity() * 4, GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
-		}
-
-		if( uv != null )
-		{
-			IntBuffer	buffer = GLManager.toGLFixed(	uv,
-														( ByteBuffer.allocate( uv.length * 4 ).asIntBuffer() )
-														);
-			vram.toGLBuffer( eVramIndexUVs, buffer, buffer.capacity() * 4, GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
-		}
-
-		if( normals != null )
-		{
-			IntBuffer	buffer = GLManager.toGLFixed(	normals,
-														( ByteBuffer.allocate( normals.length * 4 ).asIntBuffer() )
-														);
-			vram.toGLBuffer( eVramIndexNormals, buffer, buffer.capacity() * 4, GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
-		}
-
 		if( colors != null )
 		{
+			vrams[ eVramIndexColors ] = new VRAMResource( glManager );
+			vrams[ eVramIndexColors ].create( 1 );
+			VRAMResource	vram = vrams[ eVramIndexColors ];
+
 			ByteBuffer	buffer = IGLResource.createBuffer( colors );
-			vram.toGLBuffer( eVramIndexColors, buffer, buffer.capacity(), GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
+			vram.toGLBuffer( 0, buffer, buffer.capacity(), GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
+
+			attibutes |= 0x1 << eVramIndexColors;
+		}
+	}
+
+	/**
+	 * 法線バッファへ転送する。
+	 * @author eagle.sakura
+	 * @param normals
+	 * @version 2010/07/25 : 新規作成
+	 */
+	public	void	initNormalBuffer( float[] normals )
+	{
+		if( normals != null )
+		{
+			vrams[ eVramIndexNormals ] = new VRAMResource( glManager );
+			vrams[ eVramIndexNormals ].create( 1 );
+			VRAMResource	vram = vrams[ eVramIndexNormals ];
+
+			IntBuffer	buffer = GLManager.toGLFixed(	normals,
+														( ByteBuffer.allocateDirect( normals.length * 4 ).order( ByteOrder.nativeOrder() ).asIntBuffer() )
+														);
+			buffer.position( 0 );
+			vram.toGLBuffer( 0, buffer, buffer.capacity() * 4, GL11.GL_ARRAY_BUFFER, GL11.GL_STATIC_DRAW );
+
+			attibutes |= 0x1 << eVramIndexNormals;
 		}
 	}
 
@@ -97,8 +147,57 @@ public class VertexBufferHW implements IVertexBuffer
 	@Override
 	public void bind()
 	{
+		GL11	gl = glManager.getGL();
 	// TODO 自動生成されたメソッド・スタブ
+		//!	位置
+		if( EagleUtil.isFlagOn( attibutes, 0x1 << eVramIndexPositions ) )
+		{
+			gl.glEnableClientState( GL11.GL_VERTEX_ARRAY );
+			vrams[ eVramIndexPositions ].bind( 0, GL11.GL_ARRAY_BUFFER );
+			gl.glVertexPointer( 3, GL11.GL_FIXED, 0, 0 );
+		}
+		else
+		{
+			gl.glDisableClientState( GL11.GL_VERTEX_ARRAY );
+		}
 
+		//!	法線
+		if( EagleUtil.isFlagOn( attibutes, 0x1 << eVramIndexNormals ) )
+		{
+			gl.glEnableClientState( GL11.GL_NORMAL_ARRAY );
+			vrams[ eVramIndexNormals ].bind( 0, GL11.GL_ARRAY_BUFFER );
+			gl.glNormalPointer( GL11.GL_FIXED, 0, 0 );
+		}
+		else
+		{
+			gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
+		}
+
+		//!	色
+		if( EagleUtil.isFlagOn( attibutes, 0x1 << eVramIndexColors ) )
+		{
+			gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
+			vrams[ eVramIndexColors ].bind( 0, GL11.GL_ARRAY_BUFFER );
+			gl.glColorPointer( 4, GL11.GL_UNSIGNED_BYTE, 0, 0 );
+		}
+		else
+		{
+			gl.glDisableClientState( GL11.GL_COLOR_ARRAY );
+		}
+
+		//!	UV
+		if( EagleUtil.isFlagOn( attibutes, 0x1 << eVramIndexUVs ) )
+		{
+			gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
+			vrams[ eVramIndexUVs ].bind( 0, GL11.GL_ARRAY_BUFFER );
+			gl.glTexCoordPointer( 2, GL11.GL_FIXED, 0, 0 );
+		}
+		else
+		{
+			gl.glDisableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
+		}
+
+		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
 	}
 
 	/**
@@ -109,7 +208,11 @@ public class VertexBufferHW implements IVertexBuffer
 	public void unbind()
 	{
 	// TODO 自動生成されたメソッド・スタブ
-
+		GL11	gl = glManager.getGL();
+		gl.glDisableClientState( GL11.GL_VERTEX_ARRAY );
+		gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
+		gl.glDisableClientState( GL11.GL_COLOR_ARRAY );
+		gl.glDisableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 	}
 
 	/**
@@ -120,7 +223,13 @@ public class VertexBufferHW implements IVertexBuffer
 	public void dispose()
 	{
 	// TODO 自動生成されたメソッド・スタブ
-
+		for( VRAMResource vram : vrams )
+		{
+			if( vram != null )
+			{
+				vram.dispose();
+			}
+		}
 	}
 
 }

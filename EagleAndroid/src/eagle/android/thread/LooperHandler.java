@@ -45,6 +45,13 @@ public class LooperHandler	implements	ILoopManager,
 	 */
 	private	int							frameRate	=	15;
 
+	@Override
+	public void setFrameRate(int rate)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		frameRate = rate;
+	}
+
 	/**
 	 *
 	 * @author eagle.sakura
@@ -195,8 +202,7 @@ public class LooperHandler	implements	ILoopManager,
 
 					//!	スレッドを休眠させる
 					LooperHandler.this.handler.postDelayed( this, sleepTime );
-				//	EagleUtil.log( "" + ( 1000.0f / ( float )( eTime - sTime ) ) + "fps" );
-				//	EagleUtil.log( "Sleep : " + sleepTime );
+				//	EagleUtil.log( "" + ( 1000.0f / ( float )( eTime - sTime ) ) + "fps( Sleep:" + sleepTime + " )" );
 				}
 			}
 		}

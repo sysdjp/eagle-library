@@ -239,8 +239,10 @@ public class Figure		implements	Disposable
 	 * @throws EagleException
 	 * @version 2010/07/08 : 新規作成
 	 */
-	private	Node			createNode( Node parent, DataInputStream dis )	throws	IOException,
-																					EagleException
+	private	Node			createNode( Node				parent,
+										DataInputStream		dis,
+										GLResourceCreater	glCreater )	throws	IOException,
+																				EagleException
 	{
 		{
 			int	version	=	dis.readS32();
@@ -276,13 +278,13 @@ public class Figure		implements	Disposable
 			nodes[ number ] = node;
 		}
 
-		nodes[ number ].initialize( dis );
+		nodes[ number ].initialize( dis, glCreater );
 
 		{
 			int	childs = dis.readS16();
 			for( int i = 0; i < childs; ++i )
 			{
-				Node node =	createNode( nodes[ number ], dis );
+				Node node =	createNode( nodes[ number ], dis, glCreater );
 				nodes[ number ].addChild( node );
 			}
 		}
@@ -340,8 +342,10 @@ public class Figure		implements	Disposable
 	 * @throws EagleException
 	 * @version 2010/07/08 : 新規作成
 	 */
-	public	static	Figure			createInstance( GLManager glManager, DataInputStream dis )	throws	IOException,
-																								EagleException
+	public	static	Figure			createInstance( GLManager			glManager,
+													DataInputStream		dis,
+													GLResourceCreater	glCreater )	throws	IOException,
+																							EagleException
 	{
 		Figure	figure = new	Figure();
 		figure.glManager = glManager;
@@ -363,7 +367,7 @@ public class Figure		implements	Disposable
 
 		//!	ノードを作成する
 		{
-			figure.createNode( null, dis );
+			figure.createNode( null, dis, glCreater );
 			//!	初期行列を生成する。
 			figure.updateNodeTree( figure.getRootNode() );
 

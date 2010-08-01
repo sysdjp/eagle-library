@@ -327,6 +327,36 @@ public class GLManager
 	}
 
 	/**
+	 * 初期化時のコンフィグスペック。
+	 */
+	private	int[]		configSpec =
+	{
+		/**
+		 * 2008/12/1 修正
+		 * 以下の設定が実機では使えないようなのでカット。
+		 * この部分をはずすと、サポートされている設定が使われる(明示的に設定しないと機種依存で変わる可能性あり?)。
+		 *
+		EGL10.EGL_RED_SIZE,		5,	//!	赤要素：8ビット
+		EGL10.EGL_GREEN_SIZE,	6,	//!	緑要素：8ビット
+		EGL10.EGL_BLUE_SIZE,	5,	//!	青要素：8ビット
+	//	EGL10.EGL_ALPHA_SIZE,	8,	//!	アルファチャンネル：8ビット
+		EGL10.EGL_DEPTH_SIZE,	16,	//!	深度バッファ：16ビット
+		*/
+		EGL10.EGL_NONE				//!	終端にはEGL_NONEを入れる
+	};
+
+	/**
+	 * 初期化設定を入れ替える。
+	 * @author eagle.sakura
+	 * @param specs
+	 * @version 2010/07/27 : 新規作成
+	 */
+	public	void		setConfigSpec( int[] specs )
+	{
+		configSpec = specs;
+	}
+
+	/**
 	 * GL系を初期化する。
 	 * @author eagle.sakura
 	 * @version 2009/11/14 : 新規作成
@@ -336,8 +366,8 @@ public class GLManager
 		//GL ES操作モジュール取得
 		egl = ( EGL10 )EGLContext.getEGL();
 		EagleUtil.log( "egl : " + egl );
-		EagleUtil.log( "eglGetCurrentContext : " +  egl.eglGetCurrentContext() );
-		EagleUtil.log( "eglGetCurrentDisplay : " +  egl.eglGetCurrentDisplay() );
+	//	EagleUtil.log( "eglGetCurrentContext : " +  egl.eglGetCurrentContext() );
+	//	EagleUtil.log( "eglGetCurrentDisplay : " +  egl.eglGetCurrentDisplay() );
 		{
 			//ディスプレイコネクション作成
 			glDisplay = egl.eglGetDisplay( EGL10.EGL_DEFAULT_DISPLAY );
@@ -362,21 +392,6 @@ public class GLManager
 
 		{
 			//コンフィグ設定
-			int[] configSpec =
-			{
-				/**
-				 * 2008/12/1 修正
-				 * 以下の設定が実機では使えないようなのでカット。
-				 * この部分をはずすと、サポートされている設定が使われる(明示的に設定しないと機種依存で変わる可能性あり?)。
-				 *
-				EGL10.EGL_RED_SIZE,		5,	//!	赤要素：8ビット
-				EGL10.EGL_GREEN_SIZE,	6,	//!	緑要素：8ビット
-				EGL10.EGL_BLUE_SIZE,	5,	//!	青要素：8ビット
-			//	EGL10.EGL_ALPHA_SIZE,	8,	//!	アルファチャンネル：8ビット
-				EGL10.EGL_DEPTH_SIZE,	16,	//!	深度バッファ：16ビット
-				*/
-				EGL10.EGL_NONE				//!	終端にはEGL_NONEを入れる
-			};
 			EGLConfig[] configs = new EGLConfig[ 1 ];
 			int[] numConfigs = new int[ 1 ];
 			if( !egl.eglChooseConfig(glDisplay, configSpec, configs, 1, numConfigs ) )
@@ -549,9 +564,9 @@ public class GLManager
 	{
 		{
 			EagleUtil.log( "eglCreateWindowSurface" );
-			if( egl.eglMakeCurrent( glDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT ) )
+	//		if( egl.eglMakeCurrent( glDisplay, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT ) )
 			{
-				EagleUtil.log( "eglMakeCurrent boot ok" );
+		//		EagleUtil.log( "eglMakeCurrent boot ok" );
 			}
 
 			//サーフェイス作成

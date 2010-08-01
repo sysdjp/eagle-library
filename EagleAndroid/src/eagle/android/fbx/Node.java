@@ -101,8 +101,8 @@ public class Node
 	 * @throws EagleException
 	 * @version 2010/07/08 : 新規作成
 	 */
-	protected	void	initialize( DataInputStream dis )	throws	IOException,
-																	EagleException
+	protected	void	initialize( DataInputStream dis, GLResourceCreater glCreater )	throws	IOException,
+																								EagleException
 	{
 		{
 			String	name = dis.readString();

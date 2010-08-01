@@ -62,6 +62,13 @@ public class LooperThread	extends			Thread
 		setLooper( looper );
 	}
 
+	@Override
+	public void setFrameRate(int rate)
+	{
+		// TODO 自動生成されたメソッド・スタブ
+		frameRate = rate;
+	}
+
 	/**
 	 * サーフェイスを追加する。
 	 * @author eagle.sakura

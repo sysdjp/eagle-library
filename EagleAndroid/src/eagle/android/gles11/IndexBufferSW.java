@@ -3,7 +3,7 @@
  * @author eagle.sakura
  * @version 2010/07/08 : 新規作成
  */
-package eagle.android.fbx;
+package eagle.android.gles11;
 
 import java.nio.Buffer;
 import java.nio.ShortBuffer;
@@ -11,24 +11,26 @@ import java.nio.ShortBuffer;
 import javax.microedition.khronos.opengles.GL11;
 
 import eagle.android.gles11.GLManager;
-import eagle.android.gles11.IGLResource;
+
 
 /**
  * @author eagle.sakura
  * @version 2010/07/08 : 新規作成
  */
-public class IndexBufferSW
+public class IndexBufferSW	implements	IIndexBuffer
 {
 	private	ShortBuffer			indexBuffer		=	null;
 	private	int					bufferLength	=	0;
+	private	GLManager			glManager		=	null;
+
 	/**
 	 * 空のインデックスバッファを作成する。
 	 * @author eagle.sakura
 	 * @version 2009/11/15 : 新規作成
 	 */
-	public	IndexBufferSW( )
+	public	IndexBufferSW( GLManager glManager )
 	{
-
+		this.glManager = glManager;
 	}
 
 	/**
@@ -57,9 +59,9 @@ public class IndexBufferSW
 	 * @param glMgr
 	 * @version 2009/11/16 : 新規作成
 	 */
-	public	void		drawElements( GLManager	glMgr )
+	public	void		drawElements(  )
 	{
-		GL11	gl = glMgr.getGL();
+		GL11	gl = glManager.getGL();
 		//!	インデックスバッファの描画を行う。
 		gl.glDrawElements(	GL11.GL_TRIANGLES,
 							bufferLength,

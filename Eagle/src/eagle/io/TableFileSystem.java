@@ -52,6 +52,18 @@ public class TableFileSystem extends FileSystem
 	}
 
 	/**
+	 *
+	 * @author eagle.sakura
+	 * @param key
+	 * @return
+	 * @version 2010/07/30 : 新規作成
+	 */
+	public	byte[]		getFile( String key )
+	{
+		return	fileTable.get( key );
+	}
+
+	/**
 	 * ファイルテーブルの内容をzipへ圧縮する。
 	 * @author eagle.sakura
 	 * @param os

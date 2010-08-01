@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import eagle.android.gles11.GLManager;
 import eagle.android.gles11.ITexture;
+import eagle.android.gles11.IndexBufferSW;
+import eagle.android.gles11.VertexBufferSW;
 import eagle.android.math.Matrix4x4;
 import eagle.io.DataInputStream;
 import eagle.util.EagleException;
@@ -165,10 +167,12 @@ public class Frame extends Node
 	 * @throws EagleException
 	 * @version 2010/07/08 : 新規作成
 	 */
-	public	void	initialize( DataInputStream dis )	throws	IOException,
-																EagleException
+	public	void	initialize( DataInputStream dis, GLResourceCreater glCreater )	throws	IOException,
+																							EagleException
 	{
-		super.initialize( dis );
+		super.initialize( dis, glCreater );
+
+		GLResourceCreater.FbxVertices	fbxVertices = new GLResourceCreater.FbxVertices();
 
 		vertices	=	new	VertexBufferSW( figure.getGLManager() );
 
@@ -215,7 +219,7 @@ public class Frame extends Node
 			for( int i = 0; i < length; ++i )
 			{
 				Material	m = Material.createInstance( figure.getGLManager(), dis );
-				IndexBufferSW	ib = new IndexBufferSW();
+				IndexBufferSW	ib = new IndexBufferSW( figure.getGLManager() );
 
 				int	ibLength = dis.readS32();
 				short[]		buffer	=	new short[ ibLength ];
@@ -257,8 +261,8 @@ public class Frame extends Node
 					weights[ i ] = dis.readFloat();
 				}
 
-				DeformBufferSW	db = new DeformBufferSW();
-				db.init( weights, indices, size );
+				DeformBufferSW	db = new DeformBufferSW( figure.getGLManager() );
+				db.init( weights, indices );
 				deformer.setDeform( db );
 			}
 		}

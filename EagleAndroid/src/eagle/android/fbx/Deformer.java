@@ -146,8 +146,6 @@ public class Deformer
 		GL11Extension	gles = glManager.getGL11Extension();
 		{
 			gles.glEnable( GL11Ext.GL_MATRIX_PALETTE_OES );
-			gles.glEnableClientState( GL11Ext.GL_MATRIX_INDEX_ARRAY_OES );
-			gles.glEnableClientState( GL11Ext.GL_WEIGHT_ARRAY_OES );
 		}
 
 		//!	行列を転送
@@ -172,6 +170,26 @@ public class Deformer
 			glManager.popMatrix();
 		}
 
+		deform.bind();
+	}
+
+	/**
+	 * GLへの関連付けを解除する。
+	 * @author eagle.sakura
+	 * @version 2010/07/10 : 新規作成
+	 */
+	public	void	unbind( )
+	{
+		deform.unbind();
+
+		GL11			gl11 = glManager.getGL11();
+		gl11.glDisable( GL11Ext.GL_MATRIX_PALETTE_OES );
+		gl11.glMatrixMode( GL11.GL_MODELVIEW );
+	}
+}
+
+
+
 		/*
 			glManager.pushMatrixF( bone.getMatrix() );
 			glManager.pushMatrixF( bone.getInvertMatrix() );
@@ -189,25 +207,3 @@ public class Deformer
 			}
 			gl11.glPopMatrix();
 		 */
-
-		//!	パレット情報を転送
-		gles.glWeightPointerOES( 3, deform.getVertexWeightType(), 0, deform.getVertexWeight() );
-		gles.glMatrixIndexPointerOES( 3, deform.getPaletteIndexBufferType(), 0, deform.getPaletteIndexBuffer() );
-	}
-
-	/**
-	 * GLへの関連付けを解除する。
-	 * @author eagle.sakura
-	 * @version 2010/07/10 : 新規作成
-	 */
-	public	void	unbind( )
-	{
-		GL11			gl11 = glManager.getGL11();
-		GL11Extension	gles = glManager.getGL11Extension();
-
-		gl11.glDisable( GL11Ext.GL_MATRIX_PALETTE_OES );
-		gl11.glDisableClientState( GL11Ext.GL_MATRIX_INDEX_ARRAY_OES );
-		gl11.glDisableClientState( GL11Ext.GL_WEIGHT_ARRAY_OES );
-		gl11.glMatrixMode( GL11.GL_MODELVIEW );
-	}
-}

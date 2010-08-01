@@ -11,7 +11,9 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import javax.microedition.khronos.opengles.GL11;
+import javax.microedition.khronos.opengles.GL11Ext;
 
+import eagle.android.gles11.GL11Extension;
 import eagle.android.gles11.GLManager;
 import eagle.android.gles11.IGLResource;
 
@@ -19,7 +21,7 @@ import eagle.android.gles11.IGLResource;
  * @author eagle.sakura
  * @version 2010/07/08 : 新規作成
  */
-public class DeformBufferSW
+public class DeformBufferSW		implements	IDeformBuffer
 {
 	/**
 	 * 頂点ウェイト配列。
@@ -31,14 +33,16 @@ public class DeformBufferSW
 	 */
 	private	ByteBuffer			palettes		=	null;
 
+	private	GLManager			glManager		=	null;
+
 	/**
 	 *
 	 * @author eagle.sakura
 	 * @version 2010/07/08 : 新規作成
 	 */
-	public	DeformBufferSW( )
+	public	DeformBufferSW( GLManager glManager )
 	{
-
+		this.glManager = glManager;
 	}
 
 	/**
@@ -91,7 +95,7 @@ public class DeformBufferSW
 	 * @param indices
 	 * @version 2010/07/08 : 新規作成
 	 */
-	public	void		init( float[] weights, byte[] indices, int matrixPaletteSize )
+	public	void		init( float[] weights, byte[] indices )
 	{
 		{
 			ByteBuffer	buffer =	ByteBuffer.allocateDirect( weights.length * 4 );
@@ -103,5 +107,37 @@ public class DeformBufferSW
 		{
 			palettes	=	IGLResource.createBuffer( indices );
 		}
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @version 2010/07/26 : 新規作成
+	 */
+	@Override
+	public void bind()
+	{
+		GL11Extension	gles = glManager.getGL11Extension();
+		gles.glEnableClientState( GL11Ext.GL_MATRIX_INDEX_ARRAY_OES );
+		gles.glEnableClientState( GL11Ext.GL_WEIGHT_ARRAY_OES );
+		// TODO 自動生成されたメソッド・スタブ
+		//!	パレット情報を転送
+		gles.glWeightPointerOES( 3, getVertexWeightType(), 0, getVertexWeight() );
+		gles.glMatrixIndexPointerOES( 3, getPaletteIndexBufferType(), 0, getPaletteIndexBuffer() );
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @version 2010/07/27 : 新規作成
+	 */
+	@Override
+	public void unbind()
+	{
+		GL11	gl11 = glManager.getGL();
+		// TODO 自動生成されたメソッド・スタブ
+		gl11.glDisableClientState( GL11Ext.GL_MATRIX_INDEX_ARRAY_OES );
+		gl11.glDisableClientState( GL11Ext.GL_WEIGHT_ARRAY_OES );
+
 	}
 }

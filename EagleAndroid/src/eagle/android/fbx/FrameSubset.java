@@ -8,6 +8,7 @@ package eagle.android.fbx;
 import org.w3c.dom.Text;
 
 import eagle.android.gles11.GLManager;
+import eagle.android.gles11.IndexBufferSW;
 
 /**
  * @author eagle.sakura
@@ -57,7 +58,7 @@ public class FrameSubset
 	public	void	drawSubset( GLManager gl )
 	{
 		material.bind();
-		indices.drawElements( gl );
+		indices.drawElements(  );
 		material.unbind();
 	}
 

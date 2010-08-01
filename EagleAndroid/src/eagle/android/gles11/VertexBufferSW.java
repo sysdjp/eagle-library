@@ -3,7 +3,7 @@
  * @author eagle.sakura
  * @version 2010/07/08 : 新規作成
  */
-package eagle.android.fbx;
+package eagle.android.gles11;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -12,14 +12,13 @@ import java.nio.IntBuffer;
 import javax.microedition.khronos.opengles.GL11;
 
 import eagle.android.gles11.GLManager;
-import eagle.android.gles11.IGLResource;
 import eagle.util.EagleUtil;
 
 /**
  * @author eagle.sakura
  * @version 2010/07/08 : 新規作成
  */
-public class VertexBufferSW
+public class VertexBufferSW	implements	IVertexBuffer
 {
 	/**
 	 * 位置バッファ。

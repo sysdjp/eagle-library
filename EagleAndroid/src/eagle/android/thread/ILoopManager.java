@@ -43,4 +43,14 @@ public interface ILoopManager
 	 */
 	public	void		dispose( );
 
+
+	/**
+	 * フレームレートを指定する。<BR>
+	 * 負の値を指定した場合の挙動は不定。
+	 * @author eagle.sakura
+	 * @param rate
+	 * @version 2010/07/27 : 新規作成
+	 */
+	public	void		setFrameRate( int rate );
+
 }
