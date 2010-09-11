@@ -16,7 +16,8 @@ import eagle.util.EagleUtil;
  */
 public class OutputStreamBufferWriter implements IBufferWriter
 {
-	private	OutputStream	os	=	null;
+	protected	OutputStream	os	=	null;
+
 	/**
 	 *
 	 * @author eagle.sakura

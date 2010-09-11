@@ -21,7 +21,7 @@ import eagle.util.EagleUtil;
 public class InputStreamBufferReader	implements	IBufferReader
 												,	Disposable
 {
-	private	InputStream	is = null;
+	protected	InputStream	is = null;
 
 	/**
 	 * InputStreamから読み取るリーダーを作成する。

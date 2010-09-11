@@ -1,6 +1,7 @@
 package eagle.io;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import eagle.util.Disposable;
 import eagle.util.EagleUtil;
@@ -33,6 +34,11 @@ public class DataOutputStream	implements	Disposable
 	public	DataOutputStream( IBufferWriter bw )
 	{
 		writer = bw;
+	}
+
+	public	DataOutputStream( OutputStream os )
+	{
+		writer = new OutputStreamBufferWriter( os );
 	}
 
 	/**
