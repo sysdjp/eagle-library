@@ -65,31 +65,31 @@ import eagle.util.FrameController;
  */
 public class ShakeLooper extends ILooper
 {
-	private ITexture texture = null;
-	private Context context = null;
-	private ShakeVertices vertices = null;
+	protected ITexture texture = null;
+	protected Context context = null;
+	protected ShakeVertices vertices = null;
 //	private FrameController frames = null;
-	private ShakeInitialize shakeData = null;
-	private Option option = null;
-	private SensorDevice sensor = null;
-	private GLManager glManager = null;
-	private	boolean		weightLock	=	false;
+	protected ShakeInitialize shakeData = null;
+	protected Option option = null;
+	protected SensorDevice sensor = null;
+	protected GLManager glManager = null;
+	protected	boolean		weightLock	=	false;
 
 	/**
 	 * 上側のフリースペース。<BR>
 	 * 指定以上のピクセル数を確保出来る場合、adviewを生成する。
 	 */
-	private	int		upperFreePixel	=	-1;
+	protected	int		upperFreePixel	=	-1;
 
 	/**
 	 * サムネイル用画像。
 	 */
-	private Bitmap thumbnail		 = null;
+	protected Bitmap thumbnail		 = null;
 
 	/**
 	 * テクスチャ作成元のBMP
 	 */
-	private	Bitmap	textureOrigin	=	null;
+	protected	Bitmap	textureOrigin	=	null;
 
 	/**
 	 *
@@ -216,6 +216,11 @@ public class ShakeLooper extends ILooper
 		return	upperFreePixel;
 	}
 
+	public	boolean	isPlayingOnly( )
+	{
+		return	false;
+	}
+
 	private	Face	mainFace	=	null;
 
 	/**
@@ -223,7 +228,7 @@ public class ShakeLooper extends ILooper
 	 * @author eagle.sakura
 	 * @version 2010/05/21 : 新規作成
 	 */
-	private void createTexture()
+	protected void createTexture()
 	{
 		Bitmap texSrc = null;
 		Bitmap origin = null;
@@ -260,8 +265,6 @@ public class ShakeLooper extends ILooper
 		else
 		{
 			origin = getInitializeData().bmp;
-
-
 		}
 
 		if(origin == null)
@@ -343,6 +346,29 @@ public class ShakeLooper extends ILooper
 			{
 				origin =	Bitmap.createScaledBitmap(	 origin, outWidth, outHeight, true );
 			}
+
+			//!	オリジナルの画像を保存x
+			{
+
+			}
+			/*
+				EagleUtil.log( "scaled bitmap : " + origin.getWidth() + " x " + origin.getHeight() );
+				getInitializeData().displayOrigin = origin;
+			*/
+			{
+				getInitializeData().displayOrigin = Bitmap.createBitmap( displayW, displayH, android.graphics.Bitmap.Config.RGB_565 );
+				Graphics	disp = new Graphics();
+				disp.setCanvas( new Canvas( getInitializeData().displayOrigin ) );
+
+				int	srcW = origin.getWidth(),
+					srcH = origin.getHeight(),
+					dstW = displayW,
+					dstH = displayH;
+				disp.drawBitmap( origin, ( dstW / 2 ) - ( srcW / 2 ), ( dstH / 2 ) - ( srcH / 2 ) );
+
+				System.gc();
+			}
+
 
 			graphics.getPaint().setAntiAlias( true );
 			graphics.drawBitmap( origin, x, y );
@@ -567,6 +593,8 @@ public class ShakeLooper extends ILooper
 		//!	頂点設定
 		if( mainFace != null )
 		{
+			//!	上半身に重みを自動設定する。
+
 			PointF	center = new PointF();
 			mainFace.getMidPoint( center );
 			float	eye = mainFace.eyesDistance();
@@ -697,6 +725,7 @@ public class ShakeLooper extends ILooper
 		{
 			glMgr.clearColorRGBA(255, 0, 0, 255);
 		}
+		//	glMgr.clearColorRGBA(255, 0, 0, 255);
 		glMgr.clear();
 
 		if(texture == null)
@@ -740,61 +769,4 @@ public class ShakeLooper extends ILooper
 	//	frames.update();
 	}
 
-	/**
-	 *
-	 */
-	public	static	final	String		eLastSaveFile = Environment.getExternalStorageDirectory().getPath() + "/shakedroid/last.dat";
-
-	/**
-	 *
-	 * @author eagle.sakura
-	 * @param looper
-	 * @version 2010/05/31 : 新規作成
-	 */
-	public	static	void	writeLastFile( ShakeLooper looper )
-	{
-		//!	ファイル保存テスト
-		try
-		{
-			DataOutputStream dos = new DataOutputStream( new OutputStreamBufferWriter( new FileOutputStream( eLastSaveFile ) ) );
-
-		//	ShakeDataFile	sdf = new ShakeDataFile();
-		//	sdf.serialize( looper, dos );
-
-			dos.dispose();
-		}
-		catch( Exception e )
-		{
-			EagleUtil.log( e );
-		}
-
-	}
-
-	/**
-	 *
-	 * @author eagle.sakura
-	 * @param context
-	 * @param gl
-	 * @return
-	 * @version 2010/05/31 : 新規作成
-	 */
-	public	static	ShakeLooper	readLastFile( Context context, GLManager gl )
-	{
-    	//!	ファイル保存テスト
-    	try
-    	{
-    		DataInputStream dis = new DataInputStream( new InputStreamBufferReader( new FileInputStream( eLastSaveFile ) ) );
-
-    	//	ShakeDataFile	sdf			= new ShakeDataFile();
-    	//	ShakeLooper		shakeLooper =	sdf.deserialize( context, gl, dis );
-    		dis.dispose();
-
-    	//	return	shakeLooper;
-    	}
-    	catch( Exception e )
-    	{
-    		EagleUtil.log( e );
-    	}
-    	return	null;
-	}
 }

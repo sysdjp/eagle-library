@@ -76,6 +76,163 @@ public class ShakeVertices
 	/**
 	 *
 	 * @author eagle.sakura
+	 * @version 2010/09/06 : 新規作成
+	 */
+	public	ShakeVertices(  )
+	{
+
+	}
+
+	public	void	initNoScaled( GLManager gl, int divX, int divY )
+	{
+		vertexBuffer 	= new VertexBufferSW( gl );
+		indexBuffer 	= new IndexBufferSW( gl );
+
+		glMgr 		= gl;
+		divisionX	= divX;
+		divisionY	= divY;
+
+		final	int	fixedX	=	EagleUtil.eGLFixed1_0	/ ( divisionX );
+		final	int	fixedY	=	EagleUtil.eGLFixed1_0	/ ( divisionY );
+		{
+			positions	=	new	int[ 	( divisionX + 1 )
+			         	 	   	    *	( divisionY + 1 )
+			         	 	   	    *	3
+			         	 	   	     ];
+
+			weights		=	new	VertexWeight[ 	( divisionX + 1 )
+					         	 	   	    *	( divisionY + 1 )
+					         	 	   	     ];
+
+			int	index = 0;
+
+			for( int y = 0; y < ( divisionY + 1 ); ++y )
+			{
+				for( int x = 0; x < ( divisionX + 1 ); ++x )
+				{
+					int	head = index;
+					//!	x
+					positions[ index ] = fixedX * x;
+					++index;
+					//!	y
+					positions[ index ] = fixedY * y;
+					++index;
+					++index;
+
+					weights[ head / 3 ] = new VertexWeight( this, head );
+				}
+			}
+		}
+
+
+
+		{
+			float	scaleX = 1.0f,
+					scaleY = 1.0f;
+			{
+				int	texSizeX = 2,
+					texSizeY = 2;
+
+				while( texSizeX < glMgr.getDisplayWidth() )
+				{
+					texSizeX *= 2;
+				}
+				while( texSizeY < glMgr.getDisplayHeight() )
+				{
+					texSizeY *= 2;
+				}
+
+				scaleX = ( float )glMgr.getDisplayWidth()	/ ( float )texSizeX;
+				scaleY = ( float )glMgr.getDisplayHeight()	/ ( float )texSizeY;
+			}
+
+			//!<
+			/*
+			*/
+			scaleX = 1.0f;
+			scaleY = 1.0f;
+
+			uv			=	new	int[ 	( divisionX + 1 )
+			         	 	   	    *	( divisionY + 1 )
+			         	 	   	    *	2
+			         	 	   	     ];
+
+			int	index = 0;
+
+			for( int y = 0; y < ( divisionY + 1 ); ++y )
+			{
+				for( int x = 0; x < ( divisionX + 1 ); ++x )
+				{
+					//!	x
+					uv[ index ] = ( int )( ( fixedX * x ) * scaleX );
+					++index;
+					//!	y
+					uv[ index ] = ( int )( (  EagleUtil.eGLFixed1_0 - fixedY * y ) * scaleY );
+					++index;
+				}
+			}
+		}
+
+
+		{
+			indices		=	new	short[ 	( divisionX )
+			         	 	   	    *	( divisionY )
+			         	 	   	    *	6
+			         	 	   	     ];
+			/**
+			 *
+				short[]	indices =
+				{
+					0,	1,	2,
+					1,	2,	3,
+				};
+			 */
+
+			final	int	line = divisionX + 1;
+
+			int	index = 0;
+			for( int y = 0; y < ( divisionY ); ++y )
+			{
+				for( int x = 0; x < ( divisionX ); ++x )
+				{
+					/**
+					 * 2     3
+					 *
+					 * 0     1
+					 */
+					indices[ index ] = ( short )( ( line * ( y + 0 ) ) + x + 0 );
+					++index;
+					indices[ index ] = ( short )( ( line * ( y + 0 ) ) + x + 1 );
+					++index;
+					indices[ index ] = ( short )( ( line * ( y + 1 ) ) + x + 0 );
+					++index;
+
+					indices[ index ] = ( short )( ( line * ( y + 0 ) ) + x + 1 );
+					++index;
+					indices[ index ] = ( short )( ( line * ( y + 1 ) ) + x + 0 );
+					++index;
+					indices[ index ] = ( short )( ( line * ( y + 1 ) ) + x + 1 );
+					++index;
+				}
+			}
+		}
+
+		//!	色バッファを生成する。
+		{
+			int		colorNum = positions.length / 3;
+			colors = new int[ colorNum * 4 ];
+		}
+
+		//!	バッファの生成
+		vertexBuffer.initPosBuffer( positions );
+		vertexBuffer.initColBuffer( colors );
+		vertexBuffer.initUVBuffer( uv );
+		indexBuffer.init( indices );
+	}
+
+	/**
+	 *
+	 * @author eagle.sakura
 	 * @param divisions 画面の縦横分割数。
 	 * @version 2010/05/13 : 新規作成
 	 */
@@ -141,6 +298,13 @@ public class ShakeVertices
 				scaleX = ( float )glMgr.getDisplayWidth()	/ ( float )texSizeX;
 				scaleY = ( float )glMgr.getDisplayHeight()	/ ( float )texSizeY;
 			}
+
+			//!<
+			/*
+			if( false ){ EagleUtil.log( "後で消すこと。" ); }
+			scaleX = 1.0f;
+			scaleY = 1.0f;
+			*/
 
 			uv			=	new	int[ 	( divisionX + 1 )
 			         	 	   	    *	( divisionY + 1 )

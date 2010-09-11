@@ -27,6 +27,11 @@ public class ShakeInitialize
 	public	Bitmap			bmp		=	null;
 
 	/**
+	 * 画像描画用に生成されたBMP。
+	 */
+	public	Bitmap			displayOrigin	=	null;
+
+	/**
 	 * ユーザーの設定したオプション情報。
 	 */
 	public	Option			option	=	new	Option();
@@ -81,6 +86,7 @@ public class ShakeInitialize
 		originFileName	= "";
 		weights			= null;
 		bmp				= null;
+		displayOrigin	= null;
 		xDivision		= -1;
 		yDivision		= -1;
 		isFaceDetect	= false;

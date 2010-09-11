@@ -61,4 +61,7 @@
 <item>If it is &quot;ShakeDroid Advance&quot;,</item>
 <item>this character string can be deleted. </item>
 </string-array>
+<string name="str_crop">Crop</string>
+<string name="str_share">Share</string>
+<string name="share_shakedata_message">This is ShakeDroid Picture!! #shakedroid</string>
 </resources>

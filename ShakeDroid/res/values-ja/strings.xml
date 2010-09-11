@@ -49,4 +49,7 @@
 </string-array>
 <string name="toast_hit_faces">上半身を認識しました。</string>
 <string name="toast_nohit_face">上半身を認識できませんでした。</string>
+<string name="str_crop">トリミング</string>
+<string name="str_share">共有</string>
+<string name="share_shakedata_message">ShakeDroidで作った揺れる画像です #shakedroid</string>
 </resources>

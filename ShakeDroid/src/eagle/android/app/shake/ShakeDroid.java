@@ -1,10 +1,16 @@
 package eagle.android.app.shake;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
+import java.util.Date;
 
 import eagle.android.app.appinfo.AppInfomation;
 import eagle.android.appcore.IAppInfomation;
@@ -12,6 +18,7 @@ import eagle.android.appcore.shake.Option;
 import eagle.android.appcore.shake.ShakeDataFile;
 import eagle.android.appcore.shake.ShakeInitialize;
 import eagle.android.appcore.shake.ShakeLooper;
+import eagle.android.appcore.shake.ShakePlayLooper;
 import eagle.android.appcore.shake.ShakeVertices;
 import eagle.android.graphic.Graphics;
 import eagle.android.thread.ILoopManager;
@@ -28,6 +35,7 @@ import eagle.io.InputStreamBufferReader;
 import eagle.io.OutputStreamBufferWriter;
 import eagle.math.Vector2;
 import eagle.util.EagleUtil;
+import android.R.layout;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -38,7 +46,9 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.Region.Op;
 import android.net.Uri;
@@ -51,18 +61,22 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Gallery;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -158,10 +172,92 @@ public class ShakeDroid	extends		UtilActivity
 
     	Intent intent = getIntent();
     	String	action = intent.getAction();
-    	if( action.equals( Intent.ACTION_SEND ) )
+    	if( action.equals( Intent.ACTION_SEND )
+    	||	action.equals( Intent.ACTION_VIEW ))
     	{
     		EagleUtil.log( "Open Intent..." );
-			  String	extra =	intent.getParcelableExtra( Intent.EXTRA_STREAM ).toString();
+
+			  String	extra =	"";
+
+			  try
+			  {
+				  EagleUtil.log( "STREAM : " + intent.getStringExtra( Intent.EXTRA_STREAM ) );
+				  EagleUtil.log( "URI : " + intent.getData() );
+				  EagleUtil.log( "DATASTRING : " + intent.getDataString() );
+				  if( intent.getParcelableExtra( Intent.EXTRA_STREAM ) != null )
+				  {
+					  EagleUtil.log( "Extra : A" );
+					  extra = intent.getParcelableExtra( Intent.EXTRA_STREAM ).toString();
+				//	  extra = intent.getStringExtra( Intent.EXTRA_TEXT );
+				  }
+				  else
+				  {
+
+					  EagleUtil.log( "Extra : B" );
+					  extra = intent.getStringExtra( Intent.EXTRA_TEXT );
+
+					  if( extra == null )
+					  {
+						 extra = intent.getDataString();
+					  }
+				  }
+				  EagleUtil.log( "extra : " + extra );
+			  }
+			  catch( Exception e )
+			  {
+				  EagleUtil.log( e );
+			  }
+
+			  /*
+			  {
+				  //!	http?
+				  if( extra.startsWith( "http" ) )
+				  {
+						try
+						{
+							//!	ローカルに落とす
+							EagleUtil.log( "Download Resource..." );
+							Toast.makeText( this,  "DOWNLOAD...", Toast.LENGTH_LONG ).show();
+
+							URL	url = new URL( extra );
+
+							HttpURLConnection http = ( HttpURLConnection )url.openConnection();
+							http.connect();
+							InputStream	is = http.getInputStream();
+
+							String	path = UtilActivity.convertSDPath( "shakedroid/" + UtilActivity.getDateString() + ".img" );
+							EagleUtil.log( "path" + path );
+							FileOutputStream	fos = new FileOutputStream( path );
+
+							int	read = 0;
+							byte[]	buffer = new byte[ 512 ];
+							int readbytes = 0;
+							while( true )
+							{
+								readbytes = is.read( buffer, 0, is.available() > 512 ? 512 : is.available() );
+								if( readbytes <= 0 )
+								{
+									break;
+								}
+								else
+								{
+									fos.write( buffer, 0, readbytes );
+								}
+							}
+
+							EagleUtil.log( "Export complete!" );
+
+							fos.close();
+							extra = "file://" + path;
+						}
+						catch( Exception e )
+						{
+							EagleUtil.log( e );
+						}
+				  }
+			  }
+				 */
+
 			  if( extra != null )
 			  {
 				  initData.uri = Uri.parse( extra );
@@ -170,6 +266,8 @@ public class ShakeDroid	extends		UtilActivity
 			  if( initData.uri != null )
 			  {
 				  Toast.makeText( this, getString( R.string.touch_picture ), Toast.LENGTH_LONG ).show();
+
+
 				  createThread();
 			  }
 			  else
@@ -183,7 +281,185 @@ public class ShakeDroid	extends		UtilActivity
     		createStartView();
     	}
 
+
+
+    	/*
+    	{
+    		RelativeLayout	rLayout = new RelativeLayout( this );
+
+    		//!	webView
+    		{
+	    		//!	webview
+	    		WebView	wv = new WebView( this );
+	    		wv.loadUrl( "file:///android_asset/tips/helptest.html" );
+	    		rLayout.addView( wv );
+    		}
+
+    		//!	checkbox
+    		{
+	    		LinearLayout	layout = new LinearLayout( this );
+	    		layout.setOrientation( LinearLayout.VERTICAL );
+	    		layout.setGravity( Gravity.BOTTOM );
+
+	    		CheckBox		checkBox = new CheckBox( this );
+	    		checkBox.setText( "もう表示しない" );
+	    		checkBox.setBackgroundColor( 0xff000000 );
+
+	    		layout.addView( checkBox );
+	    		rLayout.addView( layout, new LayoutParams( LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT ) );
+    		}
+
+    		setContentView( rLayout );
+    	}
+    	*/
 	}
+
+    /**
+     * 現在のデータの共有を行う。
+     * @author eagle.sakura
+     * @version 2010/08/08 : 新規作成
+     */
+    private	void	startShareActivity( )
+    {
+    	try
+    	{
+    		String	name = "";
+    		{
+    			Date	date = new Date();
+    			name += "send";
+    			name += UtilActivity.getDateString();
+    			name += ".png";
+    		}
+    		String	path = UtilActivity.convertSDPath( "shakedroid/" + name );
+    		FileOutputStream	fos = new FileOutputStream( path );
+    		DataOutputStream	fileDos = new DataOutputStream( fos );
+    		{
+    			//!	PNG化する。
+    			EagleUtil.log( "Size : " + getInitializeData().displayOrigin.getWidth() + " x " + getInitializeData().displayOrigin.getHeight() );
+    			getInitializeData().displayOrigin.compress( CompressFormat.PNG, 100, fos );
+
+    			//!	揺れ情報をバイト化する
+    	//		if( false )
+    			{
+    				ByteArrayOutputStream	baos = new ByteArrayOutputStream();
+    				DataOutputStream		dos = new DataOutputStream( baos );
+
+    				ShakeDataFile	sdf = new ShakeDataFile( getLooper() );
+    				sdf.serialize( dos );
+
+    				//!	バッファ化する。
+    				byte[]	buffer =	baos.toByteArray();
+
+    				dos.dispose();
+
+    				//!	バッファを書き込む
+    				fos.write( buffer );
+
+    				//!	バッファサイズを書き込む
+    				fileDos.writeS32( buffer.length );
+
+    				//!	バッファ識別子を書き込む。
+    				byte[]		fin =
+    				{
+    					( byte )'S',
+    					( byte )'H',
+    					( byte )'A',
+    					( byte )'K',
+    					( byte )'E',
+    				};
+    				fos.write( fin );
+    			}
+    		}
+    		fileDos.dispose();
+    		fileDos = null;
+    		fos = null;
+
+    		{
+	    		Intent		intent = new Intent( Intent.ACTION_SEND );
+	    	//	String	text =	"ShakeData Share #shakedroid";
+	    		String	text = getResources().getString( R.string.share_shakedata_message );
+	    		intent.putExtra( Intent.EXTRA_TEXT, text );
+	    		intent.setType( "image/png" );
+	    		intent.putExtra( Intent.EXTRA_STREAM, Uri.parse( "file://" +  path ) );
+	    		startActivity( intent );
+	    		removeGLThread();
+    		}
+    	}
+    	catch( Exception e )
+    	{
+    		EagleUtil.log( e );
+    	}
+    }
+
+    private	byte[]		isShakeInPng( Uri uri )
+    {
+    	EagleUtil.log( "URI : " + uri.toString() );
+    	try
+    	{
+	    	InputStream		fis = getContentResolver().openInputStream( uri );
+
+	    	int	size = fis.available();
+	    	EagleUtil.log( "size : " + size );
+	    	fis.skip( size - 5 );
+
+	    	//!	識別子を調べる。
+	    	{
+	    		final char[] check ="SHAKE".toCharArray();
+	    		for( char c : check )
+	    		{
+	    			char	cc = ( char )fis.read();
+	    			EagleUtil.log( "CHAR : " + cc );
+
+	    			if( c != cc )
+	    			{
+	    				fis.close();
+	    				return	null;
+	    			}
+	    		}
+
+	    		EagleUtil.log( "this is ShakeInFile!!" );
+	    		fis.close();
+	    		fis = null;
+	    	}
+
+	    	//!	ファイルサイズを知らえる
+	    	{
+	    	//	fis = new FileInputStream( file );
+	    		fis = getContentResolver().openInputStream( uri );
+	    		fis.skip( size - 5 - 4 );
+
+	    		DataInputStream	dis = new DataInputStream( fis );
+	    		int	shakeDataSize =	dis.readS32();
+	    		EagleUtil.log( "ShakeDataSize : " + shakeDataSize );
+
+	    		dis.dispose();
+	    		dis = null;
+	    		fis = null;
+
+	    //		fis = new FileInputStream( file );
+	    		fis = getContentResolver().openInputStream( uri );
+	    		fis.skip( size - 5 - 4 - shakeDataSize );
+	    		dis = new DataInputStream( fis );
+
+	    		byte[]	result =	dis.readBuffer( shakeDataSize );
+
+	    		EagleUtil.log( "VERSION : " + result[ 0 ] );
+	    		EagleUtil.log( "VERSION : " + result[ 1 ] );
+	    		EagleUtil.log( "VERSION : " + result[ 2 ] );
+	    		EagleUtil.log( "VERSION : " + result[ 3 ] );
+
+	    		return	result;
+	    	}
+
+    	}
+    	catch( Exception e )
+    	{
+    		EagleUtil.log( e );
+    	}
+
+    	return	null;
+    }
+
 
     /**
      *
@@ -328,6 +604,22 @@ public class ShakeDroid	extends		UtilActivity
     		outState.putString( "SDUri", initData.uri.toString() );
     	}
     	initData.option.saveBundle( outState );
+
+    	/*
+    	//!	揺れ情報を保存
+    	try
+    	{
+	    	if( shakeLooper != null )
+	    	{
+	    		ShakeDataFile	sdf = new ShakeDataFile( shakeLooper );
+	    		ByteArrayOutputStream	baos = new ByteArrayOutputStream();
+	    	}
+    	}
+    	catch( Exception e )
+    	{
+    		EagleUtil.log( e );
+    	}
+    	*/
     }
 
     /**
@@ -388,6 +680,40 @@ public class ShakeDroid	extends		UtilActivity
     }
 
     /**
+     * 読込み・再生専用のスレッドを立てる。
+     * @author eagle.sakura
+     * @param file
+     * @version 2010/08/25 : 新規作成
+     */
+    protected	void	createImportThread( byte[] file )
+    {
+    	EagleUtil.log( "create import thread" );
+    	OpenGLView	glView = new	OpenGLView( this );
+
+    	shakeLooper	=	new	ShakePlayLooper( file, this, glView.getGLManager(), initData );
+
+    	{
+    		loopManager		=	createLoopManager( shakeLooper );
+    		loopManager.addSurface( glView );
+    	}
+
+		setContentView( glView );
+    	{
+	    	IAppInfomation	info = new AppInfomation();
+	    	if( ! info.isSharewareMode() )
+	    	{
+	    		View	admob = info.createAdView( this );
+	    		if( admob != null )
+	    		{
+	    			addContentView( admob, new LayoutParams( LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT )	);
+	    		}
+	    	}
+    	}
+		addShakeMenu();
+    	EagleUtil.log( "create import thread complete!" );
+    }
+
+    /**
      * 表示用スレッドを作成。
      * @author eagle.sakura
      * @version 2010/05/20 : 新規作成
@@ -395,6 +721,18 @@ public class ShakeDroid	extends		UtilActivity
     protected	void	createThread( )
     {
     	removeGLThread();
+
+    	//!	組み込みデータ?
+    	if( initData.uri != null )
+    	{
+    		byte[] file = isShakeInPng( initData.uri );
+    		if( file != null )
+    		{
+    			createImportThread( file );
+    			return;
+    		}
+    	}
+
 
     	EagleUtil.log( "create thread" );
     	OpenGLView	glView = new	OpenGLView( this );
@@ -413,22 +751,15 @@ public class ShakeDroid	extends		UtilActivity
     	//!	顔認識
     	initData.isFaceDetect = sharedData.isEnableFaceDetect();
 
+
     	shakeLooper	=	new	ShakeLooper( this, glView.getGLManager(), initData );
 
-    	/*
-    	{
-	    	thread		=	new	LooperThread( shakeLooper );
-	    	thread.addSurface( glView );
-    	}
-    	*/
     	{
     		loopManager		=	createLoopManager( shakeLooper );
     		loopManager.addSurface( glView );
     	}
 
 		setContentView( glView );
-	//	initFreeSpaceAdview( );
-
     	{
 	    	IAppInfomation	info = new AppInfomation();
 	    	if( ! info.isSharewareMode() )
@@ -440,16 +771,6 @@ public class ShakeDroid	extends		UtilActivity
 	    		}
 	    	}
     	}
-
-		//!	スレッド処理開始
-    	/*
-    	{
-    		thread.start();
-    	}
-    	{
-    		handler.startLoop();
-    	}
-    	*/
 
 		addShakeMenu();
     	EagleUtil.log( "create thread complete!" );
@@ -465,7 +786,6 @@ public class ShakeDroid	extends		UtilActivity
     {
     	try
     	{
-		//	UtilActivity.setOrientationFixed( this, true );
 	    	removeGLThread();
 
 	    	ShakeDataFile	sdf = new	ShakeDataFile( intent.getByteArrayExtra( eLoadFileResultKey_FileBuffer ) );
@@ -476,29 +796,11 @@ public class ShakeDroid	extends		UtilActivity
 	    	shakeLooper	=	sdf.createLooper( this, glView.getGLManager() );
 	    	initData	=	shakeLooper.getInitializeData(	);
 	    	initData.originFileName	=	intent.getStringExtra( eLoadFileResultKey_FileName );
-	    	/*
-	    	{
-		    	thread		=	new	LooperThread( shakeLooper );
-		    	thread.addSurface( glView );
-	    	}
-	    	*/
 	    	{
 	    		loopManager = createLoopManager( shakeLooper );
 	    		loopManager.addSurface( glView );
 	    	}
 			setContentView( glView );
-	//		initFreeSpaceAdview( );
-
-			//!	スレッド処理開始
-			/*
-			{
-				thread.start();
-			}
-			{
-				handler.startLoop();
-			}
-			*/
-
 			addShakeMenu();
 	    	EagleUtil.log( "create thread complete!" );
     	}
@@ -604,6 +906,11 @@ public class ShakeDroid	extends		UtilActivity
     public	static	final	String		eLoadFileResultKey_FileBuffer	=	"FILE_BUFFER";
 
     /**
+     * トリミングしたデータの保存先。
+     */
+    private	static	final	String		eTrimDataPath = UtilActivity.convertSDPath( "shakeDroid/trim.dat" );
+
+    /**
      * 画像のトリミングを開始する。
      * @author eagle.sakura
      * @version 2010/07/14 : 新規作成
@@ -612,22 +919,31 @@ public class ShakeDroid	extends		UtilActivity
     {
     	try
     	{
-		//	Intent	intent = new Intent( Intent.ACTION_GET_CONTENT );
 			Intent	intent = new Intent( "com.android.camera.action.CROP" );
-		//	intent.setClassName( "com.android.camera", "com.android.camera.CropImage" );
 			intent.setData( initData.uri );
 			intent.putExtra("crop", "true");
 			Vector2	size = UtilActivity.getDisplaySize( this, new Vector2() );
-			float	mul = ( 0.5f + ( 1.0f - sharedData.getMemorySavingLevel() ) / 2 );
-			size.x *= mul;
-			size.y *= mul;
-			intent.putExtra("return-data", true);
+		//	float	mul = ( 0.5f + ( 1.0f - sharedData.getMemorySavingLevel() ) / 2 );
+		//	size.x *= mul;
+		//	size.y *= mul;
+		//	intent.putExtra("return-data", true);
+			intent.putExtra(	android.provider.MediaStore.EXTRA_OUTPUT,
+								Uri.fromFile( new File( eTrimDataPath ) )
+							);
 			intent.putExtra("aspectX",	( int )size.x);
 			intent.putExtra("aspectY",	( int )size.y);
 			intent.putExtra("outputX",	( int )size.x);
 			intent.putExtra("outputY",	( int )size.y);
 			intent.putExtra("scale",	true );
 			startActivityForResult( intent, eRequestCodeImageTriming );
+
+    		/*
+    		String	text =	"inetnt tweet test";
+    		Intent	intent = new Intent( Intent.ACTION_SEND );
+    		intent.putExtra( Intent.EXTRA_TEXT, text );
+    		intent.setType( "text/plain" );
+    		startActivity( intent );
+    		*/
     	}
     	catch( Exception e )
     	{
@@ -704,7 +1020,8 @@ public class ShakeDroid	extends		UtilActivity
     		try
     		{
 	    		Uri	photoURI = initData.uri;
-	    		Bitmap	bmp =	( Bitmap )data.getExtras().getParcelable( "data" );
+	    	//	Bitmap	bmp =	( Bitmap )data.getExtras().getParcelable( "data" );
+	    		Bitmap	bmp =	BitmapFactory.decodeFile( eTrimDataPath );
 	    		{
 		    		int	height	=	bmp.getHeight(),
 		    			width	=	bmp.getWidth();
@@ -785,6 +1102,11 @@ public class ShakeDroid	extends		UtilActivity
     public	static	final	int		eMenuTrimImage			=	Menu.FIRST + 8;
 
     /**
+     * 画像の共有を行う。
+     */
+    public	static	final	int		eMenuShareShakeData		=	Menu.FIRST + 9;
+
+    /**
      *
      */
     private	Menu	menu	=	null;
@@ -859,6 +1181,7 @@ public class ShakeDroid	extends		UtilActivity
 		//	menu.removeItem( eMenuShakeTypeDialog	);
 			menu.removeItem( eMenuSave				);
 			menu.removeItem( eMenuTrimImage			);
+			menu.removeItem( eMenuShareShakeData	);
     	}
     }
 
@@ -867,7 +1190,7 @@ public class ShakeDroid	extends		UtilActivity
      * @author eagle.sakura
      * @version 2010/05/21 : 新規作成
      */
-    private	void	addShakeMenu( )
+    private	void	addPlayMenu( )
     {
     	IAppInfomation	info = new AppInfomation();
 		if( menu	!= null
@@ -879,6 +1202,68 @@ public class ShakeDroid	extends		UtilActivity
 			removeShakeMenu();
 			menu.removeItem( eMenuFileActivity		);
 			menu.removeItem( eMenuToggleVH			);
+			menu.removeItem( eMenuToggleMode		);
+			menu.removeItem( eMenuShakeTypeDialog	);
+
+	    	//!	ファイル読み込み
+	    	if( info.isSharewareMode() )
+	    	{
+	    		menu.add(	Menu.NONE + 3,
+	    					eMenuFileActivity,
+	    					Menu.NONE,
+	    					getString( R.string.menutitle_load )
+	    					).setIcon( android.R.drawable.ic_menu_save );
+	    	}
+
+	    	//!	トグル
+	    	{
+	    		menu.add(	Menu.NONE + 4,
+	    					eMenuToggleVH,
+	    					Menu.NONE,
+	    					getString( R.string.str_inclination )
+	    					).setIcon( android.R.drawable.ic_menu_always_landscape_portrait );
+	    	}
+
+		}
+    }
+    /**
+     *
+     * @author eagle.sakura
+     * @version 2010/05/21 : 新規作成
+     */
+    private	void	addShakeMenu( )
+    {
+    	if( shakeLooper != null )
+    	{
+    		if( shakeLooper.isPlayingOnly() )
+    		{
+    			addPlayMenu();
+    			return;
+    		}
+    	}
+
+    	IAppInfomation	info = new AppInfomation();
+		if( menu	!= null
+	//	&&	thread	!= null
+	//	&&	handler != null
+		&&	loopManager != null
+		)
+		{
+			removeShakeMenu();
+			menu.removeItem( eMenuFileActivity		);
+			menu.removeItem( eMenuToggleVH			);
+			menu.removeItem( eMenuShakeTypeDialog	);
+
+	    	//!	設定ダイアログ
+	    	{
+	    		menu.add(	Menu.NONE + 1,
+	    					eMenuShakeTypeDialog,
+	    					Menu.NONE,
+	    					getString( R.string.menu_shaketype )
+	    					).setIcon( android.R.drawable.ic_menu_preferences );
+	    	}
+
+
 	    	//!	モードトグル
 	    	{
 	    		menu.add(	Menu.NONE + 2,
@@ -930,10 +1315,18 @@ public class ShakeDroid	extends		UtilActivity
 	    		menu.add(	Menu.NONE + 4,
 	    					eMenuTrimImage,
 	    					Menu.NONE,
-	    					"トリミング"
+	    					getString( R.string.str_crop )
 	    					).setIcon( android.R.drawable.ic_menu_crop );
 	    	}
 
+	    	//!	画像共有
+	    	{
+	    		menu.add(	Menu.NONE + 4,
+	    					eMenuShareShakeData,
+	    					Menu.NONE,
+	    					getString( R.string.str_share )
+	    					).setIcon( android.R.drawable.ic_menu_share );
+	    	}
 		}
     }
     /**
@@ -1031,6 +1424,9 @@ public class ShakeDroid	extends		UtilActivity
     		return	true;
     	case	eMenuTrimImage:
     		startTrimImageActivity( );
+    		return	true;
+    	case	eMenuShareShakeData:
+    		startShareActivity();
     		return	true;
     	}
 
