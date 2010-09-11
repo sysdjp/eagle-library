@@ -51,6 +51,17 @@ public class Node
 	private		Matrix4x4		matrix		=	new	Matrix4x4( );
 
 	/**
+	 * 初期姿勢への逆行列を示す。<BR>
+	 * 基点情報を変更している場合の対応策として利用する。
+	 */
+	private		Matrix4x4		invertLocalMatrix	=	null;
+
+	/**
+	 *
+	 */
+	private		Matrix4x4		invertGlobalMatrix	=	null;
+
+	/**
 	 * ノード番号。
 	 */
 	private		int				number		=	0;
@@ -130,6 +141,33 @@ public class Node
 
 		//!	初期姿勢にバインドする。
 		getBindKey().set( scale, rotate, translate );
+
+		//!	逆行列を求める。
+	//	if( translate.length() > 0.01f )
+		{
+			invertLocalMatrix	= new Matrix4x4();
+			invertGlobalMatrix	= new Matrix4x4();
+
+			//!	ローカルキーを保存する。
+			getBindKey().calcMatrix( invertLocalMatrix ).invert();
+		}
+	}
+
+	/**
+	 * 初期姿勢への逆行列を取得する。<BR>
+	 * 初期姿勢が単位行列の場合、nullを返す。
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/08/17 : 新規作成
+	 */
+	protected	Matrix4x4	getPoseInvertMatrixLocal( )
+	{
+		return	invertLocalMatrix;
+	}
+
+	protected	Matrix4x4	getPoseInvertMatrixGlobal( )
+	{
+		return	invertGlobalMatrix;
 	}
 
 	/**
@@ -150,6 +188,15 @@ public class Node
 	 */
 	public	void	updateMatrix( )
 	{
+		/*
+		Matrix4x4	m = new Matrix4x4( );
+		getPoseInvertMatrixLocal().multiply( getBindKey().calcMatrix( m ), getMatrix() );
+		if( getParent() != null )
+		{
+			getMatrix().multiply( getParent().getMatrix() );
+		}
+		*/
+
 		getBindKey().calcMatrix( getMatrix() );
 		if( getParent() != null )
 		{

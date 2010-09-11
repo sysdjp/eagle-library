@@ -143,11 +143,13 @@ public class Figure		implements	Disposable
 	 */
 	public	void		draw( Matrix4x4 trans )
 	{
+		/*
 		//!	全ノードを描画する。
 		for( Node node : nodes )
 		{
 		//	node.draw();
 		}
+		*/
 		updateNodeTree( getRootNode() );
 		drawNodeTree( getRootNode() );
 	}
@@ -204,7 +206,21 @@ public class Figure		implements	Disposable
 		for( Node node : nodes )
 		{
 			if( node.getNodeType() == Node.eNodeTypeBone
-			&&	node.getName().equals( name ) )
+			&&	node.getName().equals( name )
+		//	&&	name.startsWith( node.getName( )
+			)
+			{
+				return	node;
+			}
+		}
+
+		for( Node node : nodes )
+		{
+			if( node.getNodeType() == Node.eNodeTypeBone
+		//	&&	node.getName().equals( name )
+			&&	name.startsWith( node.getName( ) )
+			&&	( node.getName().length() + 3 ) > name.length()
+			)
 			{
 				return	node;
 			}
@@ -293,7 +309,8 @@ public class Figure		implements	Disposable
 	}
 
 	/**
-	 * ボーン情報を関連付ける。
+	 * ボーン情報を関連付ける。<BR>
+	 * 初回のみ行う。
 	 * @author eagle.sakura
 	 * @version 2010/07/10 : 新規作成
 	 */
@@ -311,6 +328,16 @@ public class Figure		implements	Disposable
 					Node	bone =	getBone( deformer.getBoneName( i ) );
 					deformer.setBone( i, ( Bone )bone );
 				}
+			}
+
+			//!	初期への逆行列を指定する。
+			if( node.getPoseInvertMatrixGlobal() != null
+		//	&&	node.getParent() != null
+			)
+			{
+				node.getMatrix().invert( node.getPoseInvertMatrixGlobal( ) );
+			//	node.getMatrix().invert( node.getPoseInvertMatrixGlobal( ) ).multiply( getRootNode().getChild( 0 ).getMatrix() );
+			//	node.getMatrix().invert( node.getDefaultPoseInvertMatrix( ) );
 			}
 		}
 	}
@@ -368,6 +395,18 @@ public class Figure		implements	Disposable
 		//!	ノードを作成する
 		{
 			figure.createNode( null, dis, glCreater );
+
+				String[] str = new String[ figure.nodes.length ];
+			{
+				int i = 0;
+				for( Node node : figure.nodes )
+				{
+					str[ i ] = node.getName();
+					++i;
+				}
+				str = str;
+			}
+
 			//!	初期行列を生成する。
 			figure.updateNodeTree( figure.getRootNode() );
 

@@ -86,15 +86,21 @@ public class Frame extends Node
 		GLManager	glManager = figure.getGLManager();
 
 		// TODO 自動生成されたメソッド・スタブ
+
+		//!	ボーン変形行列が指定されている場合、それを設定する。
 		if( deformer != null )
 		{
-			Bone	bone = ( deformer.getBone( 1 ) );
-			float	speed = 2.0f;
 			deformer.bind();
 		}
 		else
 		{
+			//!	初期姿勢への逆行列がある場合、そちらを設定する。
+
 			glManager.pushMatrixF( getMatrix() );
+
+		//	glManager.pushMatrixF( getPoseInvertMatrixLocal() );
+		//	glManager.pushMatrixF( getPoseInvertMatrixGlobal( ) );
+		//	glManager.pushMatrixF( getPoseInvertMatrixGlobal() );
 		}
 
 		vertices.bind();
@@ -113,6 +119,8 @@ public class Frame extends Node
 		else
 		{
 			glManager.popMatrix();
+		//	glManager.popMatrix();
+		//	glManager.popMatrix();
 		}
 
 	}

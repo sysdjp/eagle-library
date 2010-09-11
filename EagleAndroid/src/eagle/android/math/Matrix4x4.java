@@ -93,9 +93,10 @@ public	final class Matrix4x4
 	 * @param result
 	 * @version 2009/11/15 : 新規作成
 	 */
-	public	void	invert( Matrix4x4 result )
+	public	Matrix4x4	invert( Matrix4x4 result )
 	{
 		Matrix.invertM( result.m, 0, m, 0 );
+		return	result;
 	}
 
 	/**
