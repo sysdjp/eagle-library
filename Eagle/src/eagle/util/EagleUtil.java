@@ -50,6 +50,18 @@ public class EagleUtil
 		// TODO 自動生成されたメソッド・スタブ
 			System.out.println( message );
 		}
+
+		/**
+		 *
+		 * @author eagle.sakura
+		 * @return
+		 * @version 2010/09/12 : 新規作成
+		 */
+		@Override
+		public int getPlatformVersion()
+		{
+			return	0;
+		}
 	};
 
 	/**

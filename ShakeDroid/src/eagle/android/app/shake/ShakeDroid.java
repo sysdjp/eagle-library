@@ -154,7 +154,7 @@ public class ShakeDroid	extends		UtilActivity
  //       setContentView(R.layout.main);
     	//!	Urilを初期化
 		UtilActivity.setOrientationFixed( this, true );
-    	EagleUtil.init( new UtilBridgeAndroid( "ShakeDroid" ) );
+    	EagleUtil.init( AppInfomation.createBridge() );
     	EagleUtil.log( "onCreate" );
     	EagleUtil.log( "handler type" );
 

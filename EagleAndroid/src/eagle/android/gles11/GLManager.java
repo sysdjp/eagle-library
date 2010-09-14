@@ -21,6 +21,7 @@ import javax.microedition.khronos.opengles.GL11Ext;
 import javax.microedition.khronos.opengles.GL11ExtensionPack;
 
 import eagle.android.math.Matrix4x4;
+import eagle.android.util.UtilActivity;
 import eagle.util.EagleUtil;
 
 import android.graphics.PixelFormat;
@@ -82,6 +83,11 @@ public class GLManager
 	private		int					surfaceHeight	=	-1;
 
 	/**
+	 * GL11エクステンション機能を有効にするか。
+	 */
+	private	static	boolean			isGL11ExtentionInitialize	=	true;
+
+	/**
 	 * GL描画用スレッドを作成する。
 	 * @author eagle.sakura
 	 * @param holder
@@ -89,6 +95,18 @@ public class GLManager
 	 */
 	public	GLManager(  )
 	{
+	}
+
+	/**
+	 * GL11エクステンションの有効・無効を指定する。<BR>
+	 * デフォルトは有効。
+	 * @author eagle.sakura
+	 * @param set
+	 * @version 2010/09/12 : 新規作成
+	 */
+	public	static	void		setGL11ExtentionEnable( boolean set )
+	{
+		isGL11ExtentionInitialize = set;
 	}
 
 	/**
@@ -454,7 +472,20 @@ public class GLManager
 			gl11			= ( GL11 ) glContext.getGL();
 			gl11Ext			= ( GL11Ext ) glContext.getGL();
 			gl11ExtPack		= ( GL11ExtensionPack ) glContext.getGL();
-			gl11Extension	= new GL11Extension();
+
+			try
+			{
+				//!	Extentionの生成を試す。
+				EagleUtil.log( "SDK Version : " + EagleUtil.getBridge().getPlatformVersion() );
+				if( isGL11ExtentionInitialize )
+				{
+					gl11Extension	= new GL11Extension();
+				}
+			}
+			catch( Exception e )
+			{
+				EagleUtil.log( e );
+			}
 		}
 
 		{

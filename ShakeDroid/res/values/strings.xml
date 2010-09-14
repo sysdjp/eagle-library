@@ -64,4 +64,5 @@
 <string name="str_crop">Crop</string>
 <string name="str_share">Share</string>
 <string name="share_shakedata_message">This is ShakeDroid Picture!! #shakedroid</string>
+<string name="app_name_cupcake">ShakeDroid for Cupcake</string>
 </resources>

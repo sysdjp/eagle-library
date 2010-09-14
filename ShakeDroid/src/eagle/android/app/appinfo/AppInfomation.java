@@ -10,6 +10,8 @@ import com.admob.android.ads.AdView;
 import android.app.Activity;
 import android.view.View;
 import eagle.android.appcore.IAppInfomation;
+import eagle.android.util.UtilBridgeAndroid;
+import eagle.util.IEagleUtilBridge;
 
 /**
  * @author eagle.sakura
@@ -51,4 +53,14 @@ public class AppInfomation implements IAppInfomation
 		return false;
 	}
 
+	/**
+	 *
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/09/12 : 新規作成
+	 */
+	public	static	IEagleUtilBridge		createBridge( )
+	{
+		return	new	UtilBridgeAndroid( "ShakeDroid" );
+	}
 }

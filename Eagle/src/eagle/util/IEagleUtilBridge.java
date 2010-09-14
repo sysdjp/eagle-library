@@ -30,4 +30,12 @@ public interface IEagleUtilBridge
 	 * @version 2010/03/20 : 新規作成
 	 */
 	public	void		log( int eLogType, String message );
+
+	/**
+	 * 実行しているプラットフォームのバージョンを取得する。
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/09/12 : 新規作成
+	 */
+	public	int			getPlatformVersion( );
 }

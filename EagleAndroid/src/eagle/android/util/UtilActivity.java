@@ -35,7 +35,7 @@ public class UtilActivity extends Activity
 	/**
 	 * SDカードへの出力ストリームを開く。<BR>
 	 * pathにはSDカード以下のパスを記述する。<BR>
-	 * パーミッションが設定されていない場合、このメソッドは必ずExceptionを投げる。
+	 * android.permission.WRITE_EXTERNAL_STORAGEが設定されていない場合、このメソッドは必ずExceptionを投げる。
 	 * @author eagle.sakura
 	 * @param path
 	 * @return
@@ -445,7 +445,8 @@ public class UtilActivity extends Activity
 	 */
 	public	static	boolean		isSdkVersion1_x( )
 	{
-		return	( new Build.VERSION() ).SDK_INT <= 4;
+	//	return	( new Build.VERSION() ).SDK_INT <= 4;
+		return	( EagleUtil.getBridge().getPlatformVersion() ) <= 4;
 	}
 
 	/**
@@ -456,6 +457,7 @@ public class UtilActivity extends Activity
 	 */
 	public	static	boolean		isSdkVersion2_x( )
 	{
-		return	( new Build.VERSION() ).SDK_INT > 4;
+	//	return	( new Build.VERSION() ).SDK_INT > 4;
+		return	( EagleUtil.getBridge().getPlatformVersion() ) > 4;
 	}
 }

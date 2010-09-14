@@ -1,22 +1,19 @@
 /**
  *
  * @author eagle.sakura
- * @version 2010/05/30 : 新規作成
+ * @version 2010/09/12 : 新規作成
  */
 package eagle.android.util;
 
-import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.util.Log;
+import eagle.util.EagleUtil;
 import eagle.util.IEagleUtilBridge;
 
 /**
  * @author eagle.sakura
- * @version 2010/05/30 : 新規作成
+ * @version 2010/09/12 : 新規作成
  */
-public class UtilBridgeAndroid		implements	IEagleUtilBridge
+public class UtilBridgeAndroidSDK3 implements IEagleUtilBridge
 {
 	private		String		tag	=	"";
 
@@ -26,7 +23,7 @@ public class UtilBridgeAndroid		implements	IEagleUtilBridge
 	 * @param tag
 	 * @version 2010/05/30 : 新規作成
 	 */
-	public	UtilBridgeAndroid( String tag )
+	public	UtilBridgeAndroidSDK3( String tag )
 	{
 		this.tag = tag;
 	}
@@ -54,7 +51,6 @@ public class UtilBridgeAndroid		implements	IEagleUtilBridge
 	}
 
 	/**
-	 *
 	 * @author eagle.sakura
 	 * @return
 	 * @version 2010/09/12 : 新規作成
@@ -62,8 +58,8 @@ public class UtilBridgeAndroid		implements	IEagleUtilBridge
 	@Override
 	public int getPlatformVersion()
 	{
+		EagleUtil.log( "getVersion" );
 		// TODO 自動生成されたメソッド・スタブ
-		return ( new Build.VERSION() ).SDK_INT;
+		return 3;
 	}
-
 }
