@@ -202,7 +202,13 @@ public class LooperHandler	implements	ILoopManager,
 
 					//!	スレッドを休眠させる
 					LooperHandler.this.handler.postDelayed( this, sleepTime );
-				//	EagleUtil.log( "" + ( 1000.0f / ( float )( eTime - sTime ) ) + "fps( Sleep:" + sleepTime + " )" );
+
+					/*
+					if( sleepTime == 1 )
+					{
+						EagleUtil.log( "" + ( 1000.0f / ( float )( eTime - sTime ) ) + "fps( Sleep:" + sleepTime + " )" );
+					}
+					*/
 				}
 			}
 		}

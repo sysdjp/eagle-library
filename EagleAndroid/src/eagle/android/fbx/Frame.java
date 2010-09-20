@@ -9,7 +9,10 @@ import java.io.IOException;
 
 import eagle.android.gles11.GLManager;
 import eagle.android.gles11.ITexture;
+import eagle.android.gles11.IVertexBuffer;
+import eagle.android.gles11.IndexBufferHW;
 import eagle.android.gles11.IndexBufferSW;
+import eagle.android.gles11.VertexBufferHW;
 import eagle.android.gles11.VertexBufferSW;
 import eagle.android.math.Matrix4x4;
 import eagle.io.DataInputStream;
@@ -30,7 +33,7 @@ public class Frame extends Node
 	/**
 	 * 頂点バッファ。
 	 */
-	private		VertexBufferSW	vertices	=	null;
+	private		IVertexBuffer	vertices	=	null;
 
 	/**
 	 *
@@ -180,20 +183,23 @@ public class Frame extends Node
 	{
 		super.initialize( dis, glCreater );
 
-		GLResourceCreater.FbxVertices	fbxVertices = new GLResourceCreater.FbxVertices();
+	//	GLResourceCreater.FbxVertices	fbxVertices = new GLResourceCreater.FbxVertices();
 
-		vertices	=	new	VertexBufferSW( figure.getGLManager() );
+		VertexBufferHW	vb	=	new	VertexBufferHW( figure.getGLManager() );
+	//	VertexBufferSW	vb	=	new	VertexBufferSW( figure.getGLManager() );
+		vertices = vb;
 
 		//!	位置
 		{
 			int			length		= dis.readS32() * 3;
-			int[]		buffer	= new int[ length ];
+			float[]		buffer	= new float[ length ];
 
 			for( int i = 0; i < ( length ); ++i )
 			{
-				buffer[ i ] = ( int )( dis.readFloat() * EagleUtil.eGLFixed1_0 );
+			//	buffer[ i ] = ( int )( dis.readFloat() * EagleUtil.eGLFixed1_0 );
+				buffer[ i ] = dis.readFloat();
 			}
-			vertices.initPosBuffer( buffer );
+			vb.initPosBuffer( buffer );
 		}
 
 		//!	法線
@@ -210,13 +216,14 @@ public class Frame extends Node
 		//!	UV
 		{
 			int			length		= dis.readS32() * 2;
-			int[]		buffer	= new int[ length ];
+			float[]		buffer	= new float[ length ];
 
 			for( int i = 0; i < ( length ); ++i )
 			{
-				buffer[ i ] = ( int )( dis.readFloat() * EagleUtil.eGLFixed1_0 );
+			//	buffer[ i ] = ( int )( dis.readFloat() * EagleUtil.eGLFixed1_0 );
+				buffer[ i ] = dis.readFloat();
 			}
-			vertices.initUVBuffer( buffer );
+			vb.initUVBuffer( buffer );
 		}
 
 		//!	インデックスバッファ
@@ -227,7 +234,8 @@ public class Frame extends Node
 			for( int i = 0; i < length; ++i )
 			{
 				Material	m = Material.createInstance( figure.getGLManager(), dis );
-				IndexBufferSW	ib = new IndexBufferSW( figure.getGLManager() );
+			//	IndexBufferSW	ib = new IndexBufferSW( figure.getGLManager() );
+				IndexBufferHW	ib = new IndexBufferHW( figure.getGLManager() );
 
 				int	ibLength = dis.readS32();
 				short[]		buffer	=	new short[ ibLength ];
@@ -270,9 +278,12 @@ public class Frame extends Node
 				}
 
 				DeformBufferSW	db = new DeformBufferSW( figure.getGLManager() );
+			//	DeformBufferHW	db = new DeformBufferHW( figure.getGLManager() );
 				db.init( weights, indices );
 				deformer.setDeform( db );
 			}
 		}
+
+		System.gc();
 	}
 }

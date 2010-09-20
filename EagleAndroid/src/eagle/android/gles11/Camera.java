@@ -6,6 +6,8 @@
 package eagle.android.gles11;
 
 import javax.microedition.khronos.opengles.GL11;
+
+import eagle.android.math.Matrix4x4;
 import eagle.math.Vector3;
 import android.opengl.GLU;
 
@@ -45,6 +47,16 @@ public class Camera	extends	IGLResource
 	private	float				farClip		= 100.0f;
 
 	/**
+	 * パース情報。
+	 */
+	public	static	final	int		eCameraTypePerse = 0;
+
+	/**
+	 * 現在設定されているカメラの種類。
+	 */
+	private	int					eCameraType = 0;
+
+	/**
 	 * GLで管理するカメラ。
 	 * @author eagle.sakura
 	 * @version 2009/11/15 : 新規作成
@@ -70,6 +82,7 @@ public class Camera	extends	IGLResource
 		farClip		= far;
 		aspect		=	( (float)displayW ) / ( (float)displayH );
 		this.fovY	= fovY;
+		eCameraType	= eCameraTypePerse;
 	}
 
 	/**
@@ -146,20 +159,6 @@ public class Camera	extends	IGLResource
 	}
 
 	/**
-	 * パースデータを転送する。
-	 * @author eagle.sakura
-	 * @param glMgr
-	 * @version 2009/11/15 : 新規作成
-	 */
-	public	void	toDevicePerse( GLManager glMgr )
-	{
-		GL11	gl = glMgr.getGL();
-		gl.glMatrixMode( GL11.GL_PROJECTION );
-		gl.glLoadIdentity();
-		GLU.gluPerspective( gl, fovY, aspect, nearClip, farClip );
-	}
-
-	/**
 	 * リソースをデバイスに転送する。
 	 * @author eagle.sakura
 	 * @param gl
@@ -168,9 +167,28 @@ public class Camera	extends	IGLResource
 	public	void	bind( GLManager glMgr )
 	{
 		GL11	gl = glMgr.getGL();
+		gl.glMatrixMode( GL11.GL_PROJECTION );
+		gl.glPopMatrix();
+		gl.glLoadIdentity();
+
+		Matrix4x4	matrix = new Matrix4x4( );
+		{
+			matrix.projection( nearClip, farClip, fovY, glMgr.getDisplayAspect() );
+			gl.glLoadMatrixf( matrix.m, 0 );
+		}
+
+		{
+			matrix.lookAt( getPos(), getLook(), getUpper() );
+			gl.glPushMatrix();
+			gl.glMultMatrixf( matrix.m, 0 );
+		}
+		gl.glMatrixMode( GL11.GL_MODELVIEW );
+
+		/*
 		gl.glMatrixMode( GL11.GL_MODELVIEW );
 		gl.glLoadIdentity();
 		GLU.gluLookAt( gl, pos.x, pos.y, pos.z, look.x, look.y, look.z, upper.x, upper.y, upper.z );
+		*/
 	}
 
 	/**

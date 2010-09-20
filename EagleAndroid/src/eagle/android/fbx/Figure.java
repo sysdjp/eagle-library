@@ -6,9 +6,13 @@
 package eagle.android.fbx;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import eagle.android.fbx.GLResourceCreater.FbxVertices;
 import eagle.android.gles11.GLManager;
 import eagle.android.gles11.ITexture;
+import eagle.android.gles11.IVertexBuffer;
 import eagle.android.math.Matrix4x4;
 import eagle.io.DataInputStream;
 import eagle.util.Disposable;
@@ -26,6 +30,17 @@ public class Figure		implements	Disposable
 	 *
 	 */
 	private	Node[]			nodes;		//!<	ノードを直線状にした配列。
+
+	/**
+	 * 全体で利用する頂点バッファ。<BR>
+	 * 頂点バッファは全体で１つのバッファを利用し、転送回数を軽減する。
+	 */
+	private	IVertexBuffer	vertices;
+
+	/**
+	 * 中間頂点情報
+	 */
+	private	List< FbxVertices >		fbxVertices = new ArrayList();
 
 	private	GLManager		glManager;
 
@@ -273,6 +288,7 @@ public class Figure		implements	Disposable
 		int	number	= dis.readS32();
 
 		EagleUtil.log( "type : " + type + "  number : " + number );
+		EagleUtil.log( "Memory : " + ( Runtime.getRuntime().freeMemory() / 1024 ) + " KB" );
 
 		if( type == Node.eNodeTypeMesh
 		||	type == Node.eNodeTypeSkin )
@@ -396,7 +412,7 @@ public class Figure		implements	Disposable
 		{
 			figure.createNode( null, dis, glCreater );
 
-				String[] str = new String[ figure.nodes.length ];
+			String[] str = new String[ figure.nodes.length ];
 			{
 				int i = 0;
 				for( Node node : figure.nodes )

@@ -64,8 +64,8 @@ public class VRAMResource
 	/**
 	 * バッファをバインドし、転送する。
 	 * @author eagle.sakura
-	 * @param index
-	 * @param buffer
+	 * @param index バッファ番号
+	 * @param buffer 実バッファ
 	 * @param ussage メモリの使用方法
 	 * @version 2009/11/17 : 新規作成
 	 * @see GL11#GL_STATIC_DRAW

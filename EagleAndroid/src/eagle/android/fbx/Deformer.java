@@ -129,7 +129,7 @@ public class Deformer
 	 * @param deform
 	 * @version 2010/07/08 : 新規作成
 	 */
-	public void setDeform(DeformBufferSW deform)
+	public void setDeform( DeformBufferSW deform)
 	{
 		this.deform = deform;
 	}

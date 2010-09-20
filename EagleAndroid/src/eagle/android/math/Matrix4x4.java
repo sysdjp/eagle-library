@@ -328,4 +328,95 @@ public	final class Matrix4x4
 		}
 	}
 
+	private	static	int		TO_TRANS_INDEX( int y, int x )
+	{
+		return	( y * 4 ) + x;
+	}
+
+
+	/**
+	 * 視線変更行列を生成する。
+	 * @author eagle.sakura
+	 * @param position
+	 * @param look
+	 * @param up
+	 * @version 2010/09/17 : 新規作成
+	 */
+	public	void	lookAt( Vector3 position, Vector3 look, Vector3 up )
+	{
+		Vector3		zaxis = new Vector3(),
+					xaxis = new Vector3(),
+					yaxis = new Vector3();
+
+		zaxis.sub( position, look );
+		zaxis.normalize();
+		up.cross( zaxis, xaxis );
+		xaxis.normalize();
+		zaxis.cross( xaxis, yaxis );
+
+		{
+			// Transformインスタンスに設定
+			m[ TO_TRANS_INDEX(0, 0) ] = xaxis.x;
+			m[ TO_TRANS_INDEX(1, 0) ] = xaxis.y;
+			m[ TO_TRANS_INDEX(2, 0) ] = xaxis.z;
+			m[ TO_TRANS_INDEX(3, 0) ] = -xaxis.dot( position );
+
+		}
+		{
+
+			m[ TO_TRANS_INDEX(0, 1) ] = yaxis.x;
+			m[ TO_TRANS_INDEX(1, 1) ] = yaxis.y;
+			m[ TO_TRANS_INDEX(2, 1) ] = yaxis.z;
+			m[ TO_TRANS_INDEX(3, 1) ] = -yaxis.dot( position );
+		}
+		// 視線ベクトルを求める
+		{
+
+			m[ TO_TRANS_INDEX(0, 2) ] = -zaxis.x;
+			m[ TO_TRANS_INDEX(1, 2) ] = -zaxis.y;
+			m[ TO_TRANS_INDEX(2, 2) ] = -zaxis.z;
+			m[ TO_TRANS_INDEX(3, 2) ] = zaxis.dot( position );
+		}
+
+		// 視線ベクトルを求める
+		{
+
+			m[ TO_TRANS_INDEX(0, 3) ] = 0;
+			m[ TO_TRANS_INDEX(1, 3) ] = 0;
+			m[ TO_TRANS_INDEX(2, 3) ] = 0;
+			m[ TO_TRANS_INDEX(3, 3) ] = 1;
+		}
+	}
+
+	/**
+	 * 射影行列を作成する。
+	 * @author eagle.sakura
+	 * @param near
+	 * @param far
+	 * @param fovY
+	 * @param aspect
+	 * @version 2010/09/17 : 新規作成
+	 */
+	public	void	projection( float near, float far, float fovY, float aspect )
+	{
+		float    h, w, Q;
+
+		float	width_fov = ( fovY * ( aspect ) / 360.0f ),
+				height_fov = ( fovY / 360.0f );
+
+		w = (float)( 1.0 /Math.tan(width_fov*0.5) / ( Math.PI * 2 ) );  // 1/tan(x) == cot(x)
+		h = (float)( 1.0/Math.tan(height_fov*0.5) / ( Math.PI * 2 ) );   // 1/tan(x) == cot(x)
+		Q = far/(far - near);
+
+		for( int i = 0; i < 16; ++i )
+		{
+			m[ i ] = 0;
+		}
+
+		m[ TO_TRANS_INDEX( 0, 0 ) ] = w;
+		m[ TO_TRANS_INDEX( 1, 1 ) ] = h;
+		m[ TO_TRANS_INDEX( 2, 2 ) ] = Q;
+		m[ TO_TRANS_INDEX( 3, 2 ) ] = -Q * near;
+		m[ TO_TRANS_INDEX( 2, 3 ) ] = 1;
+	}
 }

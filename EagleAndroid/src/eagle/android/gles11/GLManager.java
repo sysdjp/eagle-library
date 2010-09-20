@@ -586,6 +586,17 @@ public class GLManager
 	}
 
 	/**
+	 * ディスプレイアスペクト比（W / H)を取得する。
+	 * @author eagle.sakura
+	 * @return
+	 * @version 2010/09/18 : 新規作成
+	 */
+	public	float	getDisplayAspect( )
+	{
+		return	( ( float )surfaceWidth ) / ( ( float )surfaceHeight );
+	}
+
+	/**
 	 * サーフェイス作成。<BR>
 	 * サーフェイスを作成して、レンダリングコンテキストと結びつける
 	 *
@@ -754,6 +765,19 @@ public class GLManager
 	}
 
 	/**
+	 * カメラ関連の行列をリセットし、単位行列化する。
+	 * @author eagle.sakura
+	 * @version 2010/09/18 : 新規作成
+	 */
+	public	void	resetCamera( )
+	{
+		gl11.glMatrixMode( GL11.GL_PROJECTION );
+		gl11.glPopMatrix();
+		gl11.glLoadIdentity();
+		gl11.glMatrixMode( GL11.GL_MODELVIEW );
+	}
+
+	/**
 	 *
 	 * @author eagle.sakura
 	 * @param array
@@ -768,5 +792,176 @@ public class GLManager
 			result[ i ] = ( short )array[ i ];
 		}
 		return	result;
+	}
+
+	/**
+	 * 位置バッファ。
+	 */
+	private	static	final	int[]		spritePositions =
+	{
+		0,						0,							0,
+		EagleUtil.eGLFixed1_0,	0,							0,
+		0,						EagleUtil.eGLFixed1_0,		0,
+		EagleUtil.eGLFixed1_0, 	EagleUtil.eGLFixed1_0,		0,
+	};
+
+	/**
+	 * 色バッファ。
+	 */
+	private	static	final	int[]		spriteColors =
+	{
+		EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,
+		EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,
+		EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,
+		EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,EagleUtil.eGLFixed1_0,
+
+
+		/*
+		EagleUtil.eGLFixed1_0,	0,						0,						EagleUtil.eGLFixed1_0,
+		0,						EagleUtil.eGLFixed1_0,	0,						EagleUtil.eGLFixed1_0,
+		0,						0,						EagleUtil.eGLFixed1_0,	EagleUtil.eGLFixed1_0,
+		EagleUtil.eGLFixed1_0,	EagleUtil.eGLFixed1_0,	EagleUtil.eGLFixed1_0,	EagleUtil.eGLFixed1_0,
+		*/
+	};
+
+	/**
+	 * UVバッファ。
+	 */
+	private	static	final	int[]		spriteUVs =
+	{
+		0,						0,
+		EagleUtil.eGLFixed1_0,	0,
+		0,						EagleUtil.eGLFixed1_0,
+		EagleUtil.eGLFixed1_0,	EagleUtil.eGLFixed1_0,
+	};
+
+	/**
+	 * スプライト描画用のバッファ。
+	 */
+	private	static	VertexBufferSW	spriteVertices	= null;
+
+	/**
+	 * スプライト描画用のインデックスバッファ。<BR>
+	 * 変更することはないため、転送済みにしておく。
+	 */
+	private	static	IndexBufferSW	spriteIndices	=	null;
+
+	/**
+	 * ２次元描画を行う。<BR>
+	 * 事前にカメラ行列やモデル行列はリセットしてある必要がある。<BR>
+	 * Zバッファはすべて無視される。
+	 * @author eagle.sakura
+	 * @param texture
+	 * @param srcX
+	 * @param srcY
+	 * @param srcW
+	 * @param srcH
+	 * @param dstX
+	 * @param dstY
+	 * @param dstW
+	 * @param dstH
+	 * @param colorRGBA
+	 * @version 2010/09/20 : 新規作成
+	 */
+	public	void	drawSprite( ITexture texture,
+								int srcX, int srcY, int srcW, int srcH,
+								int dstX, int dstY, int dstW, int dstH,
+								int colorRGBA	)
+	{
+		if( spriteVertices == null )
+		{
+			spriteVertices = new VertexBufferSW( this );
+			spriteIndices = new IndexBufferSW( this );
+			spriteIndices.init( new short[]{ 0, 1, 2, 1, 2, 3, } );
+		}
+
+		//!	位置情報
+	//	if( false )
+		{
+			float	screenW = getDisplayWidth(),
+					screenH = getDisplayHeight();
+
+			int	vx = ( int )( ( ( float )dstX / screenW ) * EagleUtil.eGLFixed1_0 ),
+				vy = ( int )( ( ( float )dstY / screenH ) * EagleUtil.eGLFixed1_0 ),
+				vw = ( int )( ( ( float )dstW / screenW ) * EagleUtil.eGLFixed1_0 ),
+				vh = ( int )( ( ( float )dstH / screenH ) * EagleUtil.eGLFixed1_0 );
+
+			//!	左上
+			spritePositions[ 3*0 + 0 ] = vx;
+			spritePositions[ 3*0 + 1 ] = EagleUtil.eGLFixed1_0 - vy;
+
+			//!	右上
+			spritePositions[ 3*1 + 0 ] = vx + vw;
+			spritePositions[ 3*1 + 1 ] = EagleUtil.eGLFixed1_0 - vy;
+
+			//!	左下
+			spritePositions[ 3*2 + 0 ] = vx;
+			spritePositions[ 3*2 + 1 ] = EagleUtil.eGLFixed1_0 - vy - vh;
+
+			//!	右下
+			spritePositions[ 3*3 + 0 ] = vx + vw;
+			spritePositions[ 3*3 + 1 ] = EagleUtil.eGLFixed1_0 - vy - vh;
+
+			//!	スクリーン座標系に直す
+			for( int i = 0; i < 4; ++i )
+			{
+				spritePositions[ i * 3 + 0 ] = ( spritePositions[ i * 3 + 0 ] * 2 ) - EagleUtil.eGLFixed1_0;
+				spritePositions[ i * 3 + 1 ] = ( spritePositions[ i * 3 + 1 ] * 2 ) - EagleUtil.eGLFixed1_0;
+			}
+		}
+
+		//!	UV情報
+		if( texture != null
+	//	&& false
+		)
+		{
+			float	texW = texture.getWidth(),
+					texH = texture.getHeight();
+
+			int	vx = ( int )( ( ( float )srcX / texW ) * EagleUtil.eGLFixed1_0 ),
+				vy = ( int )( ( ( float )srcY / texH ) * EagleUtil.eGLFixed1_0 ),
+				vw = ( int )( ( ( float )srcW / texW ) * EagleUtil.eGLFixed1_0 ),
+				vh = ( int )( ( ( float )srcH / texH ) * EagleUtil.eGLFixed1_0 );
+
+
+			//!	左上
+			spriteUVs[ 2*0 + 0 ] = vx;
+			spriteUVs[ 2*0 + 1 ] = vy;
+
+			//!	右上
+			spriteUVs[ 2*1 + 0 ] = vx + vw;
+			spriteUVs[ 2*1 + 1 ] = vy;
+
+			//!	左下
+			spriteUVs[ 2*2 + 0 ] = vx;
+			spriteUVs[ 2*2 + 1 ] = vy + vh;
+
+			//!	右下
+			spriteUVs[ 2*3 + 0 ] = vx + vw;
+			spriteUVs[ 2*3 + 1 ] = vy + vh;
+		}
+
+		spriteVertices.initPosBuffer( spritePositions );
+		spriteVertices.initColBuffer( spriteColors );
+		spriteVertices.initUVBuffer( spriteUVs );
+
+		GL11	gl = getGL();
+		gl.glDisable( GL11.GL_DEPTH_TEST );
+		gl.glDisable( GL11.GL_CULL_FACE );
+
+		if( texture != null )
+		{
+			texture.bind();
+		}
+		spriteVertices.bind();
+
+		spriteIndices.drawElements();
+
+		spriteVertices.unbind();
+		if( texture != null )
+		{
+			texture.unbind();
+		}
+		gl.glEnable( GL11.GL_DEPTH_TEST );
 	}
 }

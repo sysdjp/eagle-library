@@ -8,6 +8,7 @@ package eagle.android.gles11;
 import javax.microedition.khronos.opengles.GL11;
 
 import eagle.util.Disposable;
+import eagle.util.EagleUtil;
 
 /**
  * テクスチャを示す基底クラス。
@@ -193,4 +194,5 @@ public	abstract class ITexture		implements	Disposable
 		gl.glBindTexture( GL11.GL_TEXTURE_2D, 0 );
 		gl.glDisable( GL11.GL_TEXTURE_2D );
 	}
+
 }

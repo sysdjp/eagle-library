@@ -16,6 +16,7 @@ import eagle.android.gles11.IGLResource;
 import eagle.android.gles11.ITexture;
 import eagle.io.DataInputStream;
 import eagle.util.EagleException;
+import eagle.util.EagleUtil;
 
 /**
  * @author eagle.sakura
@@ -139,6 +140,7 @@ public class Material
 		Material	result = new Material( gl );
 
 		result.textureName = dis.readString();
+		EagleUtil.log( result.textureName );
 		{
 			float[]	diffuse 	= { 0,0,0,0 };
 			float[]	ambient 	= { 0,0,0,0 };

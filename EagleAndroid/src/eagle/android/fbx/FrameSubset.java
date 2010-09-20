@@ -8,6 +8,7 @@ package eagle.android.fbx;
 import org.w3c.dom.Text;
 
 import eagle.android.gles11.GLManager;
+import eagle.android.gles11.IIndexBuffer;
 import eagle.android.gles11.IndexBufferSW;
 
 /**
@@ -19,7 +20,7 @@ public class FrameSubset
 	/**
 	 * インデックスバッファ。
 	 */
-	private		IndexBufferSW		indices		=	null;
+	private		IIndexBuffer	indices		=	null;
 
 	/**
 	 * 関連付けられたマテリアル。
@@ -33,7 +34,7 @@ public class FrameSubset
 	 * @param m
 	 * @version 2010/07/11 : 新規作成
 	 */
-	public	FrameSubset( IndexBufferSW ib, Material m )
+	public	FrameSubset( IIndexBuffer ib, Material m )
 	{
 		indices		= ib;
 		material	= m;

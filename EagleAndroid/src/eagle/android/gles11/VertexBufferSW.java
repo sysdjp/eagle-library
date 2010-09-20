@@ -5,6 +5,7 @@
  */
 package eagle.android.gles11;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -27,7 +28,7 @@ public class VertexBufferSW	implements	IVertexBuffer
 	/**
 	 * 頂点カラーバッファ。
 	 */
-	private		IntBuffer			colBuffer		=	null;
+	private		Buffer				colBuffer		=	null;
 	/**
 	 * UVバッファ。
 	 */
@@ -46,6 +47,11 @@ public class VertexBufferSW	implements	IVertexBuffer
 	 *
 	 */
 	private		GLManager			glManager		=	null;
+
+	/**
+	 * デフォルトはINTバッファ。
+	 */
+	private		int					colorBufferType	=	GL11.GL_FIXED;
 
 	/**
 	 * 色情報を無効化する。
@@ -113,30 +119,6 @@ public class VertexBufferSW	implements	IVertexBuffer
 	}
 
 	/**
-	 * 位置バッファを取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/05/22 : 新規作成
-	 */
-	public	IntBuffer	getPositions( )	{	return	posBuffer;	}
-
-	/**
-	 * 色バッファを取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/05/22 : 新規作成
-	 */
-	public	IntBuffer	getColors( )	{	return	colBuffer;	}
-
-	/**
-	 * UVバッファを取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/05/22 : 新規作成
-	 */
-	public	IntBuffer	getUVs( )		{	return	uvBuffer;	}
-
-	/**
 	 * 色バッファを作成する。<BR>
 	 * 各値は固定小数で示す。
 	 * @author eagle.sakura
@@ -145,15 +127,39 @@ public class VertexBufferSW	implements	IVertexBuffer
 	 */
 	public	void		initColBuffer( int[] vertexBuffer )
 	{
-		if( colBuffer != null )
+		IntBuffer	ib = ( IntBuffer )colBuffer;
+		if( ib != null )
 		{
-			colBuffer.put( vertexBuffer );
-			colBuffer.position( 0 );
+			ib.put( vertexBuffer );
+			ib.position( 0 );
 		}
 		else
 		{
 			colBuffer = IGLResource.createBuffer( vertexBuffer );
 		}
+		colorBufferType = GL11.GL_FIXED;
+	}
+
+	/**
+	 * 色バッファを作成する。<BR>
+	 * 各値は255までとなる。
+	 * @author eagle.sakura
+	 * @param vertexBuffer
+	 * @version 2010/09/20 : 新規作成
+	 */
+	public	void		initColBuffer( byte[] vertexBuffer )
+	{
+		ByteBuffer	bb = ( ByteBuffer )colBuffer;
+		if( bb != null )
+		{
+			bb.put( vertexBuffer );
+			bb.position( 0 );
+		}
+		else
+		{
+			colBuffer = IGLResource.createBuffer( vertexBuffer );
+		}
+		colorBufferType = GL11.GL_UNSIGNED_BYTE;
 	}
 
 	/**
@@ -239,7 +245,7 @@ public class VertexBufferSW	implements	IVertexBuffer
 		&&	!isAttributeOn( eAttributeColorDisable ) )
 		{
 			gl.glEnableClientState(GL11.GL_COLOR_ARRAY);
-			gl.glColorPointer( 4, GL11.GL_FIXED, 0, colBuffer );
+			gl.glColorPointer( 4, colorBufferType, 0, colBuffer );
 		}
 
 		//!	UVバッファを転送する。
