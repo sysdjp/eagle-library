@@ -46,6 +46,7 @@ public class ShakeWallDataNotify
 			this.listener	=	listener;
 			manager.registerOnSharedPreferenceChangeListener( listener );
 		}
+
 	}
 
 	public	void	dispose( )
