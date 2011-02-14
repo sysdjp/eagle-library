@@ -11,8 +11,7 @@ import eagle.android.device.TouchDisplay;
  * @author eagle.sakura
  * @version 2010/05/31 : 新規作成
  */
-public abstract class ILooper
-{
+public abstract class ILooper {
     private TouchDisplay touchDisplay = new TouchDisplay();
 
     /**
@@ -22,8 +21,7 @@ public abstract class ILooper
      * @return
      * @version 2010/05/31 : 新規作成
      */
-    public TouchDisplay getTouchDisplay( )
-    {
+    public TouchDisplay getTouchDisplay() {
         return touchDisplay;
     }
 
@@ -34,8 +32,7 @@ public abstract class ILooper
      * @param td
      * @version 2010/07/20 : 新規作成
      */
-    public void setTouchDisplay( TouchDisplay td )
-    {
+    public void setTouchDisplay(TouchDisplay td) {
         touchDisplay = td;
     }
 
@@ -45,7 +42,7 @@ public abstract class ILooper
      * @author eagle.sakura
      * @version 2010/05/31 : 新規作成
      */
-    public abstract void onInitialize( );
+    public abstract void onInitialize();
 
     /**
      * 毎フレームの定期処理が呼ばれる。
@@ -53,7 +50,7 @@ public abstract class ILooper
      * @author eagle.sakura
      * @version 2010/05/31 : 新規作成
      */
-    public abstract void onLoop( );
+    public abstract void onLoop();
 
     /**
      * ループの終了時に呼ばれる。
@@ -61,6 +58,6 @@ public abstract class ILooper
      * @author eagle.sakura
      * @version 2010/05/31 : 新規作成
      */
-    public abstract void onFinalize( );
+    public abstract void onFinalize();
 
 }

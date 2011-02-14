@@ -21,308 +21,293 @@ import eagle.util.EagleUtil;
  * コマンド名 : 1つのみ<BR>
  * 引数 : 0以上無制限<BR>
  * 子コマンド : 0以上無制限
+ *
  * @author eagle.sakura
  * @version 2010/03/21 : 新規作成
  */
-public class Command
-{
-	private		List< String >		params	=	new	ArrayList< String >();
-	private		List< Command >		childs	=	null;
-	private		Command				parent	=	null;
+public class Command {
+    private List<String> params = new ArrayList<String>();
+    private List<Command> childs = null;
+    private Command parent = null;
 
-	/**
-	 * コマンド名を指定して作成する。
-	 * @author eagle.sakura
-	 * @param name
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	Command( String name )
-	{
-		if( name == null )
-		{
-			name = "";
-		}
+    /**
+     * コマンド名を指定して作成する。
+     *
+     * @author eagle.sakura
+     * @param name
+     * @version 2010/03/21 : 新規作成
+     */
+    public Command(String name) {
+        if (name == null) {
+            name = "";
+        }
 
-		params.add( name );
-	}
+        params.add(name);
+    }
 
-	/**
-	 * コマンド名を指定せずに作成する。
-	 * @author eagle.sakura
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	Command( )
-	{
+    /**
+     * コマンド名を指定せずに作成する。
+     *
+     * @author eagle.sakura
+     * @version 2010/03/21 : 新規作成
+     */
+    public Command() {
 
-	}
+    }
 
-	/**
-	 * 子を追加する。
-	 * @author eagle.sakura
-	 * @param child
-	 * @version 2010/04/03 : 新規作成
-	 */
-	public	void	addChild( Command child )
-	{
-		if( childs == null )
-		{
-			childs =	new	ArrayList< Command >();
-		}
+    /**
+     * 子を追加する。
+     *
+     * @author eagle.sakura
+     * @param child
+     * @version 2010/04/03 : 新規作成
+     */
+    public void addChild(Command child) {
+        if (childs == null) {
+            childs = new ArrayList<Command>();
+        }
 
-		child.parent = this;
-		childs.add( child );
-	}
-	/**
-	 * コマンドの末尾にパラメータを追加する。
-	 * @author eagle.sakura
-	 * @param param
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	void	addParam( String param )
-	{
-		params.add( param );
-	}
+        child.parent = this;
+        childs.add(child);
+    }
 
-	/**
-	 * コマンド名を取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	String		getName( )
-	{
-		return	params.get( 0 );
-	}
+    /**
+     * コマンドの末尾にパラメータを追加する。
+     *
+     * @author eagle.sakura
+     * @param param
+     * @version 2010/03/21 : 新規作成
+     */
+    public void addParam(String param) {
+        params.add(param);
+    }
 
-	/**
-	 * パラメータを取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	String		getParam( int index )
-	{
-		return	params.get( index + 1 );
-	}
+    /**
+     * コマンド名を取得する。
+     *
+     * @author eagle.sakura
+     * @return
+     * @version 2010/03/21 : 新規作成
+     */
+    public String getName() {
+        return params.get(0);
+    }
 
-	/**
-	 * パラメータを数値として取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	int			getParamInt( int index )
-	{
-		return	Integer.parseInt( getParam( index ) );
-	}
+    /**
+     * パラメータを取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/03/21 : 新規作成
+     */
+    public String getParam(int index) {
+        return params.get(index + 1);
+    }
 
-	/**
-	 * マスコットカプセル標準の固定小数として取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/04/03 : 新規作成
-	 */
-	public	float		getParamMCFixed( int index )
-	{
-		return	( ( float )getParamInt( index ) ) / ( ( float ) EagleUtil.eMCFixed1_0 );
-	}
+    /**
+     * パラメータを数値として取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/03/21 : 新規作成
+     */
+    public int getParamInt(int index) {
+        return Integer.parseInt(getParam(index));
+    }
 
-	/**
-	 * GL標準の固定小数として取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/04/03 : 新規作成
-	 */
-	public	float		getParamGLFixed( int index )
-	{
-		return	( ( float )getParamInt( index ) ) / ( ( float ) EagleUtil.eGLFixed1_0 );
-	}
+    /**
+     * マスコットカプセル標準の固定小数として取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/04/03 : 新規作成
+     */
+    public float getParamMCFixed(int index) {
+        return ((float) getParamInt(index)) / ((float) EagleUtil.eMCFixed1_0);
+    }
 
-	/**
-	 * パラメータを浮動小数として取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	float		getParamFloat( int index )
-	{
-		return	Float.parseFloat( getParam( index ) );
-	}
+    /**
+     * GL標準の固定小数として取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/04/03 : 新規作成
+     */
+    public float getParamGLFixed(int index) {
+        return ((float) getParamInt(index)) / ((float) EagleUtil.eGLFixed1_0);
+    }
 
-	/**
-	 * パラメータを論理値として取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/03/21 : 新規作成
-	 */
-	public	boolean		getParamBool( int index )
-	{
-		return	getParam( index ).equals( "true" );
-	}
+    /**
+     * パラメータを浮動小数として取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/03/21 : 新規作成
+     */
+    public float getParamFloat(int index) {
+        return Float.parseFloat(getParam(index));
+    }
 
-	/**
-	 * パラメータ数を取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/04/04 : 新規作成
-	 */
-	public	int			getParamCount( )
-	{
-		return	params.size() - 1;
-	}
+    /**
+     * パラメータを論理値として取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/03/21 : 新規作成
+     */
+    public boolean getParamBool(int index) {
+        return getParam(index).equals("true");
+    }
 
-	/**
-	 * サブコマンド数を取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/04/04 : 新規作成
-	 */
-	public	int			getChildCount( )
-	{
-		if( childs == null )
-		{
-			return	0;
-		}
-		return	childs.size();
-	}
+    /**
+     * パラメータ数を取得する。
+     *
+     * @author eagle.sakura
+     * @return
+     * @version 2010/04/04 : 新規作成
+     */
+    public int getParamCount() {
+        return params.size() - 1;
+    }
 
-	/**
-	 * 子コマンドを取得する。
-	 * @author eagle.sakura
-	 * @param index
-	 * @return
-	 * @version 2010/04/04 : 新規作成
-	 */
-	public	Command		getChild( int index )
-	{
-		return	childs.get( index );
-	}
+    /**
+     * サブコマンド数を取得する。
+     *
+     * @author eagle.sakura
+     * @return
+     * @version 2010/04/04 : 新規作成
+     */
+    public int getChildCount() {
+        if (childs == null) {
+            return 0;
+        }
+        return childs.size();
+    }
 
-	/**
-	 * コマンドの階層を取得する。
-	 * @author eagle.sakura
-	 * @return
-	 * @version 2010/04/04 : 新規作成
-	 */
-	public	int			getDepth( )
-	{
-		int	n = 0;
-		Command	cmd = parent;
-		while( cmd != null )
-		{
-			cmd = cmd.parent;
-			++n;
-		}
-		return	n;
-	}
+    /**
+     * 子コマンドを取得する。
+     *
+     * @author eagle.sakura
+     * @param index
+     * @return
+     * @version 2010/04/04 : 新規作成
+     */
+    public Command getChild(int index) {
+        return childs.get(index);
+    }
 
-	/**
-	 * コマンド階層を追加する。
-	 * @author eagle.sakura
-	 * @param parent
-	 * @param reader
-	 * @version 2010/04/04 : 新規作成
-	 */
-	private	static	void		addCommand( Command parent, BufferedReader reader )	throws	IOException
-	{
-		while( true )
-		{
-			String	textLine = reader.readLine();
-			//!	チャンクのフッダである場合、追加を終了する
-			if( textLine == null )
-			{
-				return;
-			}
+    /**
+     * コマンドの階層を取得する。
+     *
+     * @author eagle.sakura
+     * @return
+     * @version 2010/04/04 : 新規作成
+     */
+    public int getDepth() {
+        int n = 0;
+        Command cmd = parent;
+        while (cmd != null) {
+            cmd = cmd.parent;
+            ++n;
+        }
+        return n;
+    }
 
-			EsfLine	line = EsfLine.create( textLine );
+    /**
+     * コマンド階層を追加する。
+     *
+     * @author eagle.sakura
+     * @param parent
+     * @param reader
+     * @version 2010/04/04 : 新規作成
+     */
+    private static void addCommand(Command parent, BufferedReader reader) throws IOException {
+        while (true) {
+            String textLine = reader.readLine();
+            // ! チャンクのフッダである場合、追加を終了する
+            if (textLine == null) {
+                return;
+            }
 
-			//!	ラインの取得に失敗した場合は次の行を読み取る。
-			if( line == null )
-			{
-				continue;
-			}
+            EsfLine line = EsfLine.create(textLine);
 
-			//!	フッダだったら上の階層に戻る。
-			if( line.isChunkFooter() )
-			{
-				return;
-			}
+            // ! ラインの取得に失敗した場合は次の行を読み取る。
+            if (line == null) {
+                continue;
+            }
 
-			Command	current	 = new Command();
+            // ! フッダだったら上の階層に戻る。
+            if (line.isChunkFooter()) {
+                return;
+            }
 
-			//!	コマンドをひとまず追加する
-			int	cmdSize = line.getWordCount();
-			for( int i = 0; i < cmdSize; ++i )
-			{
-				//!	コマンドの追加
-				current.addParam( line.get( i ) );
-			}
+            Command current = new Command();
 
-			//!	親に追加する
-			parent.addChild( current );
+            // ! コマンドをひとまず追加する
+            int cmdSize = line.getWordCount();
+            for (int i = 0; i < cmdSize; ++i) {
+                // ! コマンドの追加
+                current.addParam(line.get(i));
+            }
 
-			//!	チャンクの開始の場合
-			if( line.isChunkHead() )
-			{
-				//!	子階層を追加する。
-				addCommand( current, reader );
-			}
-		}
-	}
+            // ! 親に追加する
+            parent.addChild(current);
 
-	/**
-	 * ファイルから階層コマンドを作成する。<BR>
-	 * コマンドはすべて"ROOT"の名を持つ親コマンドの子となる。
-	 * @author eagle.sakura
-	 * @param file
-	 * @return
-	 * @version 2010/04/04 : 新規作成
-	 */
-	public	static	Command		create( BufferedReader file )
-	{
-		try
-		{
-			Command		root = new	Command( "ROOT" );
-			addCommand( root, file );
-			return	root;
-		}
-		catch( Exception e )
-		{
-			EagleUtil.log( e );
-			return	null;
-		}
-	}
+            // ! チャンクの開始の場合
+            if (line.isChunkHead()) {
+                // ! 子階層を追加する。
+                addCommand(current, reader);
+            }
+        }
+    }
 
-	/**
-	 * ファイルから階層コマンドを作成する。<BR>
-	 * パスを直接指定する。
-	 * @author eagle.sakura
-	 * @param filePath
-	 * @return
-	 * @version 2010/04/04 : 新規作成
-	 */
-	public	static	Command		create( String filePath, FileSystem fs )
-	{
-		try
-		{
-			BufferedReader br = fs.createFileReaderSJIS( filePath );
+    /**
+     * ファイルから階層コマンドを作成する。<BR>
+     * コマンドはすべて"ROOT"の名を持つ親コマンドの子となる。
+     *
+     * @author eagle.sakura
+     * @param file
+     * @return
+     * @version 2010/04/04 : 新規作成
+     */
+    public static Command create(BufferedReader file) {
+        try {
+            Command root = new Command("ROOT");
+            addCommand(root, file);
+            return root;
+        } catch (Exception e) {
+            EagleUtil.log(e);
+            return null;
+        }
+    }
 
-			Command	result = create( br );
+    /**
+     * ファイルから階層コマンドを作成する。<BR>
+     * パスを直接指定する。
+     *
+     * @author eagle.sakura
+     * @param filePath
+     * @return
+     * @version 2010/04/04 : 新規作成
+     */
+    public static Command create(String filePath, FileSystem fs) {
+        try {
+            BufferedReader br = fs.createFileReaderSJIS(filePath);
 
-			br.close();
+            Command result = create(br);
 
-			return	result;
-		}
-		catch( Exception e )
-		{
-			EagleUtil.log( e );
-			return	null;
-		}
-	}
+            br.close();
+
+            return result;
+        } catch (Exception e) {
+            EagleUtil.log(e);
+            return null;
+        }
+    }
 }

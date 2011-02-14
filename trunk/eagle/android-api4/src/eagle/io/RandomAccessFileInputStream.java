@@ -7,25 +7,20 @@ import java.io.RandomAccessFile;
 /**
  * RandomAccessFileをInputStreamから利用する。
  */
-public class RandomAccessFileInputStream extends InputStream
-{
+public class RandomAccessFileInputStream extends InputStream {
     private RandomAccessFile file = null;
-    private int             header = 0;
-    private int             size = 0;
+    private int header = 0;
+    private int size = 0;
 
     /**
      *
      * @param raf
      */
-    public RandomAccessFileInputStream( RandomAccessFile raf )
-    {
+    public RandomAccessFileInputStream(RandomAccessFile raf) {
         file = raf;
-        try
-        {
-            size = ( int )file.length( );
-        }
-        catch( Exception e )
-        {
+        try {
+            size = (int) file.length();
+        } catch (Exception e) {
 
         }
     }
@@ -34,70 +29,60 @@ public class RandomAccessFileInputStream extends InputStream
      *
      * @param raf
      */
-    public RandomAccessFileInputStream( RandomAccessFile raf, int header, int length )
-    {
+    public RandomAccessFileInputStream(RandomAccessFile raf, int header, int length) {
         file = raf;
         this.header = header;
         this.size = length;
     }
 
     @Override
-    public int read( ) throws IOException
-    {
-        return file.read( );
+    public int read() throws IOException {
+        return file.read();
 
     }
 
     @Override
-    public int read( byte[] b ) throws IOException
-    {
-        return file.read( b );
+    public int read(byte[] b) throws IOException {
+        return file.read(b);
     }
 
     @Override
-    public int read( byte[] b, int offset, int length ) throws IOException
-    {
-        return file.read( b, offset, length );
+    public int read(byte[] b, int offset, int length) throws IOException {
+        return file.read(b, offset, length);
     }
 
     @Override
-    public boolean markSupported( )
-    {
+    public boolean markSupported() {
         return true;
     }
 
     @Override
-    public void mark( int readlimit )
-    {
+    public void mark(int readlimit) {
     }
 
     @Override
-    public int available( ) throws IOException
-    {
-    //   return  1024 * 200;
-        int result = ( int ) ( size - ( file.getFilePointer( ) - header ) );
+    public int available() throws IOException {
+        // return 1024 * 200;
+        int result = (int) (size - (file.getFilePointer() - header));
         return result;
     }
 
     @Override
-    public long skip( long byteCount ) throws IOException
-    {
+    public long skip(long byteCount) throws IOException {
 
-        long start = file.getFilePointer( );
-        file.skipBytes( ( int ) byteCount );
+        long start = file.getFilePointer();
+        file.skipBytes((int) byteCount);
 
-        return file.getFilePointer( ) - start;
+        return file.getFilePointer() - start;
     }
 
     @Override
-    public void close( ) throws IOException
-    {
+    public void close() throws IOException {
 
     }
 
     @Override
-    public synchronized void reset( ) throws IOException
-    {
-        file.seek( header );
+    public synchronized void reset() throws IOException {
+        file.seek(header);
     }
 }
