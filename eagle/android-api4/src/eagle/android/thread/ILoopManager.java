@@ -11,8 +11,7 @@ import eagle.android.view.LooperSurfaceView;
  * @author eagle.sakura
  * @version 2010/07/22 : 新規作成
  */
-public interface ILoopManager
-{
+public interface ILoopManager {
     /**
      * サーフェイスを追加する。
      *
@@ -20,7 +19,7 @@ public interface ILoopManager
      * @param surface
      * @version 2010/05/25 : 新規作成
      */
-    public void addSurface( LooperSurfaceView surface );
+    public void addSurface(LooperSurfaceView surface);
 
     /**
      * 全サーフェイスの作成が完了したらtrueを返す。
@@ -29,7 +28,7 @@ public interface ILoopManager
      * @return
      * @version 2010/05/30 : 新規作成
      */
-    public boolean isSurfaceCreateComplete( );
+    public boolean isSurfaceCreateComplete();
 
     /**
      * サーフェイスが一つでも壊れている場合にtrueを返す。
@@ -38,7 +37,7 @@ public interface ILoopManager
      * @return
      * @version 2010/09/23 : 新規作成
      */
-    public boolean isSurfaceDestroyed( );
+    public boolean isSurfaceDestroyed();
 
     /**
      * ループ処理を開始する。
@@ -46,7 +45,7 @@ public interface ILoopManager
      * @author eagle.sakura
      * @version 2010/07/22 : 新規作成
      */
-    public void startLoop( );
+    public void startLoop();
 
     /**
      * ループを終了し、クラスを破棄する。
@@ -54,7 +53,7 @@ public interface ILoopManager
      * @author eagle.sakura
      * @version 2010/07/22 : 新規作成
      */
-    public void dispose( );
+    public void dispose();
 
     /**
      * フレームレートを指定する。<BR>
@@ -64,7 +63,7 @@ public interface ILoopManager
      * @param rate
      * @version 2010/07/27 : 新規作成
      */
-    public void setFrameRate( int rate );
+    public void setFrameRate(int rate);
 
     /**
      * ループを一時停止する。
@@ -72,7 +71,7 @@ public interface ILoopManager
      * @author eagle.sakura
      * @version 2010/09/23 : 新規作成
      */
-    public boolean loopPause( );
+    public boolean loopPause();
 
     /**
      * 一時停止していたループを再開する。
@@ -81,5 +80,5 @@ public interface ILoopManager
      * @return
      * @version 2010/09/23 : 新規作成
      */
-    public boolean loopResume( );
+    public boolean loopResume();
 }

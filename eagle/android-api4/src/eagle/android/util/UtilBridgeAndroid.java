@@ -13,8 +13,7 @@ import eagle.util.IEagleUtilBridge;
  * @author eagle.sakura
  * @version 2010/05/30 : 新規作成
  */
-public class UtilBridgeAndroid implements IEagleUtilBridge
-{
+public class UtilBridgeAndroid implements IEagleUtilBridge {
     private String tag = "";
 
     /**
@@ -24,8 +23,7 @@ public class UtilBridgeAndroid implements IEagleUtilBridge
      * @param tag
      * @version 2010/05/30 : 新規作成
      */
-    public UtilBridgeAndroid( String tag )
-    {
+    public UtilBridgeAndroid(String tag) {
         this.tag = tag;
     }
 
@@ -38,16 +36,14 @@ public class UtilBridgeAndroid implements IEagleUtilBridge
      * @version 2010/05/30 : 新規作成
      */
     @Override
-    public void log( int eLogType, String message )
-    {
+    public void log(int eLogType, String message) {
         // TODO 自動生成されたメソッド・スタブ
-        switch ( eLogType )
-        {
+        switch (eLogType) {
         case eLogTypeDebug:
-            Log.d( tag, message );
+            Log.d(tag, message);
             return;
         case eLogTypeInfo:
-            Log.i( tag, message );
+            Log.i(tag, message);
             return;
         }
     }
@@ -59,11 +55,10 @@ public class UtilBridgeAndroid implements IEagleUtilBridge
      * @version 2010/09/12 : 新規作成
      */
     @Override
-    public int getPlatformVersion( )
-    {
+    public int getPlatformVersion() {
         // TODO 自動生成されたメソッド・スタブ
         return Build.VERSION.SDK_INT;
-        //	return ( new Build.VERSION() ).SDK_INT;
+        // return ( new Build.VERSION() ).SDK_INT;
     }
 
 }

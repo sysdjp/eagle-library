@@ -28,29 +28,27 @@ import eagle.util.EagleUtil;
  * @author eagle.sakura
  * @version 2010/05/31 : 新規作成
  */
-public class UtilActivity extends Activity
-{
+public class UtilActivity extends Activity {
     private static String sdcardPath = null;
 
     /**
      * SDカードへの出力ストリームを開く。<BR>
      * pathにはSDカード以下のパスを記述する。<BR>
-     * android.permission.WRITE_EXTERNAL_STORAGEが設定されていない場合、このメソッドは必ずExceptionを投げる。
+     * android.permission.WRITE_EXTERNAL_STORAGEが設定されていない場合、
+     * このメソッドは必ずExceptionを投げる。
      *
      * @author eagle.sakura
      * @param path
      * @return
      * @version 2010/06/06 : 新規作成
      */
-    public static FileOutputStream openSDOutputStream( String path ) throws IOException
-    {
-        if( path.charAt( 0 ) != '/' && path.charAt( 0 ) != '\\' )
-        {
+    public static FileOutputStream openSDOutputStream(String path) throws IOException {
+        if (path.charAt(0) != '/' && path.charAt(0) != '\\') {
             path = "/" + path;
         }
 
-        EagleUtil.log( "path : " + path );
-        return new FileOutputStream( sdcardPath + path );
+        EagleUtil.log("path : " + path);
+        return new FileOutputStream(sdcardPath + path);
     }
 
     /**
@@ -61,10 +59,8 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/07/17 : 新規作成
      */
-    public static String toSDPath( String path )
-    {
-        if( path.charAt( 0 ) != '/' && path.charAt( 0 ) != '\\' )
-        {
+    public static String toSDPath(String path) {
+        if (path.charAt(0) != '/' && path.charAt(0) != '\\') {
             path = "/" + path;
         }
         return sdcardPath + path;
@@ -79,23 +75,21 @@ public class UtilActivity extends Activity
      * @throws IOException
      * @version 2010/06/06 : 新規作成
      */
-    public static FileInputStream openSDInputStream( String path ) throws IOException
-    {
-        if( path.charAt( 0 ) != '/' && path.charAt( 0 ) != '\\' )
-        {
+    public static FileInputStream openSDInputStream(String path) throws IOException {
+        if (path.charAt(0) != '/' && path.charAt(0) != '\\') {
             path = "/" + path;
         }
 
-        EagleUtil.log( "path : " + path );
-        return new FileInputStream( getSDCardRootPath( ) + path );
+        EagleUtil.log("path : " + path);
+        return new FileInputStream(getSDCardRootPath() + path);
     }
 
     /**
      * SDカードとして認識するパスを指定する。
+     *
      * @param path
      */
-    public  static  void    setSDCardRootPath( String path )
-    {
+    public static void setSDCardRootPath(String path) {
         sdcardPath = path;
     }
 
@@ -106,16 +100,13 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/06 : 新規作成
      */
-    public static String getSDCardRootPath( )
-    {
-        if( sdcardPath == null )
-        {
-            sdcardPath = Environment.getExternalStorageDirectory( ).getPath( );
+    public static String getSDCardRootPath() {
+        if (sdcardPath == null) {
+            sdcardPath = Environment.getExternalStorageDirectory().getPath();
 
-            //! モデル情報指定
-            EagleUtil.log( Build.MODEL );
-            if( Build.MODEL.equals( "SC-01C" ) )
-            {
+            // ! モデル情報指定
+            EagleUtil.log(Build.MODEL);
+            if (Build.MODEL.equals("SC-01C")) {
                 sdcardPath += "/external_sd";
             }
         }
@@ -131,14 +122,12 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/12 : 新規作成
      */
-    public static String convertSDPath( String path )
-    {
-        if( path.charAt( 0 ) != '/' && path.charAt( 0 ) != '\\' )
-        {
+    public static String convertSDPath(String path) {
+        if (path.charAt(0) != '/' && path.charAt(0) != '\\') {
             path = "/" + path;
         }
 
-        return getSDCardRootPath( ) + path;
+        return getSDCardRootPath() + path;
     }
 
     /**
@@ -150,11 +139,10 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/07/14 : 新規作成
      */
-    public static Vector2 getDisplaySize( Context context, Vector2 result )
-    {
-        WindowManager wm = ( WindowManager ) context.getSystemService( Context.WINDOW_SERVICE );
-        int displayW = wm.getDefaultDisplay( ).getWidth( ), displayH = wm.getDefaultDisplay( ).getHeight( );
-        result.set( ( float ) displayW, ( float ) displayH );
+    public static Vector2 getDisplaySize(Context context, Vector2 result) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int displayW = wm.getDefaultDisplay().getWidth(), displayH = wm.getDefaultDisplay().getHeight();
+        result.set((float) displayW, (float) displayH);
         return result;
     }
 
@@ -165,43 +153,36 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/06 : 新規作成
      */
-    public static String getDateString( )
-    {
+    public static String getDateString() {
         String str = "";
 
-        Calendar calender = Calendar.getInstance( );
-        int month = calender.get( Calendar.MONTH ) + 1, date = calender.get( Calendar.DATE ), hour = calender
-                .get( Calendar.HOUR_OF_DAY ), minute = calender.get( Calendar.MINUTE ), seconds = calender
-                .get( Calendar.SECOND );
+        Calendar calender = Calendar.getInstance();
+        int month = calender.get(Calendar.MONTH) + 1, date = calender.get(Calendar.DATE), hour = calender.get(Calendar.HOUR_OF_DAY), minute = calender
+                .get(Calendar.MINUTE), seconds = calender.get(Calendar.SECOND);
 
-        str += calender.get( Calendar.YEAR );
+        str += calender.get(Calendar.YEAR);
 
-        if( month < 10 )
-        {
+        if (month < 10) {
             str += "0";
         }
         str += month;
 
-        if( date < 10 )
-        {
+        if (date < 10) {
             str += "0";
         }
         str += date;
 
-        if( hour < 10 )
-        {
+        if (hour < 10) {
             str += "0";
         }
         str += hour;
 
-        if( minute < 10 )
-        {
+        if (minute < 10) {
             str += "0";
         }
         str += minute;
 
-        if( seconds < 10 )
-        {
+        if (seconds < 10) {
             str += "0";
         }
         str += seconds;
@@ -216,9 +197,8 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/05 : 新規作成
      */
-    public static int getOrientation( Context context )
-    {
-        return context.getResources( ).getConfiguration( ).orientation;
+    public static int getOrientation(Context context) {
+        return context.getResources().getConfiguration().orientation;
     }
 
     /**
@@ -228,9 +208,8 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/05 : 新規作成
      */
-    public static boolean isOrientationVertical( Context context )
-    {
-        return getOrientation( context ) == Configuration.ORIENTATION_PORTRAIT;
+    public static boolean isOrientationVertical(Context context) {
+        return getOrientation(context) == Configuration.ORIENTATION_PORTRAIT;
     }
 
     /**
@@ -240,9 +219,8 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/13 : 新規作成
      */
-    public static boolean isOrientationAuto( Context context )
-    {
-        return getOrientation( context ) == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    public static boolean isOrientationAuto(Context context) {
+        return getOrientation(context) == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     }
 
     /**
@@ -253,16 +231,14 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/06 : 新規作成
      */
-    public static boolean createSDDirectory( String path )
-    {
-        File file = new File( getSDCardRootPath( ) + path );
-        if( file.isDirectory( ) )
-        {
+    public static boolean createSDDirectory(String path) {
+        File file = new File(getSDCardRootPath() + path);
+        if (file.isDirectory()) {
             return true;
         }
 
-        //!	ディレクトリを作成する。
-        return file.mkdir( );
+        // ! ディレクトリを作成する。
+        return file.mkdir();
     }
 
     /**
@@ -274,28 +250,20 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/12 : 新規作成
      */
-    public static boolean copyFile( Context context, Uri input, Uri output )
-    {
+    public static boolean copyFile(Context context, Uri input, Uri output) {
         OutputStream os = null;
 
-        try
-        {
-            os = context.getContentResolver( ).openOutputStream( output );
-            copyFile( context, input, os );
-            os.close( );
+        try {
+            os = context.getContentResolver().openOutputStream(output);
+            copyFile(context, input, os);
+            os.close();
             return true;
-        }
-        catch( Exception e )
-        {
-            try
-            {
-                if( os != null )
-                {
-                    os.close( );
+        } catch (Exception e) {
+            try {
+                if (os != null) {
+                    os.close();
                 }
-            }
-            catch( IOException ioe )
-            {
+            } catch (IOException ioe) {
 
             }
             return false;
@@ -309,42 +277,30 @@ public class UtilActivity extends Activity
      * @param os
      * @version 2010/06/12 : 新規作成
      */
-    public static void copyFile( Context context, Uri origin, OutputStream os ) throws IOException
-    {
-        InputStream is = context.getContentResolver( ).openInputStream( origin );
+    public static void copyFile(Context context, Uri origin, OutputStream os) throws IOException {
+        InputStream is = context.getContentResolver().openInputStream(origin);
 
-        byte[] temp = new byte[ 1024 * 512 ];
+        byte[] temp = new byte[1024 * 512];
 
-        try
-        {
-            while ( is.available( ) > 0 )
-            {
-                if( is.available( ) > temp.length )
-                {
-                    is.read( temp );
-                    os.write( temp );
-                }
-                else
-                {
-                    int size = is.available( );
-                    is.read( temp );
-                    os.write( temp, 0, size );
+        try {
+            while (is.available() > 0) {
+                if (is.available() > temp.length) {
+                    is.read(temp);
+                    os.write(temp);
+                } else {
+                    int size = is.available();
+                    is.read(temp);
+                    os.write(temp, 0, size);
                 }
             }
 
-            os.flush( );
-            is.close( );
-        }
-        catch( IOException ioe )
-        {
-            if( is != null )
-            {
-                try
-                {
-                    is.close( );
-                }
-                catch( Exception e )
-                {
+            os.flush();
+            is.close();
+        } catch (IOException ioe) {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (Exception e) {
 
                 }
             }
@@ -361,13 +317,12 @@ public class UtilActivity extends Activity
      * @param outPath
      * @version 2010/06/12 : 新規作成
      */
-    public static void copyFile( Context context, Uri origin, String outPath ) throws IOException
-    {
-        FileOutputStream os = new FileOutputStream( outPath );
+    public static void copyFile(Context context, Uri origin, String outPath) throws IOException {
+        FileOutputStream os = new FileOutputStream(outPath);
 
-        copyFile( context, origin, os );
+        copyFile(context, origin, os);
 
-        os.close( );
+        os.close();
     }
 
     /**
@@ -378,22 +333,15 @@ public class UtilActivity extends Activity
      * @param isVertical
      * @version 2010/06/13 : 新規作成
      */
-    public static void setOrientation( Context context, boolean isVertical )
-    {
-        try
-        {
-            Activity activity = ( Activity ) context;
-            if( isVertical )
-            {
-                activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+    public static void setOrientation(Context context, boolean isVertical) {
+        try {
+            Activity activity = (Activity) context;
+            if (isVertical) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
-            else
-            {
-                activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
-            }
-        }
-        catch( ClassCastException cce )
-        {
+        } catch (ClassCastException cce) {
             return;
         }
     }
@@ -405,23 +353,16 @@ public class UtilActivity extends Activity
      * @param context
      * @version 2010/06/16 : 新規作成
      */
-    public static void toggleOrientationFixed( Context context )
-    {
-        try
-        {
-            Activity activity = ( Activity ) context;
-            int ori = context.getResources( ).getConfiguration( ).orientation;
-            if( ori == Configuration.ORIENTATION_LANDSCAPE )
-            {
-                activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+    public static void toggleOrientationFixed(Context context) {
+        try {
+            Activity activity = (Activity) context;
+            int ori = context.getResources().getConfiguration().orientation;
+            if (ori == Configuration.ORIENTATION_LANDSCAPE) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            } else {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
-            else
-            {
-                activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
-            }
-        }
-        catch( ClassCastException cce )
-        {
+        } catch (ClassCastException cce) {
             return;
         }
     }
@@ -433,30 +374,20 @@ public class UtilActivity extends Activity
      * @param is
      * @version 2010/05/31 : 新規作成
      */
-    public static void setOrientationFixed( Context context, boolean is )
-    {
-        try
-        {
-            Activity activity = ( Activity ) context;
-            if( is )
-            {
-                int ori = context.getResources( ).getConfiguration( ).orientation;
-                if( ori == Configuration.ORIENTATION_LANDSCAPE )
-                {
-                    activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
+    public static void setOrientationFixed(Context context, boolean is) {
+        try {
+            Activity activity = (Activity) context;
+            if (is) {
+                int ori = context.getResources().getConfiguration().orientation;
+                if (ori == Configuration.ORIENTATION_LANDSCAPE) {
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                } else {
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
-                else
-                {
-                    activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
-                }
+            } else {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
-            else
-            {
-                activity.setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED );
-            }
-        }
-        catch( ClassCastException cce )
-        {
+        } catch (ClassCastException cce) {
             return;
         }
     }
@@ -468,10 +399,9 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/13 : 新規作成
      */
-    public static boolean isSdkVersion1_x( )
-    {
-        //	return	( new Build.VERSION() ).SDK_INT <= 4;
-        return ( EagleUtil.getBridge( ).getPlatformVersion( ) ) <= 4;
+    public static boolean isSdkVersion1_x() {
+        // return ( new Build.VERSION() ).SDK_INT <= 4;
+        return (EagleUtil.getBridge().getPlatformVersion()) <= 4;
     }
 
     /**
@@ -481,9 +411,8 @@ public class UtilActivity extends Activity
      * @return
      * @version 2010/06/13 : 新規作成
      */
-    public static boolean isSdkVersion2_x( )
-    {
-        //	return	( new Build.VERSION() ).SDK_INT > 4;
-        return ( EagleUtil.getBridge( ).getPlatformVersion( ) ) > 4;
+    public static boolean isSdkVersion2_x() {
+        // return ( new Build.VERSION() ).SDK_INT > 4;
+        return (EagleUtil.getBridge().getPlatformVersion()) > 4;
     }
 }
