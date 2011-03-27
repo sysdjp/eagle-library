@@ -47,7 +47,6 @@ public class LooperHandler implements ILoopManager, Callback {
 
     @Override
     public void setFrameRate(int rate) {
-        // TODO 自動生成されたメソッド・スタブ
         frameRate = rate;
     }
 
@@ -105,7 +104,6 @@ public class LooperHandler implements ILoopManager, Callback {
 
     @Override
     public boolean isSurfaceDestroyed() {
-        // TODO 自動生成されたメソッド・スタブ
         return surfaceDstroyed;
     }
 
@@ -156,7 +154,6 @@ public class LooperHandler implements ILoopManager, Callback {
 
         @Override
         public void run() {
-            // TODO 自動生成されたメソッド・スタブ
             if (LooperHandler.this.isSurfaceCreateComplete()) {
                 // ! すべてのビューが初期化完了した
                 LooperHandler.this.looper.onInitialize();
@@ -236,7 +233,6 @@ public class LooperHandler implements ILoopManager, Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // TODO 自動生成されたメソッド・スタブ
         if (isSurfaceCreateComplete() && runner == null) {
             EagleUtil.log("Surface create complete");
             startLoop();
@@ -245,26 +241,22 @@ public class LooperHandler implements ILoopManager, Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // TODO 自動生成されたメソッド・スタブ
 
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // TODO 自動生成されたメソッド・スタブ
         surfaceDstroyed = true;
     }
 
     @Override
     public boolean loopPause() {
-        // TODO 自動生成されたメソッド・スタブ
         handler.removeCallbacks(runner);
         return true;
     }
 
     @Override
     public boolean loopResume() {
-        // TODO 自動生成されたメソッド・スタブ
         handler.post(runner);
         return true;
     }

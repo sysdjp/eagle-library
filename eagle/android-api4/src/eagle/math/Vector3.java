@@ -74,6 +74,18 @@ public final class Vector3 {
     }
 
     /**
+     * ベクトル乗算を行う。
+     * @param _x
+     * @param _y
+     * @param _z
+     */
+    public void mul(float _x, float _y, float _z) {
+        x *= _x;
+        y *= _y;
+        z *= _z;
+    }
+
+    /**
      * 値のコピーを行う。
      *
      * @author eagle.sakura
@@ -162,6 +174,18 @@ public final class Vector3 {
      */
     public float length() {
         return (float) Math.sqrt((double) ((x * x) + (y * y) + (z * z)));
+    }
+
+    /**
+     * ベクトル間の距離を取得する。
+     * @param v
+     * @return
+     */
+    public float length(Vector3 v) {
+        float _x = x - v.x;
+        float _y = y - v.y;
+        float _z = z - v.z;
+        return (float) Math.sqrt((double) ((_x * _x) + (_y * _y) + (_z * _z)));
     }
 
     /**

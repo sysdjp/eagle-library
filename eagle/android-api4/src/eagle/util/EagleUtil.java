@@ -42,7 +42,6 @@ public class EagleUtil {
          */
         @Override
         public void log(int eLogType, String message) {
-            // TODO 自動生成されたメソッド・スタブ
             System.out.println(message);
         }
 
@@ -73,6 +72,17 @@ public class EagleUtil {
      */
     public static void init(IEagleUtilBridge bridge) {
         utilBridge = bridge;
+    }
+
+    /**
+     * 係数ブレンドを行い、結果を返す。
+     * @param a
+     * @param b
+     * @param blend aのブレンド値
+     * @return
+     */
+    public static float blendValue(float a, float b, float blend) {
+        return a * blend + b * (1.0f - blend);
     }
 
     /**
@@ -341,7 +351,7 @@ public class EagleUtil {
      * @version 2010/03/26 : 新規作成
      */
     public static final void log(Exception e) {
-        if (utilBridge != null) {
+        if (utilBridge != null && e != null) {
             utilBridge.log(IEagleUtilBridge.eLogTypeDebug, "" + e);
             utilBridge.log(IEagleUtilBridge.eLogTypeDebug, "" + e.getMessage());
             StackTraceElement steArray[] = e.getStackTrace();

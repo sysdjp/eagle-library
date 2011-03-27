@@ -37,7 +37,6 @@ public class UtilBridgeAndroid implements IEagleUtilBridge {
      */
     @Override
     public void log(int eLogType, String message) {
-        // TODO 自動生成されたメソッド・スタブ
         switch (eLogType) {
         case eLogTypeDebug:
             Log.d(tag, message);
@@ -56,7 +55,6 @@ public class UtilBridgeAndroid implements IEagleUtilBridge {
      */
     @Override
     public int getPlatformVersion() {
-        // TODO 自動生成されたメソッド・スタブ
         return Build.VERSION.SDK_INT;
         // return ( new Build.VERSION() ).SDK_INT;
     }

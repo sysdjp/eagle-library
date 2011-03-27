@@ -78,7 +78,6 @@ public class OpenGLView extends LooperSurfaceView {
         // glManager.initGL();
         // glManager.clearTest( );
 
-        // TODO 自動生成されたメソッド・スタブ
         Vector2 v = UtilActivity.getDisplaySize(context, new Vector2());
         EagleUtil.log("DisplaySize : " + v);
         glManager.setSurfaceSize((int) v.x, (int) v.y);
@@ -112,7 +111,6 @@ public class OpenGLView extends LooperSurfaceView {
             glManager = GLManager.getInstance();
         }
 
-        // TODO 自動生成されたメソッド・スタブ
         super.surfaceChanged(holder, format, width, height);
 
         Vector2 v = UtilActivity.getDisplaySize(context, new Vector2());
@@ -129,7 +127,6 @@ public class OpenGLView extends LooperSurfaceView {
      */
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // TODO 自動生成されたメソッド・スタブ
         super.surfaceDestroyed(holder);
 
         /*

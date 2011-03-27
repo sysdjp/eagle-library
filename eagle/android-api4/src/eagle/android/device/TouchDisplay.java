@@ -5,9 +5,9 @@
  */
 package eagle.android.device;
 
-import eagle.util.EagleUtil;
 import android.graphics.Point;
 import android.view.MotionEvent;
+import eagle.util.EagleUtil;
 
 /**
  * @author eagle.sakura
@@ -203,6 +203,11 @@ public class TouchDisplay {
          * タッチ開始した時間。
          */
         private long touchStartTime = 0;
+
+        /**
+         * タッチしていた時間（フレーム）
+         */
+        private int touchFrame = 0;
         /**
          * タッチした座標。
          */
@@ -366,6 +371,14 @@ public class TouchDisplay {
         }
 
         /**
+         * 指を引きずった長さを取得する。
+         * @return
+         */
+        public float getDrugLength() {
+            return (float) Math.sqrt(this.getDrugVectorX() * this.getDrugVectorX() + this.getDrugVectorY() * this.getDrugVectorY());
+        }
+
+        /**
          * ドラッグされた距離を取得する。
          *
          * @author eagle.sakura
@@ -435,6 +448,20 @@ public class TouchDisplay {
         protected void update() {
             attrOld = attrNow;
             attrNow = attribute;
+
+            if (isRelease() && !isReleaseOnce()) {
+                touchFrame = 0;
+            } else if (isTouch()) {
+                ++touchFrame;
+            }
+        }
+
+        /**
+         * 何フレームタッチしたか。
+         * @return
+         */
+        public int getTouchFrame() {
+            return touchFrame;
         }
     }
 

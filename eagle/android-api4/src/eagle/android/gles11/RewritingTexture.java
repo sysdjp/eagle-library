@@ -9,8 +9,8 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Bitmap.Config;
 import android.opengl.GLUtils;
 import eagle.android.graphic.Graphics;
 
@@ -87,7 +87,6 @@ public class RewritingTexture extends ITexture {
      */
     @Override
     public int getHeight() {
-        // TODO 自動生成されたメソッド・スタブ
         return bitmap.getHeight();
     }
 
@@ -98,7 +97,6 @@ public class RewritingTexture extends ITexture {
      */
     @Override
     public int getType() {
-        // TODO 自動生成されたメソッド・スタブ
         return eTypeUnknown;
     }
 
@@ -109,7 +107,6 @@ public class RewritingTexture extends ITexture {
      */
     @Override
     public int getWidth() {
-        // TODO 自動生成されたメソッド・スタブ
         return bitmap.getWidth();
     }
 

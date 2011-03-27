@@ -43,7 +43,6 @@ public class InputStreamBufferReader implements IBufferReader, Disposable {
      */
     @Override
     public int getBufferSize() throws IOException {
-        // TODO 自動生成されたメソッド・スタブ
         return is.available();
     }
 
@@ -53,7 +52,6 @@ public class InputStreamBufferReader implements IBufferReader, Disposable {
      */
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
         try {
             is.close();
             is = null;

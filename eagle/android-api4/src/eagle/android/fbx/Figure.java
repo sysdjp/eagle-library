@@ -50,7 +50,6 @@ public class Figure implements Disposable {
      */
     @Override
     protected void finalize() throws Throwable {
-        // TODO 自動生成されたメソッド・スタブ
         super.finalize();
         dispose();
     }

@@ -48,7 +48,6 @@ public class Frame extends Node {
      */
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
         super.dispose();
 
         vertices.dispose();
@@ -81,8 +80,6 @@ public class Frame extends Node {
     @Override
     public void draw() {
         GLManager glManager = figure.getGLManager();
-
-        // TODO 自動生成されたメソッド・スタブ
 
         // ! ボーン変形行列が指定されている場合、それを設定する。
         if (deformer != null) {
@@ -122,7 +119,6 @@ public class Frame extends Node {
      */
     @Override
     public int getNodeType() {
-        // TODO 自動生成されたメソッド・スタブ
         return deformer == null ? eNodeTypeMesh : eNodeTypeSkin;
     }
 

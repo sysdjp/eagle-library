@@ -62,7 +62,6 @@ public class CanvasView extends LooperSurfaceView {
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
         canvas.setHolder(arg0);
-        // TODO 自動生成されたメソッド・スタブ
         super.surfaceCreated(arg0);
     }
 

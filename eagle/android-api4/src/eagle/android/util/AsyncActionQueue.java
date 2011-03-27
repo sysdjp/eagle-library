@@ -6,15 +6,12 @@ package eagle.android.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import eagle.util.EagleUtil;
-
 import android.os.AsyncTask;
 
 /**
  * 非同期待ち行列の処理を行う。
  */
 public class AsyncActionQueue {
-
     private List<Action> queue = new ArrayList<Action>();
     private ActionTask current = null;
 
@@ -44,14 +41,11 @@ public class AsyncActionQueue {
      * @param action
      */
     public void pushFront(Action action) {
-        synchronized (queue) {
-            queue.add(0, action);
+        if (action == null) {
+            return;
         }
-    }
-
-    public void push(Action action, int location) {
         synchronized (queue) {
-            queue.add(location, action);
+            queue.add(action);
         }
     }
 
@@ -65,36 +59,11 @@ public class AsyncActionQueue {
             queue.remove(action);
             if (current != null && current.action == action) {
                 synchronized (current) {
-                    try {
-                        current.cancel(true);
-                        current = null;
-                    } catch (Exception e) {
-                        EagleUtil.log(e);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * すべての動作をキャンセルする。
-     */
-    public void cancelAll() {
-        synchronized (queue) {
-            queue.clear();
-            if (current != null) {
-                try {
                     current.cancel(true);
-                    synchronized (current.action) {
-                        current = null;
-                    }
-                } catch (Exception e) {
-                    EagleUtil.log(e);
+                    current = null;
                 }
             }
-
         }
-        isStarted = false;
     }
 
     /**
@@ -109,18 +78,31 @@ public class AsyncActionQueue {
                     queue.remove(act);
                 }
             }
-            if (current != null && current.action.equals(action)) {
-                try {
+        }
 
-                    synchronized (current) {
-                        current.cancel(true);
-                        current = null;
-                    }
-                } catch (Exception e) {
-                    EagleUtil.log(e);
-                }
+        if (current != null && current.action.equals(action)) {
+            synchronized (current) {
+                current.cancel(true);
+                current = null;
             }
         }
+    }
+
+    /**
+     * すべての動作をキャンセルする。
+     */
+    public void cancelAll() {
+        synchronized (queue) {
+            queue.clear();
+            if (current != null) {
+                current.cancel(true);
+                synchronized (current.action) {
+                    current = null;
+                }
+            }
+
+        }
+        isStarted = false;
     }
 
     private void _startAction() {
@@ -161,7 +143,7 @@ public class AsyncActionQueue {
      */
     private void onActionExit(Action action) {
         if (queue.size() > 0) {
-            // ! 次の行動を開始する。
+            //! 次の行動を開始する。
             _startAction();
         } else {
             current = null;
@@ -173,17 +155,13 @@ public class AsyncActionQueue {
      * タスクを一時停止する。
      */
     public void onPause() {
-        try {
-            if (isStarted) {
-                synchronized (current) {
-                    current.cancel(true);
-                    // ! 先頭に追加しておく
-                    pushFront(current.action);
-                    current = null;
-                }
+        if (isStarted) {
+            synchronized (current) {
+                current.cancel(true);
+                //! 先頭に追加しておく
+                pushFront(current.action);
+                current = null;
             }
-        } catch (Exception e) {
-            EagleUtil.log(e);
         }
     }
 
@@ -191,12 +169,8 @@ public class AsyncActionQueue {
      * タスクを再開する。
      */
     public void onResume() {
-        try {
-            if (isStarted) {
-                _startAction();
-            }
-        } catch (Exception e) {
-            EagleUtil.log(e);
+        if (isStarted) {
+            _startAction();
         }
     }
 
@@ -216,23 +190,13 @@ public class AsyncActionQueue {
 
         @Override
         protected void onPreExecute() {
-            try {
-                super.onPreExecute();
-            } catch (Exception e) {
-                EagleUtil.log(e);
-            }
+            super.onPreExecute();
+            action.onPreExecute();
         }
 
         @Override
         protected Object doInBackground(Object... params) {
-            try {
-                synchronized (action) {
-                    return action.onBackgroundAction();
-                }
-            } catch (Exception e) {
-                EagleUtil.log(e);
-                return null;
-            }
+            return action.onBackgroundAction();
         }
 
         /**
@@ -240,27 +204,17 @@ public class AsyncActionQueue {
          */
         @Override
         protected void onCancelled() {
-            try {
-                super.onCancelled();
-                synchronized (action) {
-                    action.onCancel();
-                }
-            } catch (Exception e) {
-                EagleUtil.log(e);
-            }
+            super.onCancelled();
+            action.onCancel();
         }
 
         @Override
         protected void onPostExecute(Object result) {
-            try {
-                super.onPostExecute(result);
+            super.onPostExecute(result);
 
-                // ! 正常に終了したことを通知する。
-                action.onPost(result);
-                onActionExit(action);
-            } catch (Exception e) {
-                EagleUtil.log(e);
-            }
+            //! 正常に終了したことを通知する。
+            action.onPost(result);
+            onActionExit(action);
         }
     }
 
@@ -268,6 +222,11 @@ public class AsyncActionQueue {
      * １回ごとの動作を示す。
      */
     public interface Action {
+        /**
+         * スレッド開始直前に呼ばれる。
+         */
+        public void onPreExecute();
+
         /**
          * 裏での動作を行う。
          */

@@ -14,8 +14,7 @@ import eagle.util.Disposable;
  * @author eagle.sakura
  * @version 2010/02/23 : 新規作成
  */
-public class FileAccessStream implements Disposable, IBufferWriter,
-        IBufferReader {
+public class FileAccessStream implements Disposable, IBufferWriter, IBufferReader {
     /**
      * ファイルアクセス用。
      */
@@ -51,7 +50,6 @@ public class FileAccessStream implements Disposable, IBufferWriter,
      */
     @Override
     public int getBufferSize() throws IOException {
-        // TODO 自動生成されたメソッド・スタブ
         return (int) raf.length();
     }
 
@@ -157,7 +155,6 @@ public class FileAccessStream implements Disposable, IBufferWriter,
      */
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
         try {
             raf.close();
             raf = null;
@@ -185,8 +182,7 @@ public class FileAccessStream implements Disposable, IBufferWriter,
      * @version 2010/03/25 : 新規作成
      */
     @Override
-    public int readBuffer(byte[] result, int head, int length)
-            throws IOException {
+    public int readBuffer(byte[] result, int head, int length) throws IOException {
         return raf.read(result, head, length);
     }
 
@@ -198,9 +194,7 @@ public class FileAccessStream implements Disposable, IBufferWriter,
      * @version 2010/02/23 : 新規作成
      */
     @Override
-    public int writeBuffer(byte[] buf, int position, int length)
-            throws IOException {
-        // TODO 自動生成されたメソッド・スタブ
+    public int writeBuffer(byte[] buf, int position, int length) throws IOException {
         raf.write(buf, position, (int) length);
         return length;
     }
