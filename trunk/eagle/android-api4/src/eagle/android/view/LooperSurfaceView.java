@@ -71,7 +71,6 @@ public class LooperSurfaceView extends SurfaceView implements SurfaceHolder.Call
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // TODO 自動生成されたメソッド・スタブ
         if (touchDisplay != null) {
             touchDisplay.onTouchEvent(event);
             return true;

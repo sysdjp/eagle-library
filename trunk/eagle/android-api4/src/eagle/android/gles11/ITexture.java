@@ -83,7 +83,6 @@ public abstract class ITexture implements Disposable {
      */
     @Override
     protected void finalize() throws Throwable {
-        // TODO 自動生成されたメソッド・スタブ
         try {
             super.finalize();
         } finally {
@@ -155,7 +154,6 @@ public abstract class ITexture implements Disposable {
      * @version 2010/05/30 : 新規作成
      */
     public void bind() {
-        // TODO 自動生成されたメソッド・スタブ
         GL11 gl = glManager.getGL();
         gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glBindTexture(GL10.GL_TEXTURE_2D, getTextureID());
@@ -167,7 +165,6 @@ public abstract class ITexture implements Disposable {
      */
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
         if (textureId == -1) {
             return;
         }
@@ -176,13 +173,26 @@ public abstract class ITexture implements Disposable {
         textureId = -1;
     }
 
+    public void setScalingFilter(boolean linear) {
+        GL10 gl = getGLManager().getGL10();
+        int type = linear ? GL10.GL_LINEAR : GL10.GL_NEAREST;
+        // ! テクスチャ属性指定。
+        bind();
+        {
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, type);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, type);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, type);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, type);
+        }
+        unbind();
+    }
+
     /**
      * @author eagle.sakura
      * @param glMgr
      * @version 2010/05/30 : 新規作成
      */
     public void unbind() {
-        // TODO 自動生成されたメソッド・スタブ
         GL11 gl = glManager.getGL();
         gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
         gl.glDisable(GL10.GL_TEXTURE_2D);

@@ -42,15 +42,12 @@ public class IndexBufferHW implements IIndexBuffer {
      */
     @Override
     public void drawElements() {
-        // TODO 自動生成されたメソッド・スタブ
         vram.bind(0, GL11.GL_ELEMENT_ARRAY_BUFFER);
         glManager.getGL().glDrawElements(GL10.GL_TRIANGLES, indicesLength, GL10.GL_UNSIGNED_SHORT, 0);
     }
 
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
-
     }
 
 }

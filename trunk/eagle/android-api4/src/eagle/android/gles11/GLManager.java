@@ -228,6 +228,48 @@ public class GLManager {
     }
 
     /**
+     * 通常合成
+     */
+    public static final int eAlphaBlendNormal = 0;
+
+    /**
+     * アルファ合成
+     */
+    public static final int eAlphaBlendAdd = 1;
+
+    /**
+     * 減算合成
+     */
+    public static final int eAlphaBlendSub = 2;
+
+    /**
+     * 乗算合成
+     */
+    public static final int eAlphaBlendMul = 3;
+
+    /**
+     *
+     * @param mode
+     */
+    public void setAlphaBlendMode(int mode) {
+        switch (mode) {
+        case eAlphaBlendNormal:
+            gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        case eAlphaBlendAdd:
+            gl10.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+            break;
+        case eAlphaBlendSub:
+            break;
+        case eAlphaBlendMul:
+            gl10.glBlendFunc(GL10.GL_DST_COLOR, GL10.GL_ZERO);
+            break;
+        default:
+            break;
+        }
+    }
+
+    /**
      * バッファの消去を行う。
      *
      * @author eagle.sakura
@@ -245,7 +287,7 @@ public class GLManager {
      * @version 2009/11/29 : 新規作成
      */
     public void clear() {
-        gl11.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BITS);
+        gl11.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
     }
 
     /**
@@ -533,7 +575,7 @@ public class GLManager {
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
         /*
-*/
+        */
         {
             int[] buf = { -1 };
             gl.glGetIntegerv(GL11Ext.GL_MAX_PALETTE_MATRICES_OES, buf, 0);

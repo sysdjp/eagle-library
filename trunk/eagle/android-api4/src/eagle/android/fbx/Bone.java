@@ -38,7 +38,6 @@ public class Bone extends Node {
      */
     @Override
     public int getNodeType() {
-        // TODO 自動生成されたメソッド・スタブ
         return eNodeTypeBone;
     }
 

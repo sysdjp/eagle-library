@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.content.Context;
-
 import eagle.io.FileSystem;
 import eagle.util.EagleException;
 
@@ -45,7 +44,6 @@ public class AssetFileSystem extends FileSystem {
      */
     @Override
     public InputStream createInputStream(String filePath) throws IOException, EagleException {
-        // TODO 自動生成されたメソッド・スタブ
         return context.getAssets().open(filePath);
     }
 

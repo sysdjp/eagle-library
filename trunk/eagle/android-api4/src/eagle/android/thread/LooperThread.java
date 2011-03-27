@@ -56,7 +56,6 @@ public class LooperThread extends Thread implements ILoopManager, Callback {
 
     @Override
     public void setFrameRate(int rate) {
-        // TODO 自動生成されたメソッド・スタブ
         frameRate = rate;
     }
 
@@ -228,7 +227,6 @@ public class LooperThread extends Thread implements ILoopManager, Callback {
      */
     @Override
     public void startLoop() {
-        // TODO 自動生成されたメソッド・スタブ
         // ! スレッドを開始させる
         start();
     }
@@ -254,7 +252,6 @@ public class LooperThread extends Thread implements ILoopManager, Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // TODO 自動生成されたメソッド・スタブ
         if (isSurfaceCreateComplete()) {
             EagleUtil.log("Surface create complete thread");
             startLoop();
@@ -263,33 +260,26 @@ public class LooperThread extends Thread implements ILoopManager, Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // TODO 自動生成されたメソッド・スタブ
-
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // TODO 自動生成されたメソッド・スタブ
-
     }
 
     @Override
     public boolean loopPause() {
-        // TODO 自動生成されたメソッド・スタブ
         setSleeping(true);
         return true;
     }
 
     @Override
     public boolean loopResume() {
-        // TODO 自動生成されたメソッド・スタブ
         setSleeping(false);
         return true;
     }
 
     @Override
     public boolean isSurfaceDestroyed() {
-        // TODO 自動生成されたメソッド・スタブ
         return false;
     }
 }

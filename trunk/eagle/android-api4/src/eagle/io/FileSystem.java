@@ -35,11 +35,25 @@ public class FileSystem implements Disposable {
     protected int uniqueID = -1;
 
     /**
+     * 対象フォルダ。
+     */
+    protected String directory = "";
+
+    /**
      * @author eagle.sakura
      * @version 2010/04/05 : 新規作成
      */
     public FileSystem() {
         this.uniqueID = EagleUtil.getRand();
+    }
+
+    /**
+     *
+     * @param dir
+     */
+    public FileSystem(String dir) {
+        this.uniqueID = EagleUtil.getRand();
+        directory = dir;
     }
 
     /**
@@ -76,7 +90,7 @@ public class FileSystem implements Disposable {
      * @version 2010/04/04 : 新規作成
      */
     public BufferedReader createFileReaderSJIS(String path) throws IOException, UnsupportedEncodingException, EagleException {
-        return new BufferedReader(new InputStreamReader(createInputStream(path), EagleUtil.eEncodeSJIS));
+        return new BufferedReader(new InputStreamReader(createInputStream(directory + path), EagleUtil.eEncodeSJIS));
     }
 
     /**
@@ -92,7 +106,7 @@ public class FileSystem implements Disposable {
      * @version 2010/04/04 : 新規作成
      */
     public BufferedWriter createFileWriterSJIS(String path) throws IOException, UnsupportedEncodingException, EagleException {
-        return new BufferedWriter(new OutputStreamWriter(createOutputStream(path), EagleUtil.eEncodeSJIS));
+        return new BufferedWriter(new OutputStreamWriter(createOutputStream(directory + path), EagleUtil.eEncodeSJIS));
     }
 
     /**
@@ -107,7 +121,7 @@ public class FileSystem implements Disposable {
      * @version 2010/04/05 : 新規作成
      */
     public InputStream createInputStream(String filePath) throws IOException, EagleException {
-        return new FileInputStream(filePath);
+        return new FileInputStream(directory + filePath);
     }
 
     /**
@@ -122,7 +136,7 @@ public class FileSystem implements Disposable {
      * @version 2010/04/05 : 新規作成
      */
     public OutputStream createOutputStream(String filePath) throws IOException, EagleException {
-        return new FileOutputStream(filePath);
+        return new FileOutputStream(directory + filePath);
     }
 
 }

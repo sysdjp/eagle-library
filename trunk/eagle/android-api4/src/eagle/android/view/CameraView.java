@@ -72,7 +72,6 @@ public class CameraView extends LooperSurfaceView implements PreviewCallback, Au
      */
     @Override
     public void onAutoFocus(boolean arg0, Camera arg1) {
-        // TODO 自動生成されたメソッド・スタブ
         // Log.d( "Face", "autofocus : " + arg0 );
         isAutoFocus = false;
     }
@@ -100,7 +99,6 @@ public class CameraView extends LooperSurfaceView implements PreviewCallback, Au
      */
     @Override
     public void onPreviewFrame(byte[] arg0, Camera arg1) {
-        // TODO 自動生成されたメソッド・スタブ
         currentPixels = arg0;
     }
 
@@ -171,7 +169,6 @@ public class CameraView extends LooperSurfaceView implements PreviewCallback, Au
     public void surfaceCreated(SurfaceHolder arg0) {
         previewWidth = arg0.getSurfaceFrame().width();
         previewHeight = arg0.getSurfaceFrame().height();
-        // TODO 自動生成されたメソッド・スタブ
         initCamera();
         super.surfaceCreated(arg0);
     }
@@ -233,7 +230,6 @@ public class CameraView extends LooperSurfaceView implements PreviewCallback, Au
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
-        // TODO 自動生成されたメソッド・スタブ
         try {
             if (camera != null) {
                 camera.stopPreview();

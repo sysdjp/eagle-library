@@ -64,7 +64,6 @@ public class BmpTexture extends ITexture {
      */
     @Override
     public int getHeight() {
-        // TODO 自動生成されたメソッド・スタブ
         return height;
     }
 
@@ -75,7 +74,6 @@ public class BmpTexture extends ITexture {
      */
     @Override
     public int getType() {
-        // TODO 自動生成されたメソッド・スタブ
         return eTypeUnknown;
     }
 
@@ -86,7 +84,6 @@ public class BmpTexture extends ITexture {
      */
     @Override
     public int getWidth() {
-        // TODO 自動生成されたメソッド・スタブ
         return width;
     }
 

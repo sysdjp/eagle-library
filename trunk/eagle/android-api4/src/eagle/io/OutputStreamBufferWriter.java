@@ -33,7 +33,6 @@ public class OutputStreamBufferWriter implements IBufferWriter {
      */
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
         try {
             os.flush();
             os.close();
@@ -52,7 +51,6 @@ public class OutputStreamBufferWriter implements IBufferWriter {
      */
     @Override
     public void seek(int eSeekType, int position) throws IOException {
-        // TODO 自動生成されたメソッド・スタブ
     }
 
     /**
@@ -66,7 +64,6 @@ public class OutputStreamBufferWriter implements IBufferWriter {
      */
     @Override
     public int writeBuffer(byte[] data, int head, int length) throws IOException {
-        // TODO 自動生成されたメソッド・スタブ
         os.write(data, head, length);
         return length;
     }

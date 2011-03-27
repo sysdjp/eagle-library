@@ -134,7 +134,6 @@ public class VertexBufferHW implements IVertexBuffer {
     @Override
     public void bind() {
         GL11 gl = glManager.getGL();
-        // TODO 自動生成されたメソッド・スタブ
         // ! 位置
         if (EagleUtil.isFlagOn(attibutes, 0x1 << eVramIndexPositions)) {
             gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -180,7 +179,6 @@ public class VertexBufferHW implements IVertexBuffer {
      */
     @Override
     public void unbind() {
-        // TODO 自動生成されたメソッド・スタブ
         GL11 gl = glManager.getGL();
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
@@ -194,7 +192,6 @@ public class VertexBufferHW implements IVertexBuffer {
      */
     @Override
     public void dispose() {
-        // TODO 自動生成されたメソッド・スタブ
         for (VRAMResource vram : vrams) {
             if (vram != null) {
                 vram.dispose();

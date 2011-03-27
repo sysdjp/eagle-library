@@ -126,7 +126,6 @@ public class DeformBufferSW implements IDeformBuffer {
         GL11Extension gles = glManager.getGL11Extension();
         gles.glEnableClientState(GL11Ext.GL_MATRIX_INDEX_ARRAY_OES);
         gles.glEnableClientState(GL11Ext.GL_WEIGHT_ARRAY_OES);
-        // TODO 自動生成されたメソッド・スタブ
         // ! パレット情報を転送
         gles.glWeightPointerOES(3, getVertexWeightType(), 0, getVertexWeight());
         gles.glMatrixIndexPointerOES(3, getPaletteIndexBufferType(), 0, getPaletteIndexBuffer());
@@ -140,7 +139,6 @@ public class DeformBufferSW implements IDeformBuffer {
     @Override
     public void unbind() {
         GL11 gl11 = glManager.getGL();
-        // TODO 自動生成されたメソッド・スタブ
         gl11.glDisableClientState(GL11Ext.GL_MATRIX_INDEX_ARRAY_OES);
         gl11.glDisableClientState(GL11Ext.GL_WEIGHT_ARRAY_OES);
 
