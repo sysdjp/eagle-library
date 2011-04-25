@@ -121,7 +121,6 @@ public class LooperSurfaceView extends SurfaceView implements SurfaceHolder.Call
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
         EagleUtil.log("surfaceCreated : " + this);
-        created = true;
     }
 
     /**

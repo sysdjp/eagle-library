@@ -32,6 +32,7 @@ public class CanvasView extends LooperSurfaceView {
         getHolder().setFormat(PixelFormat.TRANSPARENT);
         getHolder().setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
         canvas = new SurfaceCanvas(null);
+        canvas.setHolder(getHolder());
 
     }
 
@@ -46,6 +47,7 @@ public class CanvasView extends LooperSurfaceView {
         getHolder().setFormat(PixelFormat.TRANSPARENT);
         getHolder().setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
         canvas = new SurfaceCanvas(null);
+        canvas.setHolder(getHolder());
     }
 
     /**
@@ -61,7 +63,7 @@ public class CanvasView extends LooperSurfaceView {
 
     @Override
     public void surfaceCreated(SurfaceHolder arg0) {
-        canvas.setHolder(arg0);
+        //        canvas.setHolder(arg0);
         super.surfaceCreated(arg0);
     }
 

@@ -22,6 +22,8 @@ import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 import javax.microedition.khronos.opengles.GL11ExtensionPack;
 
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.view.SurfaceHolder;
 import eagle.android.math.Matrix4x4;
 import eagle.math.Vector3;
@@ -1007,6 +1009,34 @@ public class GLManager {
                 spriteTexture = null;
             }
         }
+    }
+
+    /**
+     * バックバッファの内容を撮影し、バッファに収める
+     * @return
+     */
+    public Bitmap captureSurfaceRGB888() {
+        final int eDisplayWidth = getDisplayWidth();
+        final int eDisplayHeight = getDisplayHeight();
+        ByteBuffer buffer = ByteBuffer.allocateDirect(4 * eDisplayWidth * eDisplayHeight);
+        gl10.glReadPixels(0, 0, eDisplayWidth, eDisplayHeight, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, buffer);
+        buffer.position(0);
+
+        byte[] source = new byte[4 * eDisplayWidth * eDisplayHeight];
+        buffer.get(source);
+        buffer = null;
+        System.gc();
+
+        Bitmap bmp = Bitmap.createBitmap(getDisplayWidth(), getDisplayHeight(), Config.ARGB_8888);
+
+        for (int y = 0; y < eDisplayHeight; ++y) {
+            for (int x = 0; x < eDisplayWidth; ++x) {
+                int head = (bmp.getWidth() * y + x) * 4;
+                bmp.setPixel(x, eDisplayHeight - y - 1, ((((int) source[head + 3]) & 0xff) << 24) | ((((int) source[head + 0]) & 0xff) << 16)
+                        | ((((int) source[head + 1]) & 0xff) << 8) | (((int) source[head + 2]) & 0xff));
+            }
+        }
+        return bmp;
     }
 
     /**

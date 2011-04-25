@@ -31,6 +31,18 @@ import eagle.util.EagleUtil;
 public class UtilActivity extends Activity {
     private static String sdcardPath = null;
 
+    static {
+        sdcardPath = Environment.getExternalStorageDirectory().getPath();
+
+        // ! モデル情報指定
+        EagleUtil.log(Build.MODEL);
+        if (Build.MODEL.equals("SC-01C")) {
+            sdcardPath += "/external_sd";
+        } else if (Build.MODEL.startsWith("Adam")) {
+            sdcardPath = "mnt/sdcard2";
+        }
+    }
+
     /**
      * SDカードへの出力ストリームを開く。<BR>
      * pathにはSDカード以下のパスを記述する。<BR>
@@ -101,16 +113,6 @@ public class UtilActivity extends Activity {
      * @version 2010/06/06 : 新規作成
      */
     public static String getSDCardRootPath() {
-        if (sdcardPath == null) {
-            sdcardPath = Environment.getExternalStorageDirectory().getPath();
-
-            // ! モデル情報指定
-            EagleUtil.log(Build.MODEL);
-            if (Build.MODEL.equals("SC-01C")) {
-                sdcardPath += "/external_sd";
-            }
-        }
-
         return sdcardPath;
     }
 
