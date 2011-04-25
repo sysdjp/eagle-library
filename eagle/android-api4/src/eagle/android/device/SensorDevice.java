@@ -82,7 +82,7 @@ public class SensorDevice implements SensorEventListener {
     public static final int eValueTypeZAccel = 2;
 
     /**
-     * 方位センサー。
+     * 傾きセンサー。
      */
     public static final int eSensorTypeOrientation = Sensor.TYPE_ORIENTATION;
 

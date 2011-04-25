@@ -94,7 +94,7 @@ public class FileDownloader {
             }
         }
 
-        if (resumeData == null) {
+        if (resumeData == null || resumeData.url == null || resumeData.url.length() == 0) {
             resumeData = new ResumeData();
             //! URLを探す
             GoogleDocsEntries entries = new GoogleDocsEntries(token);
@@ -126,7 +126,8 @@ public class FileDownloader {
 
         OutputStream stream = new FileOutputStream(cache, downloader.getResumeData().head > 0);
         {
-            stream.write(baos.toByteArray());
+            byte[] buffer = baos.toByteArray();
+            stream.write(buffer);
         }
         stream.close();
         baos = null;

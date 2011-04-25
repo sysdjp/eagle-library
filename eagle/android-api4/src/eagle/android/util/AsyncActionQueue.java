@@ -156,11 +156,13 @@ public class AsyncActionQueue {
      */
     public void onPause() {
         if (isStarted) {
-            synchronized (current) {
-                current.cancel(true);
-                //! 先頭に追加しておく
-                pushFront(current.action);
-                current = null;
+            if (current != null) {
+                synchronized (current) {
+                    current.cancel(true);
+                    //! 先頭に追加しておく
+                    pushFront(current.action);
+                    current = null;
+                }
             }
         }
     }

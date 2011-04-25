@@ -166,6 +166,16 @@ public final class Vector3 {
     }
 
     /**
+     * ベクトル要素を加算する。
+     * @param v
+     */
+    public void add(Vector3 v) {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+    }
+
+    /**
      * 長さを取得する。
      *
      * @author eagle.sakura

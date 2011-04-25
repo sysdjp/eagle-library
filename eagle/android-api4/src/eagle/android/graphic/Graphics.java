@@ -9,9 +9,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.Rect;
 
 /**
  * プリミティブの描画を管理する。<BR>
@@ -139,6 +139,14 @@ public class Graphics {
     }
 
     /**
+     * 描画する太さを指定する。
+     * @param size
+     */
+    public void setStrokeSize(int size) {
+        paint.setStrokeWidth(size);
+    }
+
+    /**
      * イメージの描画を行う。
      *
      * @author eagle.sakura
@@ -189,8 +197,7 @@ public class Graphics {
      */
     public void fillRect(int x, int y, int w, int h) {
         paint.setStyle(Style.FILL);
-        canvas.drawRect((float) x, (float) y, (float) (x + w), (float) (y + h),
-                paint);
+        canvas.drawRect((float) x, (float) y, (float) (x + w), (float) (y + h), paint);
     }
 
     /**
@@ -205,8 +212,7 @@ public class Graphics {
      */
     public void drawRect(int x, int y, int w, int h) {
         paint.setStyle(Style.STROKE);
-        canvas.drawRect((float) x, (float) y, (float) (x + w), (float) (y + h),
-                paint);
+        canvas.drawRect((float) x, (float) y, (float) (x + w), (float) (y + h), paint);
     }
 
     /**
@@ -246,8 +252,7 @@ public class Graphics {
             end = str.length();
         }
         paint.setStyle(Style.STROKE);
-        canvas.drawText(str, start, end, (float) x,
-                (float) (y + getStringHeight(str)), paint);
+        canvas.drawText(str, start, end, (float) x, (float) (y + getStringHeight(str)), paint);
     }
 
     /**
@@ -277,6 +282,10 @@ public class Graphics {
      */
     public static final int eStringFlagYCenter = 1 << 3;
 
+    public void setFillMode(boolean isFill) {
+        paint.setStyle(isFill ? Style.FILL : Style.STROKE);
+    }
+
     /**
      * 文字列を描画する。
      *
@@ -289,8 +298,7 @@ public class Graphics {
      * @param flags
      * @version 2009/12/13 : 新規作成
      */
-    public void drawString(String str, int x, int y, int start, int end,
-            int flags) {
+    public void drawString(String str, int x, int y, int start, int end, int flags) {
         if (start < 0 || end < 0) {
             start = 0;
             end = str.length();
@@ -311,9 +319,6 @@ public class Graphics {
         } else if ((flags & eStringFlagYCenter) != 0) {
             y += (height >> 1);
         }
-
-        paint.setStyle(Style.STROKE);
-
         canvas.drawText(str, start, end, (float) x, (float) y, paint);
     }
 
@@ -373,8 +378,7 @@ public class Graphics {
      */
     public void drawLine(int startX, int startY, int endX, int endY) {
         paint.setStyle(Style.STROKE);
-        canvas.drawLine((float) startX, (float) startY, (float) endX,
-                (float) endY, paint);
+        canvas.drawLine((float) startX, (float) startY, (float) endX, (float) endY, paint);
     }
 
     /**
