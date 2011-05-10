@@ -35,6 +35,10 @@ public class Directory {
             root += "/";
         }
 
+        if (ext.startsWith(".")) {
+            ext = ext.substring(1);
+        }
+
         enumlateFiles(root, ext, isSub);
     }
 
@@ -185,7 +189,7 @@ public class Directory {
             return "";
         int point = fileName.lastIndexOf('.');
         if (point != -1) {
-            return fileName.substring(point + 1);
+            return fileName.substring(0, point);
         } else {
             // fileName = "";
             return "";

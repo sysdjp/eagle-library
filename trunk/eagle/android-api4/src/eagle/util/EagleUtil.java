@@ -5,6 +5,11 @@
  */
 package eagle.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 /**
@@ -377,5 +382,73 @@ public class EagleUtil {
             return flg | check;
         else
             return flg & (~check);
+    }
+
+    /**
+     * ストリームをbyte配列に直す
+     * @param is
+     * @return
+     * @throws IOException
+     */
+    public static byte[] decodeStream(InputStream is) throws IOException {
+        byte[] result = null;
+
+        //! 1kbずつ読み込む。
+        byte[] tempBuffer = new byte[256];
+        //! 元ストリームを読み取り
+        {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int n = 0;
+            while ((n = is.read(tempBuffer)) > 0) {
+                baos.write(tempBuffer, 0, n);
+            }
+            result = baos.toByteArray();
+            is.close();
+        }
+
+        return result;
+    }
+
+    /**
+     * 指定URLからデータを取得する。
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static byte[] getURLData(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
+        connection.setRequestMethod("GET");
+        connection
+                .setRequestProperty("User-Agent",
+                        "Mozilla/5.0 (Linux; U; Android 1.6; ja-jp; SonyEricssonSO-01B Build/R1EA018)AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1");
+        //        connection.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)");
+        connection.connect();
+        connection.getResponseCode();
+        byte[] datas = null;
+        datas = decodeStream(connection.getInputStream());
+
+        return datas;
+    }
+
+    /**
+     * 指定URLへデータを送信する。
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static byte[] postURLData(String url, byte[] data, String contentType) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) (new URL(url)).openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", contentType); // ヘッダを設定
+        connection.getOutputStream().write(data);
+        connection.getOutputStream().close();
+        byte[] datas = null;
+        try {
+            datas = decodeStream(connection.getInputStream());
+        } catch (Exception e) {
+        }
+        int resp = connection.getResponseCode();
+        EagleUtil.log("Response : " + resp);
+        return datas;
     }
 }
