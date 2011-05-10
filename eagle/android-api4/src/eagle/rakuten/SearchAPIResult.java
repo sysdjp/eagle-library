@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eagle.util.EagleUtil;
-
 import net.arnx.jsonic.JSON;
+import eagle.util.EagleUtil;
 
 /**
  *
@@ -39,7 +38,7 @@ public class SearchAPIResult {
         public String developerID = "";
         public String keyword = "";
         public String NGKeyword = "";
-        public String genreId = eGenreIDBooks;
+        public String genreId = "";
         public String sort = eSortTypeStandard;
         public String orFlag = "0";
     };
@@ -102,13 +101,10 @@ public class SearchAPIResult {
         try {
             SearchAPIResult result = new SearchAPIResult();
 
-            URL url = new URL("http://api.rakuten.co.jp/rws/3.0/json?" + "developerId="
-                    + key.developerID + "&operation=ItemSearch" + "&version=2010-09-15"
-                    + "&keyword=" + URLEncoder.encode(key.keyword, "UTF-8") + "&sort="
-                    + URLEncoder.encode(key.sort, "UTF-8")
-                    + (key.genreId.length() > 0 ? ("&genreId=" + key.genreId) : "")
-                    + "&imageFlag=1" + "&orFlag=" + key.orFlag + "&NGKeyword="
-                    + URLEncoder.encode(key.NGKeyword, "UTF-8"));
+            URL url = new URL("http://api.rakuten.co.jp/rws/3.0/json?" + "developerId=" + key.developerID + "&operation=ItemSearch" + "&version=2010-09-15"
+                    + "&keyword=" + URLEncoder.encode(key.keyword, "UTF-8") + "&sort=" + URLEncoder.encode(key.sort, "UTF-8")
+                    + (key.genreId.length() > 0 ? ("&genreId=" + key.genreId) : "") + "&imageFlag=1" + "&orFlag=" + key.orFlag
+                    + (key.NGKeyword.length() > 0 ? "&NGKeyword=" + URLEncoder.encode(key.NGKeyword, "UTF-8") : ""));
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.connect();
 
@@ -119,8 +115,7 @@ public class SearchAPIResult {
 
             EagleUtil.log("" + map);
             // ! 検索結果を取り出す
-            List<Map<String, Object>> items = map.get("Body").get("ItemSearch").get("Items").get(
-                    "Item");
+            List<Map<String, Object>> items = map.get("Body").get("ItemSearch").get("Items").get("Item");
 
             for (Map<String, Object> item : items) {
                 Item add = new Item();

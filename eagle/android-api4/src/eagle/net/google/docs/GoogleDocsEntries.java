@@ -20,7 +20,7 @@ import com.google.api.client.xml.atom.AtomParser;
  * @author SAKURA
  *
  */
-public class GoogleDocsEntries {
+class GoogleDocsEntries {
 
     /**
      * アクセストークン
