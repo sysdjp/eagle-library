@@ -11,8 +11,7 @@ import eagle.util.EagleUtil;
 
 /**
  * Amazonで扱っている商品を示す。
- * 商品情報は基本的にケータイ端末用のデータを参照する。
- * @author yamashita.takeshi
+ * 商品情報は基本的にケータイ端末用のデータを参照するため、画像解像度は低い。
  *
  */
 public class Commodity {
@@ -131,6 +130,14 @@ public class Commodity {
     }
 
     /**
+     * 広告URLを取得する。
+     * @return
+     */
+    public String getAdURL(String developerId) {
+        return url + developerId + "/ref=nosim";
+    }
+
+    /**
      * 発売日を取得する。
      * @return
      */
@@ -210,10 +217,12 @@ public class Commodity {
      * @param url
      * @return
      */
-    static Commodity load(String _url) {
+    static Commodity load(String _url, OnCommodityLoadListener listen) {
         try {
             Commodity result = new Commodity();
             result.url = _url;
+
+            long start = System.currentTimeMillis();
             //! 商品名を取得
             {
                 byte[] buffer = EagleUtil.getURLData(result.url);
@@ -229,9 +238,12 @@ public class Commodity {
                 result.url = getAsinURL(result.ASIN);
                 result.gamePlatform = getGamePlatform(html);
                 result.authors = getAuthors(html);
-            }
 
-            result.printInfomation();
+                if (listen != null && !listen.onLoadComplete(html, result)) {
+                    return null;
+                }
+            }
+            EagleUtil.log("Time : " + (System.currentTimeMillis() - start) + "ms");
             return result;
 
         } catch (Exception e) {
@@ -246,7 +258,7 @@ public class Commodity {
      * @param barcode
      * @return
      */
-    public static Commodity searchBarcode(String barcode) {
+    public static Commodity searchBarcode(String barcode, OnCommodityLoadListener listener) {
         try {
             String url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&url=search-alias%3Daps&field-keywords="
                     + barcode;
@@ -259,7 +271,7 @@ public class Commodity {
                 //                EagleUtil.log(html);
                 url = get1stURL(html);
                 EagleUtil.log("Target URL : " + url);
-                result = load(url);
+                result = load(url, listener);
 
             }
             result.barcode = barcode;
@@ -287,26 +299,31 @@ public class Commodity {
     public static final String eSearchCategoryGame = "GAME";
 
     /**
-     * Amazonからキーワード検索し、結果を返す。
+     * 商品情報のローディングに関するメッセージを受信する。
+     *
+     */
+    public interface OnCommodityLoadListener {
+
+        /**
+         * 商品のロードを終了した場合に呼び出される。<BR>
+         * falseを返した場合、resultの商品一覧に含まない。
+         * @param item
+         * @return
+         */
+        boolean onLoadComplete(String html, Commodity item);
+    }
+
+    /**
+     * Amazonの検索結果URLを指定し、URLを取得する。
      * @param keyword
      * @param category
      * @return
      */
-    public static List<Commodity> searchKeyword(String keyword, String category, int limit) {
+    public static List<Commodity> searchUrl(String url, int limit, OnCommodityLoadListener listener) {
 
         List<Commodity> result = new ArrayList<Commodity>();
 
         try {
-            String url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%83J%83%5E%83J%83i&url=search-alias%3Daps&field-keywords=";
-
-            if (eSearchCategoryBook.equals(category)) {
-                url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%83J%83%5E%83J%83i&url=search-alias%3Dstripbooks&field-keywords=";
-            } else if (eSearchCategoryGame.equals(category)) {
-                url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%83J%83%5E%83J%83i&url=search-alias%3Dvideogames&field-keywords=";
-            }
-
-            url += URLEncoder.encode(keyword, EagleUtil.eEncodeSJIS);
-
             EagleUtil.log(url);
 
             //! 商品URLを取得
@@ -323,12 +340,40 @@ public class Commodity {
 
                 for (String _url : urlList) {
                     //                    EagleUtil.log(_url);
-                    Commodity data = load(_url);
+                    Commodity data = load(_url, listener);
                     if (data != null) {
                         result.add(data);
                     }
                 }
             }
+        } catch (Exception e) {
+
+        }
+        return result;
+    }
+
+    /**
+     * Amazonからキーワード検索し、結果を返す。
+     * @param keyword
+     * @param category
+     * @return
+     */
+    public static List<Commodity> searchKeyword(String keyword, String category, int limit, OnCommodityLoadListener listener) {
+
+        List<Commodity> result = new ArrayList<Commodity>();
+
+        try {
+            String url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%83J%83%5E%83J%83i&url=search-alias%3Daps&field-keywords=";
+
+            if (eSearchCategoryBook.equals(category)) {
+                url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%83J%83%5E%83J%83i&url=search-alias%3Dstripbooks&field-keywords=";
+            } else if (eSearchCategoryGame.equals(category)) {
+                url = "http://www.amazon.co.jp/s/ref=nb_sb_noss?__mk_ja_JP=%83J%83%5E%83J%83i&url=search-alias%3Dvideogames&field-keywords=";
+            }
+
+            url += URLEncoder.encode(keyword, EagleUtil.eEncodeSJIS);
+
+            return searchUrl(url, limit, listener);
         } catch (Exception e) {
 
         }
@@ -576,6 +621,7 @@ public class Commodity {
                 int end = html.indexOf("</a");
                 html = html.substring(0, end);
                 if (html.length() > 0) {
+                    result.remove(html); //!<    同じ名前が登録されないようにする
                     result.add(html);
                 } else {
                     return result;
