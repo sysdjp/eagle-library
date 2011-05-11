@@ -394,7 +394,7 @@ public class EagleUtil {
         byte[] result = null;
 
         //! 1kbずつ読み込む。
-        byte[] tempBuffer = new byte[256];
+        byte[] tempBuffer = new byte[1024 * 5];
         //! 元ストリームを読み取り
         {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
