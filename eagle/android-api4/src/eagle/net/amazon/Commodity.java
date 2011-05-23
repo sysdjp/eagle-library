@@ -67,6 +67,11 @@ public class Commodity {
     String gamePlatform = null;
 
     /**
+     * 価格
+     */
+    Integer price = null;
+
+    /**
      * 著者、製作者
      */
     List<String> authors = null;
@@ -193,10 +198,19 @@ public class Commodity {
         return authors;
     }
 
+    /**
+     * 価格を取得する。
+     * @return
+     */
+    public Integer getPrice() {
+        return price;
+    }
+
     public void printInfomation() {
 
         EagleUtil.log("---------------------------------------------");
         EagleUtil.log("ASIN : " + this.getASIN());
+        EagleUtil.log("価格 : " + this.getPrice());
         EagleUtil.log("バーコード : " + this.getBarcode());
         EagleUtil.log("画像URL : " + this.getImageUrl());
         EagleUtil.log("ISBN-10 : " + this.getISBN10());
@@ -222,12 +236,12 @@ public class Commodity {
             Commodity result = new Commodity();
             result.url = _url;
 
-            long start = System.currentTimeMillis();
+            //            long start = System.currentTimeMillis();
             //! 商品名を取得
             {
                 byte[] buffer = EagleUtil.getURLData(result.url);
                 String html = new String(buffer, EagleUtil.eEncodeSJIS);
-                EagleUtil.log(html);
+                //                EagleUtil.log(html);
                 result.name = getTitle(html);
                 result.imageUrl = getImageURL(html);
                 result.releaseDate = getReleaseDate(html);
@@ -238,12 +252,13 @@ public class Commodity {
                 result.url = getAsinURL(result.ASIN);
                 result.gamePlatform = getGamePlatform(html);
                 result.authors = getAuthors(html);
+                result.price = getPrice(html);
 
                 if (listen != null && !listen.onLoadComplete(html, result)) {
                     return null;
                 }
             }
-            EagleUtil.log("Time : " + (System.currentTimeMillis() - start) + "ms");
+            //            EagleUtil.log("Time : " + (System.currentTimeMillis() - start) + "ms");
             return result;
 
         } catch (Exception e) {
@@ -347,7 +362,7 @@ public class Commodity {
                 }
             }
         } catch (Exception e) {
-
+            EagleUtil.log(e);
         }
         return result;
     }
@@ -663,6 +678,24 @@ public class Commodity {
             String html = htmlBase.substring(index + header.length() + 1);
             html = html.substring(_getHeader(html), html.indexOf("<br"));
             return html;
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    static Integer getPrice(final String htmlBase) {
+        try {
+            String header = "価格:&nbsp;<font";
+            int index = htmlBase.indexOf(header);
+            if (index < 0) {
+                return null;
+            }
+            String html = htmlBase.substring(index + header.length() + 1);
+            html = html.substring(getDateIndex(html));
+            html = html.substring(0, html.indexOf("</"));
+            html = html.replaceAll(",", "");
+            return Integer.parseInt(html);
         } catch (Exception e) {
 
         }
