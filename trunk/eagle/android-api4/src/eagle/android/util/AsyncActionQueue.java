@@ -126,6 +126,10 @@ public class AsyncActionQueue {
         return isStarted;
     }
 
+    public int getQueueSize() {
+        return queue.size();
+    }
+
     /**
      * 行動リスト処理を開始する。
      */
